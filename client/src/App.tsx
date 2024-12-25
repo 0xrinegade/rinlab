@@ -154,11 +154,11 @@ function App() {
     <Switch>
       <Route path="/">
         <div className="min-h-screen bg-background font-mono">
-          <header className="border-b border-border p-4">
+          <header className="border-b border-primary/20 p-4">
             <div className="flex justify-between items-center max-w-[1200px] mx-auto">
               <div className="flex items-center gap-4">
-                <h1 className="text-2xl vintage-glow">SRCL DEFI</h1>
-                <div className="text-xs text-muted-foreground">
+                <h1 className="text-2xl vintage-glow ascii-border">SRCL DEFI</h1>
+                <div className="text-xs text-muted-foreground terminal-text">
                   ⌃+T THEME
                 </div>
               </div>
@@ -175,21 +175,21 @@ function App() {
           <main className="p-4 max-w-[1200px] mx-auto space-y-4 vintage-screen">
             {/* Analytics Dashboard */}
             <section>
-              <h2 className="text-xs text-muted-foreground mb-2">NETWORK ANALYTICS</h2>
+              <h2 className="text-xs text-primary ascii-border">NETWORK ANALYTICS</h2>
               <AnalyticsDashboard data={sampleAnalyticsData} />
             </section>
 
             {/* Market Overview */}
             <section>
-              <h2 className="text-xs text-muted-foreground mb-2">MARKET DATA</h2>
+              <h2 className="text-xs text-primary ascii-border mb-2">MARKET DATA</h2>
               <div className="grid grid-cols-3 gap-4">
-                <TerminalContainer title="Price Chart">
+                <TerminalContainer title="Price Chart" className="terminal-border">
                   <div className="p-4">
                     <PriceChart data={samplePriceData} className="h-48" />
                   </div>
                 </TerminalContainer>
 
-                <TerminalContainer title="Network Status">
+                <TerminalContainer title="Network Status" className="terminal-border">
                   <div className="p-4">
                     <NetworkTopology 
                       nodes={sampleNetworkNodes}
@@ -198,7 +198,8 @@ function App() {
                     />
                   </div>
                 </TerminalContainer>
-                <TerminalContainer title="Order Book">
+
+                <TerminalContainer title="Order Book" className="terminal-border">
                   <div className="p-4">
                     <OrderBook 
                       bids={sampleOrderBook.bids} 
@@ -208,7 +209,7 @@ function App() {
                   </div>
                 </TerminalContainer>
 
-                <TerminalContainer title="AI Predictions">
+                <TerminalContainer title="AI Predictions" className="terminal-border">
                   <TrendPredictor
                     predictions={samplePredictions}
                     currentPrice={samplePriceData[samplePriceData.length - 1].price}
@@ -216,8 +217,7 @@ function App() {
                   />
                 </TerminalContainer>
 
-                {/* Add Meme Generator */}
-                <TerminalContainer title="Market Memes">
+                <TerminalContainer title="Market Memes" className="terminal-border">
                   <div className="p-4">
                     <MemeGenerator 
                       trend={sampleMarketTrend}
@@ -231,8 +231,8 @@ function App() {
             {/* Trading Interface */}
             <div className="grid grid-cols-2 gap-4">
               <section>
-                <h2 className="text-xs text-muted-foreground mb-2">TRADING</h2>
-                <TerminalContainer title="Swap Tokens">
+                <h2 className="text-xs text-primary ascii-border mb-2">TRADING</h2>
+                <TerminalContainer title="Swap Tokens" className="terminal-border">
                   <div className="p-4 space-y-4">
                     <TokenInput
                       token="SOL"
@@ -250,8 +250,8 @@ function App() {
               </section>
 
               <section>
-                <h2 className="text-xs text-muted-foreground mb-2">HISTORY</h2>
-                <TerminalContainer title="Transactions">
+                <h2 className="text-xs text-primary ascii-border mb-2">HISTORY</h2>
+                <TerminalContainer title="Transactions" className="terminal-border">
                   <TransactionHistory 
                     transactions={sampleTransactions}
                     maxHeight="300px"
