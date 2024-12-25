@@ -21,13 +21,11 @@ import { TransactionReplay } from "@/components/defi/transaction-replay";
 import { ASCIINFTGallery } from "@/components/defi/ascii-nft-gallery";
 import { SmartOrderAgent } from "@/components/defi/smart-order-agent";
 
-// Sample analytics data with correct price property
 const sampleAnalyticsData = Array.from({ length: 24 }, (_, i) => ({
   timestamp: Date.now() - 1000 * 60 * 60 * (24 - i),
-  price: 50000 + Math.random() * 20000,  // Changed from txVolume to price
+  price: 50000 + Math.random() * 20000,
 }));
 
-// Sample transaction data
 const sampleTransactions = [
   {
     id: '1',
@@ -53,7 +51,6 @@ const sampleTransactions = [
   },
 ];
 
-// Sample prediction data
 const samplePredictions = Array.from({ length: 5 }, (_, i) => ({
   timestamp: Date.now() + 1000 * 60 * 60 * (i + 1),
   predictedValue: 50 + (Math.random() - 0.5) * 10,
@@ -66,7 +63,6 @@ const samplePredictions = Array.from({ length: 5 }, (_, i) => ({
   },
 }));
 
-// Sample market trend data for meme generator
 const sampleMarketTrend = {
   symbol: 'SOL',
   changePercent: 12.5,
@@ -74,7 +70,6 @@ const sampleMarketTrend = {
   timeframe: '24h'
 };
 
-// Sample network data
 const sampleNetworkNodes = [
   {
     id: 'node1',
@@ -113,23 +108,21 @@ const sampleNetworkNodes = [
   }
 ];
 
-// Sample order book data
 const sampleOrderBook = {
   bids: Array.from({ length: 8 }, (_, i) => ({
     price: 49.5 - i * 0.1,
     size: Math.random() * 100 + 50,
     total: 0,
-    count: Math.floor(Math.random() * 10) + 1, // Random number of orders between 1-10
+    count: Math.floor(Math.random() * 10) + 1, 
   })),
   asks: Array.from({ length: 8 }, (_, i) => ({
     price: 50.5 + i * 0.1,
     size: Math.random() * 100 + 50,
     total: 0,
-    count: Math.floor(Math.random() * 10) + 1, // Random number of orders between 1-10
+    count: Math.floor(Math.random() * 10) + 1, 
   }))
 };
 
-// Calculate cumulative totals
 let cumTotal = 0;
 sampleOrderBook.bids.forEach(bid => {
   cumTotal += bid.size;
@@ -193,7 +186,7 @@ function App() {
               <ComponentLayout>
                 <h1>Price Chart</h1>
                 <p>Interactive price chart with customizable time ranges.</p>
-                <PriceChart data={sampleAnalyticsData} valueKey="price" /> {/* Changed valueKey to price */}
+                <PriceChart data={sampleAnalyticsData} height={300} />
               </ComponentLayout>
             </Route>
 
