@@ -9,6 +9,7 @@ import { ThemeSwitcher } from "@/components/ui/theme-switcher";
 import { NetworkTopology } from "@/components/defi/network-topology";
 import { TrendPredictor } from "@/components/defi/trend-predictor";
 import { MemeGenerator } from "@/components/defi/meme-generator";
+import { TokenScreener } from "@/components/defi/token-screener";
 
 // Sample analytics data
 const sampleAnalyticsData = Array.from({ length: 24 }, (_, i) => ({
@@ -156,33 +157,8 @@ function App() {
             {/* Analytics Dashboard */}
             <section>
               <h2 className="text-xs text-primary ascii-border mb-2">NETWORK ANALYTICS</h2>
-              <div className="grid grid-cols-3 gap-4">
-                {/* Single Combined Chart for Analytics */}
-                <TerminalContainer title="Transaction Volume" className="terminal-border">
-                  <div className="p-4">
-                    <PriceChart data={sampleAnalyticsData} className="h-48" valueKey="txVolume" />
-                  </div>
-                </TerminalContainer>
-
-                <TerminalContainer title="Network Status" className="terminal-border">
-                  <div className="p-4">
-                    <NetworkTopology 
-                      nodes={sampleNetworkNodes}
-                      width={32}
-                      height={16}
-                    />
-                  </div>
-                </TerminalContainer>
-
-                <TerminalContainer title="Order Book" className="terminal-border">
-                  <div className="p-4">
-                    <OrderBook 
-                      bids={sampleOrderBook.bids} 
-                      asks={sampleOrderBook.asks} 
-                      className="h-48"
-                    />
-                  </div>
-                </TerminalContainer>
+              <div className="grid grid-cols-1 gap-4">
+                <TokenScreener />
               </div>
             </section>
 
