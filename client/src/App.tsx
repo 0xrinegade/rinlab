@@ -65,32 +65,56 @@ function App() {
   return (
     <Switch>
       <Route path="/">
-        <RetroScreen
-          intensity={0.1}
-          scanlineSpacing={3}
-          noiseOpacity={0.02}
-          glowRadius={20}
-          glowColor="hsl(var(--primary))"
-          curvature={0.05}
-          className="min-h-screen bg-background"
-        >
-          <div className="p-4">
-            <GridContainer columns={1} gap={4}>
-              <header className="flex justify-between items-center border-b border-border pb-4">
-                <div className="flex items-center gap-4">
-                  <h1 className="text-2xl font-mono">SRCL DEFI</h1>
-                  <div className="text-xs text-muted-foreground">
-                    ⌃+T THEME
-                  </div>
+        <div className="min-h-screen bg-background font-mono">
+          <header className="border-b border-border p-4">
+            <div className="flex justify-between items-center max-w-[1200px] mx-auto">
+              <div className="flex items-center gap-4">
+                <h1 className="text-2xl">SRCL DEFI</h1>
+                <div className="text-xs text-muted-foreground">
+                  ⌃+T THEME
                 </div>
-                <WalletButton 
-                  connected={false}
-                  onClick={() => console.log('connect wallet')}
-                />
-              </header>
+              </div>
+              <WalletButton 
+                connected={false}
+                onClick={() => console.log('connect wallet')}
+              />
+            </div>
+          </header>
 
-              <GridContainer columns={2} gap={4}>
-                <TerminalContainer title="Token Swap" shortcut="⌘+S">
+          <main className="p-4 max-w-[1200px] mx-auto space-y-4">
+            {/* Market Overview */}
+            <section>
+              <h2 className="text-xs text-muted-foreground mb-2">UPDATING</h2>
+              <div className="grid grid-cols-3 gap-4">
+                <TerminalContainer title="Market Data">
+                  <div className="p-4">
+                    <PriceChart data={samplePriceData} className="h-48" />
+                  </div>
+                </TerminalContainer>
+
+                <TerminalContainer title="Order Book">
+                  <div className="p-4">
+                    <OrderBook 
+                      bids={sampleOrderBook.bids} 
+                      asks={sampleOrderBook.asks} 
+                      className="h-48"
+                    />
+                  </div>
+                </TerminalContainer>
+
+                <TerminalContainer title="Recent Transactions">
+                  <div className="p-4">
+                    <TransactionList transactions={sampleTransactions} />
+                  </div>
+                </TerminalContainer>
+              </div>
+            </section>
+
+            {/* Trading Interface */}
+            <section>
+              <h2 className="text-xs text-muted-foreground mb-2">TRADING</h2>
+              <div className="grid grid-cols-2 gap-4">
+                <TerminalContainer title="Swap Tokens">
                   <div className="p-4 space-y-4">
                     <TokenInput
                       token="SOL"
@@ -106,41 +130,15 @@ function App() {
                   </div>
                 </TerminalContainer>
 
-                <GridContainer columns={1} gap={4}>
-                  <TerminalContainer title="Market Data" shortcut="⌘+M">
-                    <div className="p-4">
-                      <PriceChart data={samplePriceData} className="h-32" />
-                    </div>
-                  </TerminalContainer>
-
-                  <TerminalContainer title="Order Book" shortcut="⌘+O">
-                    <div className="p-4">
-                      <OrderBook 
-                        bids={sampleOrderBook.bids} 
-                        asks={sampleOrderBook.asks}
-                        className="h-64"
-                      />
-                    </div>
-                  </TerminalContainer>
-                </GridContainer>
-              </GridContainer>
-
-              <GridContainer columns={2} gap={4}>
-                <TerminalContainer title="Transaction History" shortcut="⌘+H">
-                  <div className="p-4">
-                    <TransactionList transactions={sampleTransactions} />
-                  </div>
-                </TerminalContainer>
-
-                <TerminalContainer title="Theme" shortcut="⌃+T">
+                <TerminalContainer title="Theme Settings">
                   <div className="p-4">
                     <ThemeSwitcher />
                   </div>
                 </TerminalContainer>
-              </GridContainer>
-            </GridContainer>
-          </div>
-        </RetroScreen>
+              </div>
+            </section>
+          </main>
+        </div>
       </Route>
     </Switch>
   );
