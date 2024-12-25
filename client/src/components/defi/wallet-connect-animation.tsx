@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Wallet, Loader2, CheckCircle2, XCircle, Copy, Check, Code } from 'lucide-react';
+import { Wallet, Loader2, CheckCircle2, XCircle, Code } from 'lucide-react';
 import { CodeSnippetHighlighter } from './code-snippet-highlighter';
 
 interface WalletConnectAnimationProps {
@@ -36,7 +36,7 @@ const LOADING_FRAMES = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', 
 
 const COMPONENT_CODE = `import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Wallet, Loader2, CheckCircle2, XCircle } from 'lucide-react';
+import { Wallet, Loader2, CheckCircle2, XCircle, Code } from 'lucide-react';
 
 interface WalletConnectAnimationProps {
   status: 'disconnected' | 'connecting' | 'connected' | 'error';
@@ -62,7 +62,6 @@ export function WalletConnectAnimation({
 }: WalletConnectAnimationProps) {
   const [loadingFrame, setLoadingFrame] = useState(0);
   const [scanLine, setScanLine] = useState(0);
-  const [copied, setCopied] = useState(false);
   const [showCode, setShowCode] = useState(false);
 
   useEffect(() => {
@@ -81,47 +80,19 @@ export function WalletConnectAnimation({
     return () => clearInterval(interval);
   }, []);
 
-  const handleCopyCode = async () => {
-    try {
-      const componentCode = `import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Wallet, Loader2, CheckCircle2, XCircle } from 'lucide-react';
-
-interface WalletConnectAnimationProps {
-  status: 'disconnected' | 'connecting' | 'connected' | 'error';
-  onConnect?: () => void;
-  className?: string;
-}
-
-export function WalletConnectAnimation({
-  status = 'disconnected',
-  onConnect,
-  className = ''
-}: WalletConnectAnimationProps) {
-  // Component implementation
-}`;
-
-      await navigator.clipboard.writeText(componentCode);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error('Failed to copy:', err);
-    }
-  };
-
   return (
     <div className={`relative p-4 ${className}`}>
       <div className="flex justify-between items-start mb-4">
-        <div className="terminal-header">
+        <pre className="text-primary text-xs font-mono">
           ┌── WALLET CONNECTION ──┐
-        </div>
+        </pre>
 
         <button
           onClick={() => setShowCode(prev => !prev)}
-          className="px-2 py-1 border border-primary/20 hover:bg-primary/10 text-primary text-xs flex items-center gap-2 transition-colors"
+          className="px-2 py-1 border border-primary/20 hover:bg-primary/10 text-primary text-xs flex items-center gap-2 transition-colors rounded-sm"
         >
           <Code className="w-3 h-3" />
-          <span>{showCode ? 'Hide Code' : 'View Code'}</span>
+          <span className="font-mono">{showCode ? 'Hide Code' : 'View Code'}</span>
         </button>
       </div>
 
@@ -131,7 +102,7 @@ export function WalletConnectAnimation({
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="overflow-hidden"
+            className="overflow-hidden mb-4"
           >
             <CodeSnippetHighlighter
               code={COMPONENT_CODE}
@@ -153,7 +124,7 @@ export function WalletConnectAnimation({
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.3 }}
       >
-        <pre className="text-xs whitespace-pre">
+        <pre className="text-xs whitespace-pre text-primary">
           {ASCII_FRAMES[status]}
         </pre>
 
@@ -161,7 +132,7 @@ export function WalletConnectAnimation({
           {status === 'disconnected' && (
             <motion.button
               onClick={onConnect}
-              className="mt-4 w-full p-2 border border-primary/20 hover:bg-primary/10 text-primary text-xs flex items-center justify-center gap-2"
+              className="mt-4 w-full p-2 border border-primary/20 hover:bg-primary/10 text-primary text-xs flex items-center justify-center gap-2 transition-colors rounded-sm"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
