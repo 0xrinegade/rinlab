@@ -47,26 +47,62 @@ export function ColorPaletteSelector({ className = '' }: ColorPaletteSelectorPro
   };
 
   const handleImportTheme = () => {
-    const themeString = prompt("┌── IMPORT THEME ──┐\n│ Paste theme code below │\n└──────────────────────┘");
-    if (!themeString) return;
+    // Create a hidden file input for theme import
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.theme.txt';
+    input.style.display = 'none';
 
-    try {
-      const success = importTheme(themeString);
-      if (success) {
-        toast({
-          title: "┌─ THEME IMPORTED ─┐",
-          description: "└── New theme applied successfully ──┘"
-        });
-      } else {
-        throw new Error("Invalid theme configuration");
-      }
-    } catch (err) {
-      toast({
-        title: "┌─ IMPORT FAILED ─┐",
-        description: "└── Invalid theme code ──┘",
-        variant: "destructive"
-      });
-    }
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const themeString = event.target?.result as string;
+        try {
+          const success = importTheme(themeString.trim());
+          if (success) {
+            toast({
+              title: "┌─ THEME IMPORTED ─┐",
+              description: "└── New theme applied successfully ──┘"
+            });
+          } else {
+            throw new Error("Invalid theme configuration");
+          }
+        } catch (err) {
+          toast({
+            title: "┌─ IMPORT FAILED ─┐",
+            description: "└── Invalid theme file ──┘",
+            variant: "destructive"
+          });
+        }
+      };
+      reader.readAsText(file);
+    };
+
+    // Trigger file selection
+    document.body.appendChild(input);
+    input.click();
+    document.body.removeChild(input);
+  };
+
+  const handleExportThemeFile = () => {
+    const themeString = exportTheme();
+    const blob = new Blob([themeString], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${currentPalette.name}.theme.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    toast({
+      title: "┌─ THEME EXPORTED ─┐",
+      description: "└── Theme file downloaded ──┘",
+    });
   };
 
   return (
@@ -131,11 +167,19 @@ export function ColorPaletteSelector({ className = '' }: ColorPaletteSelectorPro
 
         <div className="flex flex-col gap-2 p-4">
           <Button 
-            onClick={handleShareTheme}
+            onClick={handleExportThemeFile}
             className="w-full text-xs flex items-center gap-2 justify-center"
           >
             <Share className="w-4 h-4" />
-            SHARE THEME
+            EXPORT THEME FILE
+          </Button>
+          <Button 
+            onClick={handleShareTheme}
+            variant="outline"
+            className="w-full text-xs flex items-center gap-2 justify-center"
+          >
+            <Share className="w-4 h-4" />
+            COPY THEME CODE
           </Button>
           <Button 
             onClick={handleImportTheme}
