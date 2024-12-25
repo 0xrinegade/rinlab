@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Terminal, ArrowRight, AlertCircle, CheckCircle2, Code, Cpu, ChevronRight } from 'lucide-react';
+import { Terminal, ArrowRight, AlertCircle, CheckCircle2, Code, Cpu, ChevronRight, HelpCircle } from 'lucide-react';
 
 interface OrderTemplate {
   id: string;
@@ -32,6 +32,13 @@ interface SmartOrderAgentProps {
   className?: string;
 }
 
+interface CommandTooltip {
+  title: string;
+  syntax: string;
+  description: string;
+  example: string;
+}
+
 export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
   const [commandInput, setCommandInput] = useState('');
   const [orders, setOrders] = useState<Order[]>([]);
@@ -41,6 +48,7 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [selectedSuggestion, setSelectedSuggestion] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [tooltipContent, setTooltipContent] = useState<CommandTooltip | null>(null);
 
   const orderTemplates: OrderTemplate[] = [
     {
@@ -87,7 +95,6 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
     }
   ];
 
-  // Generate base suggestions from templates
   const baseSuggestions: Suggestion[] = [
     { command: 'BUY 1.5 SOL', description: 'Market buy 1.5 SOL' },
     { command: 'BUY 0.5 ETH', description: 'Market buy 0.5 ETH' },
@@ -97,7 +104,27 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
     { command: 'STOP ETH AT 1800', description: 'Stop loss for ETH at 1800' },
   ];
 
-  // Update suggestions based on input
+  const commandTooltips: Record<string, CommandTooltip> = {
+    'BUY': {
+      title: 'Market Buy Order',
+      syntax: 'BUY <amount> <symbol>',
+      description: 'Execute an immediate market buy order at current price',
+      example: 'BUY 1.5 SOL'
+    },
+    'LIMIT': {
+      title: 'Limit Order',
+      syntax: 'LIMIT BUY <amount> <symbol> AT <price>',
+      description: 'Place a limit order to buy at specified price',
+      example: 'LIMIT BUY 2 SOL AT 50.5'
+    },
+    'STOP': {
+      title: 'Stop Loss',
+      syntax: 'STOP <symbol> AT <price>',
+      description: 'Set a stop loss order to protect against downside',
+      example: 'STOP SOL AT 45.0'
+    }
+  };
+
   useEffect(() => {
     if (!commandInput.trim()) {
       setSuggestions([]);
@@ -109,7 +136,6 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
       suggestion => suggestion.command.toLowerCase().includes(commandInput.toLowerCase())
     );
 
-    // Generate dynamic suggestions based on input patterns
     const parts = commandInput.trim().toUpperCase().split(' ');
     if (parts[0] === 'BUY' && parts.length === 1) {
       filtered.push(
@@ -127,7 +153,22 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
     setSelectedSuggestion(-1);
   }, [commandInput]);
 
-  // Handle keyboard navigation
+  useEffect(() => {
+    if (!commandInput.trim()) {
+      setTooltipContent(null);
+      return;
+    }
+
+    const command = commandInput.trim().toUpperCase().split(' ')[0];
+    const tooltip = commandTooltips[command];
+
+    if (tooltip) {
+      setTooltipContent(tooltip);
+    } else {
+      setTooltipContent(null);
+    }
+  }, [commandInput]);
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (suggestions.length === 0) {
       if (e.key === 'Enter' && commandInput.trim()) {
@@ -345,6 +386,46 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
         </div>
 
         <div className="border border-border/20 p-4 relative">
+          <AnimatePresence>
+            {tooltipContent && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                className="absolute bottom-full left-0 right-0 mb-2 border border-border/20 bg-background/95 backdrop-blur-sm p-3"
+              >
+                <div className="relative">
+                  <div className="text-xs text-primary mb-2 flex items-center gap-2">
+                    <HelpCircle className="w-3 h-3" />
+                    <span className="font-bold">{tooltipContent.title}</span>
+                  </div>
+
+                  <div className="text-border/40 text-xs mb-2">
+                    ┌───────────────────────────────┐
+                  </div>
+
+                  <div className="space-y-2 text-xs">
+                    <div className="font-mono">
+                      <span className="text-muted-foreground">Syntax:</span>
+                      <span className="text-primary ml-2">{tooltipContent.syntax}</span>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Description:</span>
+                      <span className="ml-2">{tooltipContent.description}</span>
+                    </div>
+                    <div className="font-mono">
+                      <span className="text-muted-foreground">Example:</span>
+                      <span className="text-primary ml-2">{tooltipContent.example}</span>
+                    </div>
+                  </div>
+
+                  <div className="text-border/40 text-xs mt-2">
+                    └───────────────────────────────┘
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
           <div className="flex items-center gap-2 font-mono w-full">
             <Terminal className="w-4 h-4 text-primary flex-shrink-0" />
             <input
@@ -361,7 +442,6 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
             </span>
           </div>
 
-          {/* Suggestions dropdown */}
           <AnimatePresence>
             {suggestions.length > 0 && (
               <motion.div
