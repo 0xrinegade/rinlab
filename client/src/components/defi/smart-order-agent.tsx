@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Terminal, ArrowRight, AlertCircle, CheckCircle2, Code, Cpu, ChevronRight, HelpCircle, Save, Bookmark, X, Download, Upload, Copy } from 'lucide-react';
+import { Terminal, ArrowRight, AlertCircle, CheckCircle2, Code, Cpu, ChevronRight, HelpCircle, Save, Bookmark, X, Download, Upload, Copy, Share2, ThumbsUp, Medal, Trophy, Users } from 'lucide-react';
 
 interface OrderTemplate {
   id: string;
@@ -51,6 +51,18 @@ interface ImportedStrategies {
   presets: StrategyPreset[];
 }
 
+interface CommunityStrategy extends StrategyPreset {
+  creator: string;
+  votes: number;
+  popularity: number;
+  createdAt: number;
+  performance: {
+    wins: number;
+    losses: number;
+    avgReturn: number;
+  };
+}
+
 interface SmartOrderAgentProps {
   className?: string;
 }
@@ -93,6 +105,57 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
   const [showImportExport, setShowImportExport] = useState(false);
   const [importError, setImportError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [showCommunity, setShowCommunity] = useState(false);
+  const [communityStrategies, setCommunityStrategies] = useState<CommunityStrategy[]>([
+    {
+      id: 'c1',
+      name: 'Mega Whale Tracker',
+      command: 'EXIT SOL ON PROFIT',
+      description: 'Exit when whales take profit',
+      tags: ['Whale', 'Exit'],
+      creator: 'CryptoWizard',
+      votes: 128,
+      popularity: 0.92,
+      createdAt: Date.now() - 1000 * 60 * 60 * 24 * 3,
+      performance: {
+        wins: 42,
+        losses: 12,
+        avgReturn: 15.5
+      }
+    },
+    {
+      id: 'c2',
+      name: 'DCA King',
+      command: 'SMART SOL TP 150 SL 70 DCA 7',
+      description: 'Advanced DCA with wide range',
+      tags: ['DCA', 'Smart'],
+      creator: 'TradeBot9000',
+      votes: 89,
+      popularity: 0.85,
+      createdAt: Date.now() - 1000 * 60 * 60 * 24 * 5,
+      performance: {
+        wins: 38,
+        losses: 15,
+        avgReturn: 12.8
+      }
+    },
+    {
+      id: 'c3',
+      name: 'Volume Master',
+      command: 'EXIT SOL ON VOLUME',
+      description: 'Track volume leaders',
+      tags: ['Volume', 'Exit'],
+      creator: 'AlgoTrader',
+      votes: 67,
+      popularity: 0.78,
+      createdAt: Date.now() - 1000 * 60 * 60 * 24 * 7,
+      performance: {
+        wins: 31,
+        losses: 14,
+        avgReturn: 9.4
+      }
+    }
+  ]);
 
   const orderTemplates: OrderTemplate[] = [
     {
@@ -506,6 +569,40 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
     reader.readAsText(file);
   };
 
+  const handleShareStrategy = () => {
+    if (!commandInput.trim() || !presetNameInput.trim()) return;
+
+    const newStrategy: CommunityStrategy = {
+      id: Math.random().toString(36).substr(2, 9),
+      name: presetNameInput,
+      command: commandInput,
+      description: 'Custom trading strategy',
+      tags: ['Custom'],
+      creator: 'You',
+      votes: 0,
+      popularity: 0,
+      createdAt: Date.now(),
+      performance: {
+        wins: 0,
+        losses: 0,
+        avgReturn: 0
+      }
+    };
+
+    setCommunityStrategies(prev => [newStrategy, ...prev]);
+    setPresetNameInput('');
+    setShowCommunity(true);
+  };
+
+  const handleVoteStrategy = (strategyId: string) => {
+    setCommunityStrategies(prev =>
+      prev.map(strategy =>
+        strategy.id === strategyId
+          ? { ...strategy, votes: strategy.votes + 1 }
+          : strategy
+      )
+    );
+  };
 
   return (
     <div className={`terminal-container p-4 relative ${className}`}>
@@ -607,6 +704,12 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
               className="p-1 hover:bg-muted rounded"
             >
               <Download className="w-4 h-4 text-primary" />
+            </button>
+            <button
+              onClick={() => setShowCommunity(prev => !prev)}
+              className="p-1 hover:bg-muted rounded"
+            >
+              <Users className="w-4 h-4 text-primary" />
             </button>
             <span className="text-primary flex-shrink-0 w-2">
               {cursorPosition === 0 ? '█' : ' '}
@@ -793,6 +896,97 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
           </div>
         </div>
       </div>
+      <AnimatePresence>
+        {showCommunity && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="absolute left-0 right-0 top-[calc(100%+1px)] border border-border/20 bg-background/95 backdrop-blur-sm z-30 p-4"
+          >
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center justify-between">
+                <div className="text-xs text-primary flex items-center gap-2">
+                  <Trophy className="w-4 h-4" />
+                  <span>COMMUNITY ARCADE</span>
+                </div>
+                <button
+                  onClick={handleShareStrategy}
+                  disabled={!commandInput.trim() || !presetNameInput.trim()}
+                  className="flex items-center gap-1 px-2 py-1 text-xs hover:bg-muted rounded disabled:opacity-50"
+                >
+                  <Share2 className="w-3 h-3" />
+                  <span>Share Strategy</span>
+                </button>
+              </div>
+
+              <div className="space-y-2">
+                {communityStrategies.map((strategy, index) => (
+                  <motion.div
+                    key={strategy.id}
+                    className="border border-border/20 p-3 rounded"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-sm">{strategy.name}</span>
+                          {index === 0 && (
+                            <Medal className="w-4 h-4 text-yellow-500" />
+                          )}
+                        </div>
+                        <div className="text-xs text-muted-foreground mt-1">
+                          by {strategy.creator} • {new Date(strategy.createdAt).toLocaleDateString()}
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => handleVoteStrategy(strategy.id)}
+                        className="flex items-center gap-1 text-xs hover:text-primary transition-colors"
+                      >
+                        <ThumbsUp className="w-3 h-3" />
+                        <span>{strategy.votes}</span>
+                      </button>
+                    </div>
+
+                    <pre className="mt-2 p-2 bg-muted/20 rounded text-xs font-mono overflow-x-auto">
+                      {strategy.command}
+                    </pre>
+
+                    <div className="mt-2 flex items-center justify-between text-xs">
+                      <div className="flex gap-1">
+                        {strategy.tags.map(tag => (
+                          <span
+                            key={tag}
+                            className="px-1 bg-primary/10 text-primary rounded text-[10px]"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                      <div className="flex items-center gap-4 text-[10px] text-muted-foreground">
+                        <span>Wins: {strategy.performance.wins}</span>
+                        <span>Avg Return: {strategy.performance.avgReturn}%</span>
+                      </div>
+                    </div>
+
+                    <div className="mt-2 h-1 bg-muted overflow-hidden rounded-full">
+                      <motion.div
+                        className="h-full bg-primary"
+                        initial={{ width: 0 }}
+                        animate={{ width: `${strategy.popularity * 100}%` }}
+                        transition={{ duration: 1, delay: index * 0.2 }}
+                      />
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </div>
   );
 }
