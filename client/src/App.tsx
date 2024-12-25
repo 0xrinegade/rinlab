@@ -8,6 +8,7 @@ import { TransactionHistory } from "@/components/defi/transaction-history";
 import { AnalyticsDashboard } from "@/components/defi/analytics-dashboard";
 import { ThemeSwitcher } from "@/components/ui/theme-switcher";
 import { TrendPredictor } from "@/components/defi/trend-predictor";
+import { NetworkTopology } from "@/components/defi/network-topology";
 
 // Sample analytics data
 const sampleAnalyticsData = Array.from({ length: 24 }, (_, i) => ({
@@ -100,6 +101,45 @@ sampleOrderBook.asks.forEach(ask => {
   ask.total = cumTotal;
 });
 
+// Add sample network data
+const sampleNetworkNodes = [
+  {
+    id: 'node1',
+    connections: ['node2', 'node3'],
+    activity: 0.8,
+    latency: 50,
+    region: 'US-WEST'
+  },
+  {
+    id: 'node2',
+    connections: ['node1', 'node4'],
+    activity: 0.6,
+    latency: 75,
+    region: 'US-EAST'
+  },
+  {
+    id: 'node3',
+    connections: ['node1', 'node4', 'node5'],
+    activity: 0.9,
+    latency: 45,
+    region: 'EU-WEST'
+  },
+  {
+    id: 'node4',
+    connections: ['node2', 'node3'],
+    activity: 0.4,
+    latency: 90,
+    region: 'ASIA-EAST'
+  },
+  {
+    id: 'node5',
+    connections: ['node3'],
+    activity: 0.7,
+    latency: 60,
+    region: 'US-WEST'
+  }
+];
+
 function App() {
   return (
     <Switch>
@@ -137,6 +177,15 @@ function App() {
                   </div>
                 </TerminalContainer>
 
+                <TerminalContainer title="Network Status">
+                  <div className="p-4">
+                    <NetworkTopology 
+                      nodes={sampleNetworkNodes}
+                      width={32}
+                      height={16}
+                    />
+                  </div>
+                </TerminalContainer>
                 <TerminalContainer title="Order Book">
                   <div className="p-4">
                     <OrderBook 
