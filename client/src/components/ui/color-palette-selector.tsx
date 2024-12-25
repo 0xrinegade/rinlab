@@ -5,6 +5,7 @@ import { Label } from './label';
 import { Input } from './input';
 import { Button } from './button';
 import { useToast } from '@/hooks/use-toast';
+import { Share, Import, RotateCcw } from 'lucide-react';
 
 interface ColorPaletteSelectorProps {
   className?: string;
@@ -44,32 +45,43 @@ export function ColorPaletteSelector({ className = '' }: ColorPaletteSelectorPro
     updateColor(key, newValue);
   };
 
-  const handleExportTheme = () => {
+  const handleShareTheme = async () => {
     const themeString = exportTheme();
-    navigator.clipboard.writeText(themeString).then(() => {
+    try {
+      await navigator.clipboard.writeText(themeString);
       toast({
-        title: "Theme Exported",
-        description: "Theme configuration copied to clipboard"
+        title: "Theme Shared!",
+        description: "Theme configuration copied to clipboard. Share this code with others to let them use your theme.",
       });
-    });
+    } catch (err) {
+      toast({
+        title: "Share Failed",
+        description: "Could not copy theme to clipboard. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleImportTheme = () => {
-    const themeString = prompt("Paste theme configuration:");
-    if (themeString) {
+    const themeString = prompt("Paste the shared theme code:");
+    if (!themeString) return;
+
+    try {
       const success = importTheme(themeString);
       if (success) {
         toast({
-          title: "Theme Imported",
-          description: "Theme configuration applied successfully"
+          title: "Theme Imported!",
+          description: "The new theme has been applied successfully."
         });
       } else {
-        toast({
-          title: "Import Failed",
-          description: "Invalid theme configuration",
-          variant: "destructive"
-        });
+        throw new Error("Invalid theme configuration");
       }
+    } catch (err) {
+      toast({
+        title: "Import Failed",
+        description: "Invalid theme configuration. Please check the theme code and try again.",
+        variant: "destructive"
+      });
     }
   };
 
@@ -85,7 +97,7 @@ export function ColorPaletteSelector({ className = '' }: ColorPaletteSelectorPro
         {(Object.keys(colorLabels) as ColorKey[]).map((key) => (
           <div 
             key={key}
-            className="border border-border/20 p-3 hover:bg-hover transition-colors"
+            className="border border-border/20 p-3 hover:bg-hover transition-colors cursor-pointer"
             onClick={() => setSelectedColor(selectedColor === key ? null : key)}
           >
             <div className="flex items-center justify-between">
@@ -128,26 +140,29 @@ export function ColorPaletteSelector({ className = '' }: ColorPaletteSelectorPro
         ))}
       </div>
 
-      <div className="flex gap-2">
+      <div className="grid grid-cols-2 gap-2">
         <Button 
-          onClick={handleExportTheme}
-          className="flex-1 text-xs"
+          onClick={handleShareTheme}
+          className="text-xs flex items-center gap-2"
         >
-          EXPORT THEME
+          <Share className="w-4 h-4" />
+          SHARE THEME
         </Button>
         <Button 
           onClick={handleImportTheme}
-          className="flex-1 text-xs"
+          className="text-xs flex items-center gap-2"
         >
+          <Import className="w-4 h-4" />
           IMPORT THEME
         </Button>
       </div>
 
       <Button 
         onClick={resetTheme}
-        className="w-full text-xs"
         variant="outline"
+        className="w-full text-xs flex items-center gap-2 justify-center"
       >
+        <RotateCcw className="w-4 h-4" />
         RESET TO DEFAULT
       </Button>
     </motion.div>
