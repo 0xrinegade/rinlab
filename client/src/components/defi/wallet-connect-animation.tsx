@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Wallet, Loader2, CheckCircle2, XCircle, Copy, Check } from 'lucide-react';
+import { Wallet, Loader2, CheckCircle2, XCircle, Copy, Check, Code } from 'lucide-react';
+import { CodeSnippetHighlighter } from './code-snippet-highlighter';
 
 interface WalletConnectAnimationProps {
   status: 'disconnected' | 'connecting' | 'connected' | 'error';
@@ -33,7 +34,28 @@ const ASCII_FRAMES = {
 
 const LOADING_FRAMES = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
 
-export function WalletConnectAnimation({ 
+const COMPONENT_CODE = `import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Wallet, Loader2, CheckCircle2, XCircle } from 'lucide-react';
+
+interface WalletConnectAnimationProps {
+  status: 'disconnected' | 'connecting' | 'connected' | 'error';
+  onConnect?: () => void;
+  className?: string;
+}
+
+export function WalletConnectAnimation({
+  status = 'disconnected',
+  onConnect,
+  className = ''
+}: WalletConnectAnimationProps) {
+  const [loadingFrame, setLoadingFrame] = useState(0);
+  const [scanLine, setScanLine] = useState(0);
+
+  // Rest of the implementation...
+}`;
+
+export function WalletConnectAnimation({
   status = 'disconnected',
   onConnect,
   className = ''
@@ -41,8 +63,8 @@ export function WalletConnectAnimation({
   const [loadingFrame, setLoadingFrame] = useState(0);
   const [scanLine, setScanLine] = useState(0);
   const [copied, setCopied] = useState(false);
+  const [showCode, setShowCode] = useState(false);
 
-  // Animate loading spinner
   useEffect(() => {
     if (status === 'connecting') {
       const interval = setInterval(() => {
@@ -52,7 +74,6 @@ export function WalletConnectAnimation({
     }
   }, [status]);
 
-  // Scanline effect
   useEffect(() => {
     const interval = setInterval(() => {
       setScanLine(prev => (prev + 1) % 100);
@@ -96,32 +117,31 @@ export function WalletConnectAnimation({
         </div>
 
         <button
-          onClick={handleCopyCode}
+          onClick={() => setShowCode(prev => !prev)}
           className="px-2 py-1 border border-primary/20 hover:bg-primary/10 text-primary text-xs flex items-center gap-2 transition-colors"
         >
-          {copied ? (
-            <>
-              <Check className="w-3 h-3" />
-              <pre className="font-mono">
-                ┌──────┐
-                │COPIED│
-                └──────┘
-              </pre>
-            </>
-          ) : (
-            <>
-              <Copy className="w-3 h-3" />
-              <pre className="font-mono">
-                ┌──────┐
-                │EXPORT│
-                └──────┘
-              </pre>
-            </>
-          )}
+          <Code className="w-3 h-3" />
+          <span>{showCode ? 'Hide Code' : 'View Code'}</span>
         </button>
       </div>
 
-      {/* Scanline effect */}
+      <AnimatePresence>
+        {showCode && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="overflow-hidden"
+          >
+            <CodeSnippetHighlighter
+              code={COMPONENT_CODE}
+              language="typescript"
+              title="WALLET CONNECT ANIMATION"
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div
         className="absolute w-full h-[2px] bg-primary/10 pointer-events-none"
         style={{ top: `${scanLine}%` }}
@@ -188,9 +208,8 @@ export function WalletConnectAnimation({
           )}
         </AnimatePresence>
 
-        {/* Connection steps */}
         {status === 'connecting' && (
-          <motion.div 
+          <motion.div
             className="mt-4 text-[10px] text-muted-foreground space-y-1"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
