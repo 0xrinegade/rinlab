@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Terminal, ArrowRight, AlertCircle, CheckCircle2, Code, Cpu } from 'lucide-react';
+import { Terminal, ArrowRight, AlertCircle, CheckCircle2, Code, Cpu, ChevronRight } from 'lucide-react';
 
 interface OrderTemplate {
   id: string;
@@ -23,6 +23,11 @@ interface Order {
   executionSteps?: string[];
 }
 
+interface Suggestion {
+  command: string;
+  description: string;
+}
+
 interface SmartOrderAgentProps {
   className?: string;
 }
@@ -33,6 +38,9 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
   const [selectedTemplate, setSelectedTemplate] = useState<OrderTemplate | null>(null);
   const [cursorPosition, setCursorPosition] = useState(0);
   const [scanLine, setScanLine] = useState(0);
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [selectedSuggestion, setSelectedSuggestion] = useState(-1);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const orderTemplates: OrderTemplate[] = [
     {
@@ -79,19 +87,84 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
     }
   ];
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCursorPosition(prev => (prev + 1) % 2);
-    }, 500);
-    return () => clearInterval(interval);
-  }, []);
+  // Generate base suggestions from templates
+  const baseSuggestions: Suggestion[] = [
+    { command: 'BUY 1.5 SOL', description: 'Market buy 1.5 SOL' },
+    { command: 'BUY 0.5 ETH', description: 'Market buy 0.5 ETH' },
+    { command: 'LIMIT BUY 2 SOL AT 50.5', description: 'Buy 2 SOL at 50.5' },
+    { command: 'LIMIT BUY 1 ETH AT 2000', description: 'Buy 1 ETH at 2000' },
+    { command: 'STOP SOL AT 45.0', description: 'Stop loss for SOL at 45.0' },
+    { command: 'STOP ETH AT 1800', description: 'Stop loss for ETH at 1800' },
+  ];
 
+  // Update suggestions based on input
   useEffect(() => {
-    const interval = setInterval(() => {
-      setScanLine(prev => (prev + 1) % 100);
-    }, 50);
-    return () => clearInterval(interval);
-  }, []);
+    if (!commandInput.trim()) {
+      setSuggestions([]);
+      setSelectedSuggestion(-1);
+      return;
+    }
+
+    const filtered = baseSuggestions.filter(
+      suggestion => suggestion.command.toLowerCase().includes(commandInput.toLowerCase())
+    );
+
+    // Generate dynamic suggestions based on input patterns
+    const parts = commandInput.trim().toUpperCase().split(' ');
+    if (parts[0] === 'BUY' && parts.length === 1) {
+      filtered.push(
+        { command: 'BUY 1.0 SOL', description: 'Market buy 1.0 SOL' },
+        { command: 'BUY 2.0 ETH', description: 'Market buy 2.0 ETH' }
+      );
+    } else if (parts[0] === 'LIMIT' && parts.length === 1) {
+      filtered.push(
+        { command: 'LIMIT BUY 1.0 SOL AT 45.0', description: 'Limit buy 1.0 SOL at 45.0' },
+        { command: 'LIMIT BUY 1.0 ETH AT 2000', description: 'Limit buy 1.0 ETH at 2000' }
+      );
+    }
+
+    setSuggestions(filtered);
+    setSelectedSuggestion(-1);
+  }, [commandInput]);
+
+  // Handle keyboard navigation
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (suggestions.length === 0) {
+      if (e.key === 'Enter' && commandInput.trim()) {
+        handleCommandSubmit(e);
+      }
+      return;
+    }
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        setSelectedSuggestion(prev =>
+          prev < suggestions.length - 1 ? prev + 1 : prev
+        );
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        setSelectedSuggestion(prev => prev > -1 ? prev - 1 : prev);
+        break;
+      case 'Tab':
+      case 'Enter':
+        e.preventDefault();
+        if (selectedSuggestion >= 0) {
+          setCommandInput(suggestions[selectedSuggestion].command);
+          setSuggestions([]);
+          setSelectedSuggestion(-1);
+          inputRef.current?.focus();
+        } else if (e.key === 'Enter' && commandInput.trim()) {
+          handleCommandSubmit(e);
+        }
+        break;
+      case 'Escape':
+        setSuggestions([]);
+        setSelectedSuggestion(-1);
+        break;
+    }
+  };
 
   const handleCommandSubmit = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && commandInput.trim()) {
@@ -221,6 +294,20 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
     }
   };
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCursorPosition(prev => (prev + 1) % 2);
+    }, 500);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setScanLine(prev => (prev + 1) % 100);
+    }, 50);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className={`terminal-container p-4 relative ${className}`}>
       <div
@@ -242,7 +329,7 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
                 className="text-xs font-mono"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                layout // Add layout animation
+                layout
               >
                 <pre className="mb-2 text-primary whitespace-pre">{template.asciiArt}</pre>
                 <div className="flex items-center gap-2">
@@ -257,14 +344,15 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
           </div>
         </div>
 
-        <div className="border border-border/20 p-4 h-[52px] flex items-center">
+        <div className="border border-border/20 p-4 relative">
           <div className="flex items-center gap-2 font-mono w-full">
             <Terminal className="w-4 h-4 text-primary flex-shrink-0" />
             <input
+              ref={inputRef}
               type="text"
               value={commandInput}
               onChange={e => setCommandInput(e.target.value)}
-              onKeyDown={handleCommandSubmit}
+              onKeyDown={handleKeyDown}
               className="bg-transparent border-none outline-none flex-1 text-sm min-w-0"
               placeholder="Enter order command..."
             />
@@ -272,6 +360,39 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
               {cursorPosition === 0 ? '█' : ' '}
             </span>
           </div>
+
+          {/* Suggestions dropdown */}
+          <AnimatePresence>
+            {suggestions.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="absolute left-0 right-0 top-full mt-1 border border-border/20 bg-background z-10 max-h-[200px] overflow-y-auto"
+              >
+                {suggestions.map((suggestion, index) => (
+                  <motion.div
+                    key={suggestion.command}
+                    className={`p-2 text-xs font-mono cursor-pointer flex items-center gap-2
+                      ${index === selectedSuggestion ? 'bg-primary/10 text-primary' : 'hover:bg-hover'}
+                    `}
+                    onClick={() => {
+                      setCommandInput(suggestion.command);
+                      setSuggestions([]);
+                      setSelectedSuggestion(-1);
+                      inputRef.current?.focus();
+                    }}
+                  >
+                    <ChevronRight className={`w-3 h-3 ${
+                      index === selectedSuggestion ? 'text-primary' : 'text-muted-foreground'
+                    }`} />
+                    <span className="flex-1">{suggestion.command}</span>
+                    <span className="text-muted-foreground">{suggestion.description}</span>
+                  </motion.div>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         <div className="border border-border/20 p-4">
