@@ -1,10 +1,11 @@
 import { Switch, Route } from "wouter";
 import { ThemeSwitcher } from "@/components/ui/theme-switcher";
 import { Sidebar } from "@/components/layout/sidebar";
+import { NetworkTopology } from "@/components/defi/network-topology";
+import { WalletConnectAnimation } from "@/components/defi/wallet-connect-animation";
 import { TokenScreener } from "@/components/defi/token-screener";
 import { OrderBook } from "@/components/defi/order-book";
 import { PriceChart } from "@/components/defi/price-chart";
-import { NetworkTopology } from "@/components/defi/network-topology";
 import { TrendPredictor } from "@/components/defi/trend-predictor";
 import { MemeGenerator } from "@/components/defi/meme-generator";
 import { TokenInput } from "@/components/defi/token-input";
@@ -137,13 +138,13 @@ sampleOrderBook.asks.forEach(ask => {
 
 function ComponentLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="p-8 max-w-4xl mx-auto">
-      <div className="prose prose-invert mb-8">
+    <div className="p-8 max-w-4xl mx-auto space-y-8">
+      <div className="prose prose-invert">
         {children}
       </div>
     </div>
   );
-};
+}
 
 function App() {
   return (
@@ -194,7 +195,7 @@ function App() {
               <ComponentLayout>
                 <h1>Network Topology</h1>
                 <p>Blockchain network visualization showing node connections and status.</p>
-                <NetworkTopology nodes={sampleNetworkNodes} width={32} height={16} />
+                <NetworkTopology width={32} height={16} />
               </ComponentLayout>
             </Route>
 
@@ -300,11 +301,25 @@ function App() {
                 <SmartOrderAgent />
               </ComponentLayout>
             </Route>
+            <Route path="/components/wallet-connect">
+              <ComponentLayout>
+                <h1>Wallet Connection</h1>
+                <p>Animated wallet connection interface with retro terminal style.</p>
+                <WalletConnectAnimation 
+                  status="disconnected" 
+                  onConnect={() => alert('Connect clicked')} 
+                />
+              </ComponentLayout>
+            </Route>
             <Route>
               <ComponentLayout>
-                <h1>SRCL DEFI Components</h1>
-                <p>A retro-computing themed React component library for Solana blockchain interfaces.</p>
-                <p>Select a component from the sidebar to view its documentation and demo.</p>
+                <h1>DeFi Components</h1>
+                <p>Select a component from the sidebar to view its demo.</p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+                  <NetworkTopology width={32} height={16} />
+                  <WalletConnectAnimation status="disconnected" />
+                </div>
               </ComponentLayout>
             </Route>
           </Switch>
