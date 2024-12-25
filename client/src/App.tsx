@@ -1,31 +1,46 @@
 import { Switch, Route } from "wouter";
-import { RetroScreen } from "@/components/ui/retro-screen";
 import { TerminalContainer } from "@/components/layout/terminal-container";
-import { GridContainer } from "@/components/layout/grid-container";
 import { TokenInput } from "@/components/defi/token-input";
 import { WalletButton } from "@/components/defi/wallet-button";
-import { TransactionList } from "@/components/defi/transaction-list";
 import { PriceChart } from "@/components/defi/price-chart";
 import { OrderBook } from "@/components/defi/order-book";
+import { TransactionHistory } from "@/components/defi/transaction-history";
 import { ThemeSwitcher } from "@/components/ui/theme-switcher";
 
-// Sample data
+// Sample transaction data
 const sampleTransactions = [
   {
     id: '1',
-    type: 'send' as const,
+    hash: '0xd912b483ab13894',
+    type: 'swap' as const,
     amount: '1.5',
     token: 'SOL',
     status: 'confirmed' as const,
     timestamp: Date.now() - 1000 * 60 * 5,
+    from: '0x1234567890abcdef1234567890abcdef12345678',
+    to: '0xabcdef1234567890abcdef1234567890abcdef12',
   },
   {
     id: '2',
+    hash: '0xe832c274bc28973',
     type: 'receive' as const,
     amount: '100',
     token: 'USDC',
     status: 'pending' as const,
     timestamp: Date.now() - 1000 * 60 * 10,
+    from: '0x2345678901abcdef2345678901abcdef23456789',
+    to: '0xbcdef1234567890abcdef1234567890abcdef123',
+  },
+  {
+    id: '3',
+    hash: '0xf943d365cd39084',
+    type: 'send' as const,
+    amount: '50',
+    token: 'USDT',
+    status: 'failed' as const,
+    timestamp: Date.now() - 1000 * 60 * 15,
+    from: '0x3456789012abcdef3456789012abcdef34567890',
+    to: '0xcdef1234567890abcdef1234567890abcdef1234',
   },
 ];
 
@@ -39,12 +54,12 @@ const sampleOrderBook = {
   bids: Array.from({ length: 12 }, (_, i) => ({
     price: 49.5 - i * 0.1,
     size: Math.random() * 100 + 50,
-    total: 0, // Will be calculated
+    total: 0,
   })),
   asks: Array.from({ length: 12 }, (_, i) => ({
     price: 50.5 + i * 0.1,
     size: Math.random() * 100 + 50,
-    total: 0, // Will be calculated
+    total: 0,
   }))
 };
 
@@ -84,9 +99,9 @@ function App() {
           <main className="p-4 max-w-[1200px] mx-auto space-y-4">
             {/* Market Overview */}
             <section>
-              <h2 className="text-xs text-muted-foreground mb-2">UPDATING</h2>
-              <div className="grid grid-cols-3 gap-4">
-                <TerminalContainer title="Market Data">
+              <h2 className="text-xs text-muted-foreground mb-2">MARKET DATA</h2>
+              <div className="grid grid-cols-2 gap-4">
+                <TerminalContainer title="Price Chart">
                   <div className="p-4">
                     <PriceChart data={samplePriceData} className="h-48" />
                   </div>
@@ -101,19 +116,13 @@ function App() {
                     />
                   </div>
                 </TerminalContainer>
-
-                <TerminalContainer title="Recent Transactions">
-                  <div className="p-4">
-                    <TransactionList transactions={sampleTransactions} />
-                  </div>
-                </TerminalContainer>
               </div>
             </section>
 
             {/* Trading Interface */}
-            <section>
-              <h2 className="text-xs text-muted-foreground mb-2">TRADING</h2>
-              <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4">
+              <section>
+                <h2 className="text-xs text-muted-foreground mb-2">TRADING</h2>
                 <TerminalContainer title="Swap Tokens">
                   <div className="p-4 space-y-4">
                     <TokenInput
@@ -129,14 +138,19 @@ function App() {
                     />
                   </div>
                 </TerminalContainer>
+              </section>
 
-                <TerminalContainer title="Theme Settings">
-                  <div className="p-4">
-                    <ThemeSwitcher />
-                  </div>
+              <section>
+                <h2 className="text-xs text-muted-foreground mb-2">HISTORY</h2>
+                <TerminalContainer title="Transactions">
+                  <TransactionHistory 
+                    transactions={sampleTransactions}
+                    maxHeight="300px"
+                    className="p-4"
+                  />
                 </TerminalContainer>
-              </div>
-            </section>
+              </section>
+            </div>
           </main>
         </div>
       </Route>
