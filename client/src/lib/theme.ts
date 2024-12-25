@@ -40,20 +40,14 @@ export const useTheme = create<ThemeStore>((set) => ({
   setTheme: (palette) => {
     set({ currentPalette: palette });
     // Update CSS variables
-    const root = document.documentElement;
-    Object.entries(palette.colors).forEach(([key, value]) => {
-      root.style.setProperty(`--${key}`, value);
-    });
+    if (typeof window !== 'undefined') {
+      const root = document.documentElement;
+      Object.entries(palette.colors).forEach(([key, value]) => {
+        root.style.setProperty(`--${key}`, value);
+      });
+    }
   }
 }));
-
-// Initialize theme on import
-if (typeof window !== 'undefined') {
-  const root = document.documentElement;
-  Object.entries(terminalTheme.colors).forEach(([key, value]) => {
-    root.style.setProperty(`--${key}`, value);
-  });
-}
 
 export const defaultTheme = terminalTheme;
 
