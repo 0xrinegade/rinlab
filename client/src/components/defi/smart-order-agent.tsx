@@ -79,6 +79,7 @@ interface Achievement {
   icon: string;
   unlockedAt?: number;
   pixelArt: string;
+  animation?: string[];
 }
 
 interface LeaderboardEntry {
@@ -657,7 +658,21 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
    │ >>> │
    │ $$$ │
    └─────┘
-      `
+      `,
+      animation: [
+        `┌─────┐
+         │  *  │
+         │ >>> │
+         └─────┘`,
+        `┌─────┐
+         │ *   │
+         │ >>> │
+         └─────┘`,
+        `┌─────┐
+         │   * │
+         │ >>> │
+         └─────┘`
+      ]
     },
     {
       id: 'strategy-master',
@@ -675,7 +690,21 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
    │ >>> │
    │ ⚡️⚡️⚡️ │
    └─────┘
-      `
+      `,
+      animation: [
+        `┌─────┐
+         │ ⚡️   │
+         │ >>> │
+         └─────┘`,
+        `┌─────┐
+         │  ⚡️  │
+         │ >>> │
+         └─────┘`,
+        `┌─────┐
+         │   ⚡️ │
+         │ >>> │
+         └─────┘`
+      ]
     },
     {
       id: 'community-star',
@@ -693,7 +722,85 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
    │ >>> │
    │ 💫💫💫 │
    └─────┘
-      `
+      `,
+      animation: [
+        `┌─────┐
+         │ 💫   │
+         │ >>> │
+         └─────┘`,
+        `┌─────┐
+         │  💫  │
+         │ >>> │
+         └─────┘`,
+        `┌─────┐
+         │   💫 │
+         │ >>> │
+         └─────┘`
+      ]
+    },
+    {
+      id: 'diamond-hands',
+      name: 'Diamond Hands',
+      description: 'Hold a position for over 24 hours',
+      category: 'trader',
+      progress: 0,
+      maxProgress: 1,
+      unlocked: false,
+      rarity: 'rare',
+      icon: '💎',
+      pixelArt: `
+   💎 HOLD
+   ┌─────┐
+   │ >>> │
+   │ 💎💎💎 │
+   └─────┘
+      `,
+      animation: [
+        `┌─────┐
+         │ 💎   │
+         │ >>> │
+         └─────┘`,
+        `┌─────┐
+         │  💎  │
+         │ >>> │
+         └─────┘`,
+        `┌─────┐
+         │   💎 │
+         │ >>> │
+         └─────┘`
+      ]
+    },
+    {
+      id: 'profit-master',
+      name: 'Profit Master',
+      description: 'Achieve 10 profitable trades in a row',
+      category: 'master',
+      progress: 0,
+      maxProgress: 10,
+      unlocked: false,
+      rarity: 'legendary',
+      icon: '👑',
+      pixelArt: `
+   👑 PROFIT
+   ┌─────┐
+   │ >>> │
+   │ 🔥🔥🔥 │
+   └─────┘
+      `,
+      animation: [
+        `┌─────┐
+         │ 🔥   │
+         │ >>> │
+         └─────┘`,
+        `┌─────┐
+         │  🔥  │
+         │ >>> │
+         └─────┘`,
+        `┌─────┐
+         │   🔥 │
+         │ >>> │
+         └─────┘`
+      ]
     }
   ]);
 
@@ -812,6 +919,18 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
       experience: 6500
     }
   ]);
+
+  // Achievement animation logic
+  const [currentAnimationFrame, setCurrentAnimationFrame] = useState(0);
+
+  useEffect(() => {
+    if (recentAchievement?.animation) {
+      const interval = setInterval(() => {
+        setCurrentAnimationFrame(prev => (prev + 1) % recentAchievement.animation!.length);
+      }, 300);
+      return () => clearInterval(interval);
+    }
+  }, [recentAchievement]);
 
   return (
     <div className={`terminal-container p-4 relative ${className}`}>
@@ -1196,6 +1315,103 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
         )}
       </AnimatePresence>
 
+      {/* Achievement notification */}
+      <AnimatePresence>
+        {recentAchievement && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed bottom-4 right-4 p-4 bg-background/95 backdrop-blur-sm border border-primary rounded-lg shadow-lg"
+          >
+            <div className="flex items-start gap-4">
+              <div className="font-mono text-primary">
+                <pre className="whitespace-pre">
+                  {recentAchievement.animation
+                    ? recentAchievement.animation[currentAnimationFrame]
+                    : recentAchievement.pixelArt}
+                </pre>
+              </div>
+              <div>
+                <div className="text-primary font-bold">{recentAchievement.name}</div>
+                <div className="text-xs text-muted-foreground mt-1">
+                  {recentAchievement.description}
+                </div>
+                <div className="flex items-center gap-2 mt-2 text-xs">
+                  <Trophy className="w-4 h-4 text-yellow-500" />
+                  <span className="text-yellow-500">Achievement Unlocked!</span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Achievements Panel */}
+      <AnimatePresence>
+        {showAchievements && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="fixed inset-4 bg-background/95 backdrop-blur-sm border border-primary rounded-lg shadow-lg overflow-auto"
+          >
+            <div className="p-4">
+              <div className="flex items-center justify-between mb-4">
+                <div className="text-primary font-bold">Achievement Gallery</div>
+                <button
+                  onClick={() => setShowAchievements(false)}
+                  className="p-1 hover:bg-muted rounded"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {achievements.map(achievement => (
+                  <motion.div
+                    key={achievement.id}
+                    className={`p-4 border rounded ${
+                      achievement.unlocked
+                        ? 'border-primary bg-primary/5'
+                        : 'border-muted bg-muted/5'
+                    }`}
+                    whileHover={{ scale: 1.02 }}
+                  >
+                    <div className="font-mono mb-2">
+                      <pre className="whitespace-pre text-primary">
+                        {achievement.pixelArt}
+                      </pre>
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="font-bold text-primary">
+                        {achievement.name}
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        {achievement.description}
+                      </div>
+                      <div className="flex items-center gap-2 text-xs">
+                        <div className={`
+                          px-2 py-1 rounded
+                          ${achievement.rarity === 'legendary' ? 'bg-yellow-500/20 text-yellow-500' :
+                            achievement.rarity === 'rare' ? 'bg-purple-500/20 text-purple-500' :
+                              'bg-blue-500/20 text-blue-500'}
+                        `}>
+                          {achievement.rarity.toUpperCase()}
+                        </div>
+                        <div className="text-muted-foreground">
+                          {achievement.progress} / {achievement.maxProgress}
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
