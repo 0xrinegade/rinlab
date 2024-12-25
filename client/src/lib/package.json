@@ -1,6 +1,6 @@
 {
-  "name": "defi-retro-components",
-  "version": "0.1.0",
+  "name": "rinlab",
+  "version": "0.1.3",
   "description": "A comprehensive React component library for Solana blockchain interfaces with a nostalgic retro-computing aesthetic",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -8,7 +8,10 @@
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts --external react",
     "clean": "rm -rf dist",
-    "prepublishOnly": "npm run clean && npm run build"
+    "prepublishOnly": "npm run clean && npm run build",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\"",
+    "lint": "eslint \"src/**/*.{ts,tsx}\"",
+    "test": "jest"
   },
   "peerDependencies": {
     "react": "^18.0.0",
@@ -24,12 +27,20 @@
     "components",
     "retro",
     "blockchain",
-    "ui"
+    "ui",
+    "ascii-art",
+    "terminal",
+    "vintage",
+    "nostalgic"
   ],
   "author": "Aldrin Labs",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/defi-retro/defi-retro-components"
-  }
+    "url": "https://github.com/aldrinlabs/rinlab"
+  },
+  "bugs": {
+    "url": "https://github.com/aldrinlabs/rinlab/issues"
+  },
+  "homepage": "https://github.com/aldrinlabs/rinlab#readme"
 }
