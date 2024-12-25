@@ -92,6 +92,8 @@ export const themePalettes: ThemePalette[] = [
 type ThemeStore = {
   currentPalette: ThemePalette;
   setTheme: (palette: ThemePalette) => void;
+  updateColor: (key: keyof ThemePalette['colors'], value: string) => void;
+  resetTheme: () => void;
 };
 
 export const useTheme = create<ThemeStore>()(
@@ -101,10 +103,30 @@ export const useTheme = create<ThemeStore>()(
       setTheme: (palette) => {
         set({ currentPalette: palette });
         updateCssVariables(palette.colors);
+      },
+      updateColor: (key, value) => {
+        set((state) => {
+          const newPalette = {
+            ...state.currentPalette,
+            colors: { ...state.currentPalette.colors, [key]: value }
+          };
+          updateCssVariables(newPalette.colors);
+          return { currentPalette: newPalette };
+        });
+      },
+      resetTheme: () => {
+        const defaultPalette = themePalettes[2];
+        set({ currentPalette: defaultPalette });
+        updateCssVariables(defaultPalette.colors);
       }
     }),
     {
-      name: 'theme-storage'
+      name: 'theme-storage',
+      onRehydrateStorage: () => (state) => {
+        if (state && state.currentPalette) {
+          updateCssVariables(state.currentPalette.colors);
+        }
+      }
     }
   )
 );
