@@ -1,14 +1,72 @@
-export const theme = {
+import { create } from 'zustand';
+
+export type ThemePalette = {
+  name: string;
   colors: {
-    background: '#000000',
-    foreground: '#00ff00',
-    primary: '#00ff00',
-    secondary: '#ff00ff',
-    accent: '#ffff00',
-    border: '#333333',
-    hover: '#1a1a1a',
-    glow: 'rgba(0, 255, 0, 0.2)'
+    background: string;
+    foreground: string;
+    primary: string;
+    secondary: string;
+    accent: string;
+    border: string;
+    hover: string;
+    glow: string;
+  };
+};
+
+const retroPalettes: ThemePalette[] = [
+  {
+    name: 'Matrix',
+    colors: {
+      background: '0 0% 0%',
+      foreground: '120 100% 50%',
+      primary: '120 100% 50%',
+      secondary: '300 100% 50%',
+      accent: '60 100% 50%',
+      border: '0 0% 20%',
+      hover: '0 0% 10%',
+      glow: '120 100% 50% / 0.2'
+    }
   },
+  {
+    name: 'Amber',
+    colors: {
+      background: '0 0% 0%',
+      foreground: '35 100% 50%',
+      primary: '35 100% 50%',
+      secondary: '25 100% 50%',
+      accent: '45 100% 50%',
+      border: '0 0% 20%',
+      hover: '0 0% 10%',
+      glow: '35 100% 50% / 0.2'
+    }
+  },
+  {
+    name: 'IBM',
+    colors: {
+      background: '0 0% 0%',
+      foreground: '205 100% 50%',
+      primary: '205 100% 50%',
+      secondary: '220 100% 50%',
+      accent: '180 100% 50%',
+      border: '0 0% 20%',
+      hover: '0 0% 10%',
+      glow: '205 100% 50% / 0.2'
+    }
+  }
+];
+
+type ThemeStore = {
+  currentPalette: ThemePalette;
+  setTheme: (palette: ThemePalette) => void;
+};
+
+export const useTheme = create<ThemeStore>((set) => ({
+  currentPalette: retroPalettes[0],
+  setTheme: (palette) => set({ currentPalette: palette })
+}));
+
+export const theme = {
   fonts: {
     mono: "'IBM Plex Mono', monospace",
   },
@@ -22,6 +80,8 @@ export const theme = {
 };
 
 export const borderStyles = {
-  default: '1px solid',
-  glowing: `1px solid ${theme.colors.primary}`,
+  default: '1px solid hsl(var(--border))',
+  glowing: 'hsl(var(--glow))'
 };
+
+export { retroPalettes };

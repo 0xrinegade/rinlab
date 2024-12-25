@@ -7,13 +7,13 @@
 
 @layer base {
   :root {
-    --background: 0 0% 4%;
+    --background: 0 0% 0%;
     --foreground: 150 100% 50%;
 
-    --card: 0 0% 4%;
+    --card: 0 0% 0%;
     --card-foreground: 150 100% 50%;
 
-    --popover: 0 0% 4%;
+    --popover: 0 0% 0%;
     --popover-foreground: 150 100% 50%;
 
     --primary: 150 100% 50%;
@@ -36,6 +36,9 @@
     --ring: 150 100% 50%;
 
     --radius: 0;
+
+    --hover: 0 0% 10%;
+    --glow: 150 100% 50% / 0.2;
   }
 }
 

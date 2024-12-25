@@ -1,5 +1,4 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { theme } from '@/lib/theme';
 
 interface Transaction {
   id: string;
@@ -25,8 +24,7 @@ export function TransactionList({ transactions }: TransactionListProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="p-3 border"
-              style={{ borderColor: theme.colors.border }}
+              className="p-3 border border-border"
             >
               <div className="flex justify-between items-center text-xs">
                 <div className="flex items-center gap-2">
@@ -48,15 +46,14 @@ export function TransactionList({ transactions }: TransactionListProps) {
 
               {tx.status === 'pending' && (
                 <motion.div
-                  className="mt-2 h-0.5"
-                  style={{ backgroundColor: theme.colors.primary }}
+                  className="mt-2 h-0.5 bg-primary"
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
                   transition={{
                     duration: 2,
                     repeat: Infinity,
                   }}
-                  layoutOrigin="left"
+                  style={{ transformOrigin: 'left' }}
                 />
               )}
             </motion.div>
