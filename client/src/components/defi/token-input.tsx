@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { motion } from 'framer-motion';
-import { theme } from '@/lib/theme';
+import { useTheme } from '@/lib/theme';
 
 interface TokenInputProps {
   token: string;
@@ -13,13 +13,14 @@ interface TokenInputProps {
 
 export function TokenInput({ token, balance, onChange, max }: TokenInputProps) {
   const [focused, setFocused] = useState(false);
+  const { currentPalette } = useTheme();
 
   return (
     <motion.div 
       className="relative p-4 bg-black border rounded-md"
       initial={false}
       animate={focused ? {
-        boxShadow: `0 0 10px ${theme.colors.primary}`,
+        boxShadow: `0 0 10px hsl(var(--primary))`,
       } : {}}
     >
       <div className="flex justify-between mb-2">
@@ -30,7 +31,7 @@ export function TokenInput({ token, balance, onChange, max }: TokenInputProps) {
           </span>
         )}
       </div>
-      
+
       <div className="flex items-center gap-2">
         <Input
           type="number"
@@ -40,7 +41,7 @@ export function TokenInput({ token, balance, onChange, max }: TokenInputProps) {
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
         />
-        
+
         {max && (
           <button
             className="px-2 py-1 text-xs bg-primary/10 text-primary rounded hover:bg-primary/20 transition-colors font-mono"
