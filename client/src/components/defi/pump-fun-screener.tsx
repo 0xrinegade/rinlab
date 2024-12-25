@@ -29,10 +29,10 @@ export function PumpFunScreener({ className = '' }: PumpFunScreenerProps) {
   // Generate sample token data with stable IDs
   useEffect(() => {
     try {
-      const generateToken = (index: number): Token => ({
-        id: `token-${index}`,
-        symbol: ['PEPE', 'DOGE', 'SHIB', 'FLOKI', 'WOJAK'][index % 5],
-        name: ['PepeCoin', 'Dogecoin', 'Shiba Inu', 'Floki Inu', 'Wojak'][index % 5],
+      const generateToken = (index: number, baseSymbol: string, baseName: string): Token => ({
+        id: `token-${index}-${baseSymbol}`,
+        symbol: baseSymbol,
+        name: baseName,
         price: Math.random() * 10,
         change24h: (Math.random() - 0.5) * 100,
         volume24h: Math.random() * 1000000,
@@ -42,8 +42,15 @@ export function PumpFunScreener({ className = '' }: PumpFunScreenerProps) {
         lastPump: Date.now() - Math.random() * 1000 * 60 * 60 * 24
       });
 
-      const initialTokens = Array.from({ length: 10 }, (_, i) => generateToken(i));
-      setTokens(initialTokens);
+      const tokenData = [
+        { symbol: 'PEPE', name: 'PepeCoin' },
+        { symbol: 'DOGE', name: 'Dogecoin' },
+        { symbol: 'SHIB', name: 'Shiba Inu' },
+        { symbol: 'FLOKI', name: 'Floki Inu' },
+        { symbol: 'WOJAK', name: 'Wojak' }
+      ].map((token, index) => generateToken(index, token.symbol, token.name));
+
+      setTokens(tokenData);
 
       const interval = setInterval(() => {
         setTokens(prev =>
