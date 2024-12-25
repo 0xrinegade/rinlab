@@ -38,7 +38,9 @@ export function PumpFunScreener({ className = '' }: PumpFunScreenerProps) {
       lastPump: Date.now() - Math.random() * 1000 * 60 * 60 * 24
     });
 
-    setTokens(Array.from({ length: 10 }, (_, i) => generateToken(i)));
+    // Initialize tokens immediately
+    const initialTokens = Array.from({ length: 10 }, (_, i) => generateToken(i));
+    setTokens(initialTokens);
 
     const interval = setInterval(() => {
       setTokens(prev => 
@@ -95,13 +97,30 @@ export function PumpFunScreener({ className = '' }: PumpFunScreenerProps) {
     );
   };
 
-  const sortedTokens = [...tokens].sort((a, b) => {
+  // Safely sort tokens with null checks
+  const sortedTokens = [...(tokens || [])].sort((a, b) => {
+    if (!a || !b) return 0;
     const aValue = a[sortKey];
     const bValue = b[sortKey];
+    if (aValue === undefined || bValue === undefined) return 0;
     return sortDirection === 'asc' ? 
       (aValue > bValue ? 1 : -1) :
       (aValue < bValue ? 1 : -1);
   });
+
+  // Early return if tokens aren't loaded
+  if (!tokens.length) {
+    return (
+      <div className={`terminal-container p-4 ${className}`}>
+        <div className="terminal-header">
+          ┌── PUMP FUN SCREENER ──┐
+        </div>
+        <div className="p-4 text-center text-muted-foreground">
+          Loading token data...
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={`terminal-container p-4 ${className}`}>
@@ -231,16 +250,16 @@ export function PumpFunScreener({ className = '' }: PumpFunScreenerProps) {
           </div>
           <div className="grid grid-cols-3 gap-4 mt-2 text-xs">
             <div>
-              Top Gainer: {sortedTokens.sort((a, b) => b.change24h - a.change24h)[0].symbol}
-              ({sortedTokens.sort((a, b) => b.change24h - a.change24h)[0].change24h.toFixed(2)}%)
+              Top Gainer: {sortedTokens[0]?.symbol || 'N/A'}
+              ({(sortedTokens[0]?.change24h || 0).toFixed(2)}%)
             </div>
             <div>
-              Highest FOMO: {sortedTokens.sort((a, b) => b.fomoLevel - a.fomoLevel)[0].symbol}
-              ({sortedTokens.sort((a, b) => b.fomoLevel - a.fomoLevel)[0].fomoLevel.toFixed(0)}%)
+              Highest FOMO: {sortedTokens[0]?.symbol || 'N/A'}
+              ({(sortedTokens[0]?.fomoLevel || 0).toFixed(0)}%)
             </div>
             <div>
-              Best Pump Score: {sortedTokens.sort((a, b) => b.pumpScore - a.pumpScore)[0].symbol}
-              ({sortedTokens.sort((a, b) => b.pumpScore - a.pumpScore)[0].pumpScore.toFixed(0)})
+              Best Pump Score: {sortedTokens[0]?.symbol || 'N/A'}
+              ({(sortedTokens[0]?.pumpScore || 0).toFixed(0)})
             </div>
           </div>
         </div>
