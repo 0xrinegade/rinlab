@@ -16,6 +16,7 @@ import { BlockchainExplorer } from "@/components/defi/blockchain-explorer";
 import { TransactionFlowChart } from "@/components/defi/transaction-flow-chart";
 import { BlockchainHeatmap } from "@/components/defi/blockchain-heatmap";
 import { PumpFunScreener } from "@/components/defi/pump-fun-screener";
+import { NetworkStatusDashboard } from "@/components/defi/network-status-dashboard";
 
 // Sample analytics data
 const sampleAnalyticsData = Array.from({ length: 24 }, (_, i) => ({
@@ -146,7 +147,7 @@ function ComponentLayout({ children }: { children: React.ReactNode }) {
       </div>
     </div>
   );
-}
+};
 
 function App() {
   return (
@@ -272,6 +273,13 @@ function App() {
                 <h1>Pump Fun Screener</h1>
                 <p>Track meme coins and tokens with fun metrics in retro style.</p>
                 <PumpFunScreener />
+              </ComponentLayout>
+            </Route>
+            <Route path="/components/network-status">
+              <ComponentLayout>
+                <h1>Network Status Dashboard</h1>
+                <p>Pixel art visualization of blockchain network node status and connectivity.</p>
+                <NetworkStatusDashboard />
               </ComponentLayout>
             </Route>
             <Route>
