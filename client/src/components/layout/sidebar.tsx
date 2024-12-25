@@ -13,6 +13,7 @@ export function Sidebar({ className = '' }: SidebarProps) {
       title: "Components",
       items: [
         { name: "Pump Fun Screener", path: "/components/pump-fun-screener" },
+        { name: "Network Status", path: "/components/network-status" },
         { name: "Token Screener", path: "/components/token-screener" },
         { name: "Order Book", path: "/components/order-book" },
         { name: "Price Chart", path: "/components/price-chart" },
