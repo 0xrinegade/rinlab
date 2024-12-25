@@ -13,10 +13,12 @@ interface OrderTemplate {
 
 interface Order {
   id: string;
-  type: 'market' | 'limit' | 'stop' | 'trailing';
+  type: 'market' | 'limit' | 'stop' | 'trailing' | 'dca' | 'smart';
   symbol: string;
   amount: number;
   price?: number;
+  trailingPercent?: number;
+  dcaLevels?: number;
   status: 'draft' | 'validating' | 'valid' | 'invalid' | 'executing' | 'completed' | 'failed';
   timestamp: number;
   validationMessage?: string;
@@ -67,29 +69,43 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
     },
     {
       id: '2',
-      name: 'Limit Buy',
-      description: 'Place limit buy order',
-      syntax: 'LIMIT BUY <amount> <symbol> AT <price>',
-      example: 'LIMIT BUY 2 SOL AT 50.5',
+      name: 'Smart TP/SL',
+      description: 'Set smart take profit/stop loss with DCA',
+      syntax: 'SMART <symbol> TP <price> SL <price> DCA <levels>',
+      example: 'SMART SOL TP 120 SL 80 DCA 5',
       asciiArt: `
-   [£] LIMIT
+   [*] DCA
    ┌─────┐
-   │ ==> │
-   │ $$$ │
+   │ $↑↓ │
+   │ >>> │
    └─────┘
       `
     },
     {
       id: '3',
-      name: 'Stop Loss',
-      description: 'Set stop loss order',
-      syntax: 'STOP <symbol> AT <price>',
-      example: 'STOP SOL AT 45.0',
+      name: 'Trailing Orders',
+      description: 'Set trailing take profit/stop loss',
+      syntax: 'TRAIL <symbol> TP/SL <percent>',
+      example: 'TRAIL SOL TP 5',
       asciiArt: `
-   [!] STOP
+   [%] TRAIL
    ┌─────┐
-   │ *** │
-   │ !!! │
+   │ ≈≈≈ │
+   │ ^^^ │
+   └─────┘
+      `
+    },
+    {
+      id: '4',
+      name: 'Smart Exit',
+      description: 'Exit based on whale activity',
+      syntax: 'EXIT <symbol> ON <PROFIT/VOLUME/HOLDERS>',
+      example: 'EXIT SOL ON PROFIT',
+      asciiArt: `
+   [!] EXIT
+   ┌─────┐
+   │ ⟱⟱⟱ │
+   │ >>> │
    └─────┘
       `
     }
@@ -97,11 +113,12 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
 
   const baseSuggestions: Suggestion[] = [
     { command: 'BUY 1.5 SOL', description: 'Market buy 1.5 SOL' },
-    { command: 'BUY 0.5 ETH', description: 'Market buy 0.5 ETH' },
-    { command: 'LIMIT BUY 2 SOL AT 50.5', description: 'Buy 2 SOL at 50.5' },
-    { command: 'LIMIT BUY 1 ETH AT 2000', description: 'Buy 1 ETH at 2000' },
-    { command: 'STOP SOL AT 45.0', description: 'Stop loss for SOL at 45.0' },
-    { command: 'STOP ETH AT 1800', description: 'Stop loss for ETH at 1800' },
+    { command: 'SMART SOL TP 120 SL 80 DCA 5', description: 'Smart TP/SL with 5 DCA levels' },
+    { command: 'TRAIL SOL TP 5', description: 'Trailing 5% take profit' },
+    { command: 'TRAIL SOL SL 3', description: 'Trailing 3% stop loss' },
+    { command: 'EXIT SOL ON PROFIT', description: 'Exit when profitable whales dump' },
+    { command: 'EXIT SOL ON VOLUME', description: 'Exit when volume leaders dump' },
+    { command: 'EXIT SOL ON HOLDERS', description: 'Exit when top holders dump' },
   ];
 
   const commandTooltips: Record<string, CommandTooltip> = {
@@ -111,17 +128,23 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
       description: 'Execute an immediate market buy order at current price',
       example: 'BUY 1.5 SOL'
     },
-    'LIMIT': {
-      title: 'Limit Order',
-      syntax: 'LIMIT BUY <amount> <symbol> AT <price>',
-      description: 'Place a limit order to buy at specified price',
-      example: 'LIMIT BUY 2 SOL AT 50.5'
+    'SMART': {
+      title: 'Smart Take Profit/Stop Loss',
+      syntax: 'SMART <symbol> TP <price> SL <price> DCA <levels>',
+      description: 'Set smart take profit and stop loss with DCA levels',
+      example: 'SMART SOL TP 120 SL 80 DCA 5'
     },
-    'STOP': {
-      title: 'Stop Loss',
-      syntax: 'STOP <symbol> AT <price>',
-      description: 'Set a stop loss order to protect against downside',
-      example: 'STOP SOL AT 45.0'
+    'TRAIL': {
+      title: 'Trailing Orders',
+      syntax: 'TRAIL <symbol> <TP/SL> <percent>',
+      description: 'Set trailing take profit or stop loss orders',
+      example: 'TRAIL SOL TP 5'
+    },
+    'EXIT': {
+      title: 'Smart Exit Strategy',
+      syntax: 'EXIT <symbol> ON <PROFIT/VOLUME/HOLDERS>',
+      description: 'Exit position based on whale activity',
+      example: 'EXIT SOL ON PROFIT'
     }
   };
 
@@ -224,26 +247,39 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
             timestamp: Date.now(),
             executionSteps: []
           };
-        } else if (parts[0] === 'LIMIT' && parts[1] === 'BUY') {
-          if (parts.length !== 6 || parts[4] !== 'AT') throw new Error('Invalid limit buy syntax');
+        } else if (parts[0] === 'SMART') {
+          if (parts.length !== 8 || parts[2] !== 'TP' || parts[4] !== 'SL' || parts[6] !== 'DCA')
+            throw new Error('Invalid smart order syntax');
           newOrder = {
             id: Math.random().toString(36).substr(2, 9),
-            type: 'limit',
-            symbol: parts[3],
-            amount: parseFloat(parts[2]),
-            price: parseFloat(parts[5]),
+            type: 'smart',
+            symbol: parts[1],
+            amount: 0,
+            price: parseFloat(parts[3]),
+            status: 'validating',
+            timestamp: Date.now(),
+            dcaLevels: parseInt(parts[7]),
+            executionSteps: []
+          };
+        } else if (parts[0] === 'TRAIL') {
+          if (parts.length !== 4) throw new Error('Invalid trailing order syntax');
+          newOrder = {
+            id: Math.random().toString(36).substr(2, 9),
+            type: 'trailing',
+            symbol: parts[1],
+            amount: 0,
+            trailingPercent: parseFloat(parts[3]),
             status: 'validating',
             timestamp: Date.now(),
             executionSteps: []
           };
-        } else if (parts[0] === 'STOP') {
-          if (parts.length !== 4 || parts[2] !== 'AT') throw new Error('Invalid stop loss syntax');
+        } else if (parts[0] === 'EXIT') {
+          if (parts.length !== 4 || parts[2] !== 'ON') throw new Error('Invalid exit order syntax');
           newOrder = {
             id: Math.random().toString(36).substr(2, 9),
-            type: 'stop',
+            type: 'smart',
             symbol: parts[1],
             amount: 0,
-            price: parseFloat(parts[3]),
             status: 'validating',
             timestamp: Date.now(),
             executionSteps: []
@@ -252,7 +288,7 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
           throw new Error('Unknown command');
         }
 
-        if (isNaN(newOrder.amount) || (newOrder.price !== undefined && isNaN(newOrder.price))) {
+        if (newOrder.amount < 0 || (newOrder.price !== undefined && newOrder.price <= 0)) {
           throw new Error('Invalid number format');
         }
 
@@ -295,6 +331,12 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
               'Preparing transaction payload...',
               'Broadcasting to network...'
             ];
+
+            if (newOrder.type === 'smart' || newOrder.type === 'trailing') {
+              steps.push('Setting up monitoring system...');
+              steps.push('Configuring automated triggers...');
+              steps.push('Initializing DCA levels...');
+            }
 
             steps.forEach((step, index) => {
               setTimeout(() => {
@@ -509,12 +551,14 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
                     <span className="flex-1 truncate">
                       {order.type.toUpperCase()} {order.amount} {order.symbol}
                       {order.price ? ` AT ${order.price}` : ''}
+                      {order.trailingPercent && ` TRAIL ${order.trailingPercent}%`}
+                      {order.dcaLevels && ` DCA ${order.dcaLevels}`}
                     </span>
                     {order.validationMessage && (
                       <span className={`text-xs truncate max-w-[200px] ${
                         order.status === 'completed' ? 'text-green-500' :
-                        order.status === 'failed' ? 'text-red-500' :
-                        'text-yellow-500'
+                          order.status === 'failed' ? 'text-red-500' :
+                            'text-yellow-500'
                       }`}>
                         - {order.validationMessage}
                       </span>
