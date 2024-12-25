@@ -1,4 +1,3 @@
-@import './styles/animations.css';
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
 @tailwind base;
@@ -7,38 +6,32 @@
 
 @layer base {
   :root {
-    --background: 0 0% 0%;
-    --foreground: 150 100% 50%;
+    --background: 220 100% 15%;
+    --foreground: 220 100% 98%;
 
-    --card: 0 0% 0%;
-    --card-foreground: 150 100% 50%;
+    --card: 220 100% 15%;
+    --card-foreground: 220 100% 98%;
 
-    --popover: 0 0% 0%;
-    --popover-foreground: 150 100% 50%;
+    --popover: 220 100% 15%;
+    --popover-foreground: 220 100% 98%;
 
-    --primary: 150 100% 50%;
-    --primary-foreground: 0 0% 0%;
+    --primary: 220 100% 98%;
+    --primary-foreground: 220 100% 15%;
 
-    --secondary: 300 100% 50%;
-    --secondary-foreground: 0 0% 0%;
+    --secondary: 220 100% 80%;
+    --secondary-foreground: 220 100% 15%;
 
-    --muted: 0 0% 20%;
-    --muted-foreground: 0 0% 60%;
+    --muted: 220 100% 80%;
+    --muted-foreground: 220 100% 60%;
 
-    --accent: 60 100% 50%;
-    --accent-foreground: 0 0% 0%;
+    --accent: 220 100% 80%;
+    --accent-foreground: 220 100% 15%;
 
-    --destructive: 0 100% 50%;
-    --destructive-foreground: 0 0% 0%;
-
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
-    --ring: 150 100% 50%;
+    --border: 220 100% 80%;
+    --input: 220 100% 80%;
+    --ring: 220 100% 80%;
 
     --radius: 0;
-
-    --hover: 0 0% 10%;
-    --glow: 150 100% 50% / 0.2;
   }
 }
 
@@ -56,81 +49,61 @@
   }
 }
 
-/* Terminal-specific styles */
+/* Terminal styling */
+.terminal-container {
+  @apply bg-background border border-border/20;
+}
+
+.terminal-header {
+  @apply border-b border-border/20 p-2 text-xs text-muted-foreground;
+}
+
+/* Table styling matching the screenshot */
+.data-table {
+  @apply w-full font-mono text-sm;
+}
+
+.data-table th {
+  @apply bg-blue-900/30 text-muted-foreground p-2 text-left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.data-table td {
+  @apply p-2;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.data-table tr:hover {
+  @apply bg-blue-900/20;
+}
+
+/* Grid background */
+.terminal-grid {
+  background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
 .terminal-text {
   font-family: 'IBM Plex Mono', monospace;
 }
 
-.terminal-scanline {
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 255, 0, 0) 50%,
-    rgba(0, 255, 0, 0.02) 50%
-  );
-  background-size: 100% 4px;
-  animation: scanline 10s linear infinite;
-  pointer-events: none;
+/* Status indicators */
+.status-indicator {
+  @apply w-2 h-2 rounded-full inline-block mr-2;
 }
 
-@keyframes scanline {
-  0% {
-    background-position: 0 0;
-  }
-  100% {
-    background-position: 0 100%;
-  }
+.status-active {
+  @apply bg-green-500;
+}
+
+.status-inactive {
+  @apply bg-red-500;
 }
 
 /* Theme transition */
 * {
   transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
-}
-
-/* Vintage theme effects */
-.vintage-glow {
-  text-shadow: 0 0 5px var(--glow);
-}
-
-.vintage-screen {
-  position: relative;
-  overflow: hidden;
-}
-
-.vintage-screen::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent 0%,
-    rgba(0, 255, 0, 0.03) 0.5%,
-    transparent 1%
-  );
-  pointer-events: none;
-}
-
-/* Terminal border styles */
-.terminal-border {
-  border: 1px solid hsl(var(--primary));
-  box-shadow: 0 0 10px rgba(0, 255, 0, 0.1);
-}
-
-/* ASCII decorations */
-.ascii-border::before {
-  content: '┌────────────┐';
-  display: block;
-  color: hsl(var(--primary));
-  opacity: 0.5;
-}
-
-.ascii-border::after {
-  content: '└────────────┘';
-  display: block;
-  color: hsl(var(--primary));
-  opacity: 0.5;
 }
 
 /* Monospace inputs */
