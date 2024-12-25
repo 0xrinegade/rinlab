@@ -18,6 +18,7 @@ import { BlockchainHeatmap } from "@/components/defi/blockchain-heatmap";
 import { PumpFunScreener } from "@/components/defi/pump-fun-screener";
 import { NetworkStatusDashboard } from "@/components/defi/network-status-dashboard";
 import { TransactionReplay } from "@/components/defi/transaction-replay";
+import { ASCIINFTGallery } from "@/components/defi/ascii-nft-gallery";
 
 // Sample analytics data
 const sampleAnalyticsData = Array.from({ length: 24 }, (_, i) => ({
@@ -163,6 +164,15 @@ function App() {
 
         <main className="flex-1 min-h-screen">
           <Switch>
+            {/* Add the new ASCII NFT Gallery route */}
+            <Route path="/components/ascii-nft-gallery">
+              <ComponentLayout>
+                <h1>ASCII NFT Gallery</h1>
+                <p>Display NFTs with retro ASCII art style and animations.</p>
+                <ASCIINFTGallery />
+              </ComponentLayout>
+            </Route>
+
             <Route path="/components/token-screener">
               <ComponentLayout>
                 <h1>Token Screener</h1>
