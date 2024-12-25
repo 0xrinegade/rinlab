@@ -12,6 +12,7 @@ export function Sidebar({ className = '' }: SidebarProps) {
     {
       title: "Components",
       items: [
+        { name: "ASCII NFT Gallery", path: "/components/ascii-nft-gallery" },
         { name: "Pump Fun Screener", path: "/components/pump-fun-screener" },
         { name: "Network Status", path: "/components/network-status" },
         { name: "Transaction Replay", path: "/components/transaction-replay" },
