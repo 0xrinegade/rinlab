@@ -1,13 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Copy, Check, Code } from 'lucide-react';
-import { CodeSnippetHighlighter } from './code-snippet-highlighter';
 
 interface Node {
   id: string;
   connections: string[];
-  activity: number; // 0-1
-  latency: number; // ms
+  activity: number;
+  latency: number;
   region: string;
   status: 'active' | 'syncing' | 'offline';
 }
@@ -38,34 +36,6 @@ const NODE_ASCII = {
 │ ✗ │
 └───┘`
 };
-
-const COMPONENT_CODE = `import { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Code } from 'lucide-react';
-import { CodeSnippetHighlighter } from './code-snippet-highlighter';
-
-interface Node {
-  id: string;
-  connections: string[];
-  activity: number;
-  latency: number;
-  region: string;
-  status: 'active' | 'syncing' | 'offline';
-}
-
-export function NetworkTopology({ 
-  nodes = [],
-  width = 40,
-  height = 20,
-  className = '' 
-}: NetworkTopologyProps) {
-  const [grid, setGrid] = useState<string[][]>([]);
-  const [selectedNode, setSelectedNode] = useState<Node | null>(null);
-  const [hoveredNode, setHoveredNode] = useState<Node | null>(null);
-  const [scanline, setScanline] = useState(0);
-
-  // Rest of the implementation...
-}`;
 
 // Default test data
 const DEFAULT_NODES: Node[] = [
@@ -105,7 +75,6 @@ export function NetworkTopology({
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [hoveredNode, setHoveredNode] = useState<Node | null>(null);
   const [scanline, setScanline] = useState(0);
-  const [showCode, setShowCode] = useState(false);
 
   // Network metrics
   const avgLatency = useCallback(() => {
@@ -179,38 +148,13 @@ export function NetworkTopology({
 
   return (
     <div className="space-y-4">
-      <div className="font-mono text-xs flex justify-between items-center">
+      <div className="font-mono text-xs">
         <pre className="text-primary">
 {`┌── NETWORK TOPOLOGY ───────────┐
 │ NODES: ${activeNodes()}/${nodes.length} LATENCY: ${avgLatency()}ms │
 └─────────────────────────────────┘`}
         </pre>
-
-        <button
-          onClick={() => setShowCode(prev => !prev)}
-          className="px-2 py-1 border border-primary/20 hover:bg-primary/10 text-primary text-xs flex items-center gap-2 transition-colors rounded-sm"
-        >
-          <Code className="w-3 h-3" />
-          <span className="font-mono">{showCode ? 'Hide Code' : 'View Code'}</span>
-        </button>
       </div>
-
-      <AnimatePresence>
-        {showCode && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="overflow-hidden"
-          >
-            <CodeSnippetHighlighter
-              code={COMPONENT_CODE}
-              language="typescript"
-              title="NETWORK TOPOLOGY COMPONENT"
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       <motion.div
         className={`relative font-mono ${className}`}
