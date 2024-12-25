@@ -1,9 +1,5 @@
-import { Line } from 'recharts';
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from '@/components/ui/chart';
+import { ResponsiveContainer, LineChart, Line, Tooltip } from 'recharts';
+import { motion } from 'framer-motion';
 
 interface PriceData {
   timestamp: number;
@@ -23,49 +19,48 @@ export function PriceChart({
   height = 200,
   className
 }: PriceChartProps) {
-  const config = {
-    price: {
-      label: 'Price',
-      color: 'hsl(var(--primary))',
-    },
-  };
-
   return (
-    <div className={`font-mono ${className}`}>
-      <ChartContainer
-        config={config}
-        className="text-xs"
-        style={{ width, height }}
-      >
-        <defs>
-          <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
-            <stop 
-              offset="0%" 
-              stopColor="hsl(var(--primary))" 
-              stopOpacity={0.4}
-            />
-            <stop 
-              offset="100%" 
-              stopColor="hsl(var(--primary))" 
-              stopOpacity={0}
-            />
-          </linearGradient>
-        </defs>
+    <motion.div 
+      className={`font-mono ${className}`}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+    >
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart data={data}>
+          <defs>
+            <linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8}/>
+              <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+            </linearGradient>
+          </defs>
+          <Line
+            type="monotone"
+            dataKey="price"
+            stroke="hsl(var(--primary))"
+            strokeWidth={1.5}
+            dot={false}
+            fill="url(#colorPrice)"
+          />
+          <Tooltip
+            content={({ active, payload }) => {
+              if (!active || !payload?.length) return null;
+              const value = payload[0].value;
+              if (typeof value !== 'number') return null;
 
-        <Line
-          type="monotone"
-          data={data}
-          dataKey="price"
-          stroke="hsl(var(--primary))"
-          strokeWidth={1.5}
-          dot={false}
-          fill="url(#gradient)"
-        />
-
-        <ChartTooltip>
-          <ChartTooltipContent />
-        </ChartTooltip>
-      </ChartContainer>
-    </div>
+              return (
+                <div className="bg-background border border-border p-2 text-xs">
+                  <div className="text-primary">
+                    ${value.toFixed(2)}
+                  </div>
+                  <div className="text-muted-foreground text-[10px]">
+                    {new Date(payload[0].payload.timestamp).toLocaleString()}
+                  </div>
+                </div>
+              );
+            }}
+          />
+        </LineChart>
+      </ResponsiveContainer>
+    </motion.div>
   );
 }
