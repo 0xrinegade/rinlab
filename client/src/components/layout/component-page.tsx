@@ -12,7 +12,18 @@ interface ComponentPageProps {
 
 export function ComponentPage({ title, description, code, children }: ComponentPageProps) {
   const [showCode, setShowCode] = useState(false);
-  
+  const [error, setError] = useState<string | null>(null);
+
+  const handleToggleCode = () => {
+    try {
+      setShowCode(prev => !prev);
+      setError(null);
+    } catch (err) {
+      console.error('Failed to toggle code view:', err);
+      setError('Failed to display code');
+    }
+  };
+
   return (
     <div className="p-8 max-w-4xl mx-auto space-y-8">
       <div className="prose prose-invert">
@@ -21,17 +32,20 @@ export function ComponentPage({ title, description, code, children }: ComponentP
             <h1 className="mb-2">{title}</h1>
             <p className="text-muted-foreground">{description}</p>
           </div>
-          <button
-            onClick={() => setShowCode(prev => !prev)}
-            className="px-3 py-2 border border-primary/20 hover:bg-primary/10 text-primary text-sm flex items-center gap-2 transition-colors rounded-sm"
-          >
-            <Code className="w-4 h-4" />
-            <span className="font-mono">{showCode ? 'Hide Code' : 'View Code'}</span>
-          </button>
+          {code && (
+            <button
+              onClick={handleToggleCode}
+              className="px-3 py-2 border border-primary/20 hover:bg-primary/10 text-primary text-sm flex items-center gap-2 transition-colors rounded-sm"
+              aria-label={showCode ? 'Hide component code' : 'View component code'}
+            >
+              <Code className="w-4 h-4" />
+              <span className="font-mono">{showCode ? 'Hide Code' : 'View Code'}</span>
+            </button>
+          )}
         </div>
 
         <AnimatePresence>
-          {showCode && (
+          {showCode && code && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
@@ -46,6 +60,12 @@ export function ComponentPage({ title, description, code, children }: ComponentP
             </motion.div>
           )}
         </AnimatePresence>
+
+        {error && (
+          <div className="bg-destructive/10 border border-destructive text-destructive text-sm p-2 rounded mb-4">
+            {error}
+          </div>
+        )}
 
         <div className="mt-8">
           {children}
