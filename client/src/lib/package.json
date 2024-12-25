@@ -7,7 +7,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts --external react",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run clean && npm run build"
   },
   "peerDependencies": {
     "react": "^18.0.0",
@@ -25,10 +26,10 @@
     "blockchain",
     "ui"
   ],
-  "author": "Your Name",
+  "author": "Aldrin Labs",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/defi-retro-components"
+    "url": "https://github.com/defi-retro/defi-retro-components"
   }
 }
