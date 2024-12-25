@@ -34,7 +34,6 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
   const [cursorPosition, setCursorPosition] = useState(0);
   const [scanLine, setScanLine] = useState(0);
 
-  // Enhanced order templates with ASCII art
   const orderTemplates: OrderTemplate[] = [
     {
       id: '1',
@@ -80,7 +79,6 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
     }
   ];
 
-  // Blinking cursor effect
   useEffect(() => {
     const interval = setInterval(() => {
       setCursorPosition(prev => (prev + 1) % 2);
@@ -88,7 +86,6 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
     return () => clearInterval(interval);
   }, []);
 
-  // Scan line effect
   useEffect(() => {
     const interval = setInterval(() => {
       setScanLine(prev => (prev + 1) % 100);
@@ -96,14 +93,12 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
     return () => clearInterval(interval);
   }, []);
 
-  // Process command input with enhanced validation
   const handleCommandSubmit = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && commandInput.trim()) {
       const parts = commandInput.trim().toUpperCase().split(' ');
       let newOrder: Order | null = null;
 
       try {
-        // Parse command and validate
         if (parts[0] === 'BUY') {
           if (parts.length !== 3) throw new Error('Invalid market buy syntax');
           newOrder = {
@@ -164,12 +159,11 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
         setOrders(prev => [...prev, newOrder!]);
         setCommandInput('');
 
-        // Simulate order processing with steps
         if (newOrder.status === 'validating') {
           setTimeout(() => {
-            setOrders(prev => 
-              prev.map(order => 
-                order.id === newOrder!.id 
+            setOrders(prev =>
+              prev.map(order =>
+                order.id === newOrder!.id
                   ? {
                       ...order,
                       status: 'executing',
@@ -180,7 +174,6 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
               )
             );
 
-            // Add execution steps with delays
             const steps = [
               'Checking market conditions...',
               'Verifying available liquidity...',
@@ -204,7 +197,6 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
               }, (index + 1) * 1000);
             });
 
-            // Complete the order
             setTimeout(() => {
               setOrders(prev =>
                 prev.map(order =>
@@ -231,8 +223,7 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
 
   return (
     <div className={`terminal-container p-4 relative ${className}`}>
-      {/* Scan line effect */}
-      <div 
+      <div
         className="absolute w-full h-[2px] bg-foreground/10 pointer-events-none"
         style={{ top: `${scanLine}%` }}
       />
@@ -242,7 +233,6 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
       </div>
 
       <div className="space-y-4">
-        {/* Command templates with ASCII art */}
         <div className="border border-border/20 p-4">
           <div className="text-xs text-muted-foreground mb-2">Available Commands:</div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -252,8 +242,9 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
                 className="text-xs font-mono"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
+                layout // Add layout animation
               >
-                <pre className="mb-2 text-primary">{template.asciiArt}</pre>
+                <pre className="mb-2 text-primary whitespace-pre">{template.asciiArt}</pre>
                 <div className="flex items-center gap-2">
                   <ArrowRight className="w-3 h-3" />
                   <span className="font-bold">{template.syntax}</span>
@@ -266,88 +257,96 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
           </div>
         </div>
 
-        {/* Command input with retro styling */}
-        <div className="border border-border/20 p-4">
-          <div className="flex items-center gap-2 font-mono">
-            <Terminal className="w-4 h-4 text-primary" />
+        <div className="border border-border/20 p-4 h-[52px] flex items-center">
+          <div className="flex items-center gap-2 font-mono w-full">
+            <Terminal className="w-4 h-4 text-primary flex-shrink-0" />
             <input
               type="text"
               value={commandInput}
               onChange={e => setCommandInput(e.target.value)}
               onKeyDown={handleCommandSubmit}
-              className="bg-transparent border-none outline-none flex-1 text-sm"
+              className="bg-transparent border-none outline-none flex-1 text-sm min-w-0"
               placeholder="Enter order command..."
             />
-            <span className="text-primary">
+            <span className="text-primary flex-shrink-0">
               {cursorPosition === 0 ? '█' : ' '}
             </span>
           </div>
         </div>
 
-        {/* Order list with enhanced visuals */}
         <div className="border border-border/20 p-4">
           <div className="text-xs text-muted-foreground mb-2">Recent Orders:</div>
-          <AnimatePresence>
-            {orders.map(order => (
-              <motion.div
-                key={order.id}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 10 }}
-                className="mb-4 last:mb-0"
-              >
-                {/* Order header */}
-                <div className="flex items-center gap-2 text-xs font-mono mb-2">
-                  {order.status === 'validating' || order.status === 'executing' ? (
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Infinity }}
-                    >
-                      <Terminal className="w-4 h-4 text-yellow-500" />
-                    </motion.div>
-                  ) : order.status === 'completed' ? (
-                    <CheckCircle2 className="w-4 h-4 text-green-500" />
-                  ) : order.status === 'failed' ? (
-                    <AlertCircle className="w-4 h-4 text-red-500" />
-                  ) : (
-                    <Code className="w-4 h-4 text-muted-foreground" />
-                  )}
-                  <span>
-                    {order.type.toUpperCase()} {order.amount} {order.symbol}
-                    {order.price ? ` AT ${order.price}` : ''}
-                  </span>
-                  {order.validationMessage && (
-                    <span className={`text-xs ${
-                      order.status === 'completed' ? 'text-green-500' : 
-                      order.status === 'failed' ? 'text-red-500' :
-                      'text-yellow-500'
-                    }`}>
-                      - {order.validationMessage}
-                    </span>
-                  )}
-                </div>
-
-                {/* Execution steps */}
-                {order.executionSteps && order.executionSteps.length > 0 && (
-                  <div className="ml-6 border-l border-border/20 pl-4">
-                    <AnimatePresence>
-                      {order.executionSteps.map((step, index) => (
+          <div className="max-h-[400px] overflow-y-auto overflow-x-hidden">
+            <AnimatePresence mode="popLayout">
+              {orders.map(order => (
+                <motion.div
+                  key={order.id}
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="mb-4 last:mb-0"
+                >
+                  <div className="flex items-center gap-2 text-xs font-mono h-6">
+                    <div className="w-4 flex-shrink-0">
+                      {order.status === 'validating' || order.status === 'executing' ? (
                         <motion.div
-                          key={`${order.id}-step-${index}`}
-                          initial={{ opacity: 0, x: -10 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          className="text-xs text-muted-foreground flex items-center gap-2"
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 1, repeat: Infinity }}
                         >
-                          <Cpu className="w-3 h-3" />
-                          {step}
+                          <Terminal className="w-4 h-4 text-yellow-500" />
                         </motion.div>
-                      ))}
-                    </AnimatePresence>
+                      ) : order.status === 'completed' ? (
+                        <CheckCircle2 className="w-4 h-4 text-green-500" />
+                      ) : order.status === 'failed' ? (
+                        <AlertCircle className="w-4 h-4 text-red-500" />
+                      ) : (
+                        <Code className="w-4 h-4 text-muted-foreground" />
+                      )}
+                    </div>
+                    <span className="flex-1 truncate">
+                      {order.type.toUpperCase()} {order.amount} {order.symbol}
+                      {order.price ? ` AT ${order.price}` : ''}
+                    </span>
+                    {order.validationMessage && (
+                      <span className={`text-xs truncate max-w-[200px] ${
+                        order.status === 'completed' ? 'text-green-500' :
+                        order.status === 'failed' ? 'text-red-500' :
+                        'text-yellow-500'
+                      }`}>
+                        - {order.validationMessage}
+                      </span>
+                    )}
                   </div>
-                )}
-              </motion.div>
-            ))}
-          </AnimatePresence>
+
+                  {order.executionSteps && order.executionSteps.length > 0 && (
+                    <motion.div
+                      className="ml-6 border-l border-border/20 pl-4 mt-2"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.2 }}
+                    >
+                      <AnimatePresence mode="popLayout">
+                        {order.executionSteps.map((step, index) => (
+                          <motion.div
+                            key={`${order.id}-step-${index}`}
+                            initial={{ opacity: 0, x: -10, height: 0 }}
+                            animate={{ opacity: 1, x: 0, height: 20 }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="text-xs text-muted-foreground flex items-center gap-2 h-5 overflow-hidden"
+                          >
+                            <Cpu className="w-3 h-3 flex-shrink-0" />
+                            <span className="truncate">{step}</span>
+                          </motion.div>
+                        ))}
+                      </AnimatePresence>
+                    </motion.div>
+                  )}
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
         </div>
       </div>
     </div>
