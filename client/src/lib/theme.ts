@@ -10,61 +10,52 @@ export type ThemePalette = {
     accent: string;
     border: string;
     hover: string;
-    glow: string;
+    muted: string;
   };
 };
 
-const retroPalettes: ThemePalette[] = [
-  {
-    name: 'Matrix',
-    colors: {
-      background: '0 0% 0%',
-      foreground: '120 100% 50%',
-      primary: '120 100% 50%',
-      secondary: '300 100% 50%',
-      accent: '60 100% 50%',
-      border: '0 0% 20%',
-      hover: '0 0% 10%',
-      glow: '120 100% 50% / 0.2'
-    }
-  },
-  {
-    name: 'Amber',
-    colors: {
-      background: '0 0% 0%',
-      foreground: '35 100% 50%',
-      primary: '35 100% 50%',
-      secondary: '25 100% 50%',
-      accent: '45 100% 50%',
-      border: '0 0% 20%',
-      hover: '0 0% 10%',
-      glow: '35 100% 50% / 0.2'
-    }
-  },
-  {
-    name: 'IBM',
-    colors: {
-      background: '0 0% 0%',
-      foreground: '205 100% 50%',
-      primary: '205 100% 50%',
-      secondary: '220 100% 50%',
-      accent: '180 100% 50%',
-      border: '0 0% 20%',
-      hover: '0 0% 10%',
-      glow: '205 100% 50% / 0.2'
-    }
+// Terminal theme based on the screenshot
+const terminalTheme: ThemePalette = {
+  name: 'Terminal',
+  colors: {
+    background: '240 100% 27%',
+    foreground: '0 0% 100%',
+    primary: '0 0% 100%',
+    secondary: '240 30% 80%',
+    accent: '240 30% 80%',
+    border: '240 50% 60%',
+    hover: '240 100% 32%',
+    muted: '240 30% 80%'
   }
-];
+};
 
 type ThemeStore = {
   currentPalette: ThemePalette;
   setTheme: (palette: ThemePalette) => void;
 };
 
+// Initialize store with terminal theme
 export const useTheme = create<ThemeStore>((set) => ({
-  currentPalette: retroPalettes[0],
-  setTheme: (palette) => set({ currentPalette: palette })
+  currentPalette: terminalTheme,
+  setTheme: (palette) => {
+    set({ currentPalette: palette });
+    // Update CSS variables
+    const root = document.documentElement;
+    Object.entries(palette.colors).forEach(([key, value]) => {
+      root.style.setProperty(`--${key}`, value);
+    });
+  }
 }));
+
+// Initialize theme on import
+if (typeof window !== 'undefined') {
+  const root = document.documentElement;
+  Object.entries(terminalTheme.colors).forEach(([key, value]) => {
+    root.style.setProperty(`--${key}`, value);
+  });
+}
+
+export const defaultTheme = terminalTheme;
 
 export const theme = {
   fonts: {
@@ -83,5 +74,3 @@ export const borderStyles = {
   default: '1px solid hsl(var(--border))',
   glowing: 'hsl(var(--glow))'
 };
-
-export { retroPalettes };
