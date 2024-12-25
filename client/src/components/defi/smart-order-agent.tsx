@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Terminal, ArrowRight, AlertCircle, CheckCircle2, Code, Cpu, ChevronRight, HelpCircle } from 'lucide-react';
+import { Terminal, ArrowRight, AlertCircle, CheckCircle2, Code, Cpu, ChevronRight, HelpCircle, Save, Bookmark, X } from 'lucide-react';
 
 interface OrderTemplate {
   id: string;
@@ -30,8 +30,12 @@ interface Suggestion {
   description: string;
 }
 
-interface SmartOrderAgentProps {
-  className?: string;
+interface StrategyPreset {
+  id: string;
+  name: string;
+  command: string;
+  description: string;
+  tags: string[];
 }
 
 interface CommandTooltip {
@@ -39,6 +43,10 @@ interface CommandTooltip {
   syntax: string;
   description: string;
   example: string;
+}
+
+interface SmartOrderAgentProps {
+  className?: string;
 }
 
 export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
@@ -49,6 +57,31 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
   const [scanLine, setScanLine] = useState(0);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [selectedSuggestion, setSelectedSuggestion] = useState(-1);
+  const [showPresets, setShowPresets] = useState(false);
+  const [presetNameInput, setPresetNameInput] = useState('');
+  const [presets, setPresets] = useState<StrategyPreset[]>([
+    {
+      id: '1',
+      name: 'DCA Runner',
+      command: 'SMART SOL TP 120 SL 80 DCA 5',
+      description: 'DCA strategy with take profit and stop loss',
+      tags: ['DCA', 'TP/SL']
+    },
+    {
+      id: '2',
+      name: 'Whale Tracker',
+      command: 'EXIT SOL ON PROFIT',
+      description: 'Exit when profitable whales dump',
+      tags: ['Exit', 'Whales']
+    },
+    {
+      id: '3',
+      name: 'Trail Master',
+      command: 'TRAIL SOL TP 5',
+      description: 'Trailing take profit at 5%',
+      tags: ['Trail', 'TP']
+    }
+  ]);
   const inputRef = useRef<HTMLInputElement>(null);
   const [tooltipContent, setTooltipContent] = useState<CommandTooltip | null>(null);
 
@@ -146,6 +179,32 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
       description: 'Exit position based on whale activity',
       example: 'EXIT SOL ON PROFIT'
     }
+  };
+
+  const handleSavePreset = () => {
+    if (!commandInput.trim() || !presetNameInput.trim()) return;
+
+    const newPreset: StrategyPreset = {
+      id: Math.random().toString(36).substr(2, 9),
+      name: presetNameInput,
+      command: commandInput,
+      description: 'Custom trading strategy',
+      tags: ['Custom']
+    };
+
+    setPresets(prev => [...prev, newPreset]);
+    setPresetNameInput('');
+    setShowPresets(false);
+  };
+
+  const handleLoadPreset = (preset: StrategyPreset) => {
+    setCommandInput(preset.command);
+    setShowPresets(false);
+    inputRef.current?.focus();
+  };
+
+  const handleDeletePreset = (presetId: string) => {
+    setPresets(prev => prev.filter(p => p.id !== presetId));
   };
 
   useEffect(() => {
@@ -480,6 +539,12 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
               className="bg-transparent border-none outline-none flex-1 text-sm min-w-0 h-6"
               placeholder="Enter order command..."
             />
+            <button
+              onClick={() => setShowPresets(prev => !prev)}
+              className="p-1 hover:bg-muted rounded"
+            >
+              <Bookmark className="w-4 h-4 text-primary" />
+            </button>
             <span className="text-primary flex-shrink-0 w-2">
               {cursorPosition === 0 ? '█' : ' '}
             </span>
@@ -513,6 +578,76 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
                     <span className="text-muted-foreground truncate">{suggestion.description}</span>
                   </motion.div>
                 ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <AnimatePresence>
+            {showPresets && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="absolute left-0 right-0 top-[calc(100%+1px)] border border-border/20 bg-background/95 backdrop-blur-sm z-30 p-4"
+              >
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={presetNameInput}
+                      onChange={e => setPresetNameInput(e.target.value)}
+                      placeholder="Preset name..."
+                      className="bg-transparent border border-border/20 rounded px-2 py-1 text-xs min-w-0 flex-1"
+                    />
+                    <button
+                      onClick={handleSavePreset}
+                      disabled={!commandInput.trim() || !presetNameInput.trim()}
+                      className="p-1 hover:bg-muted rounded disabled:opacity-50"
+                    >
+                      <Save className="w-4 h-4 text-primary" />
+                    </button>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="text-xs text-muted-foreground">Saved Presets:</div>
+                    {presets.map(preset => (
+                      <motion.div
+                        key={preset.id}
+                        className="flex items-center gap-2 group"
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                      >
+                        <button
+                          onClick={() => handleLoadPreset(preset)}
+                          className="flex-1 text-left hover:bg-muted p-2 rounded text-xs font-mono"
+                        >
+                          <div className="flex items-center justify-between">
+                            <span className="font-bold">{preset.name}</span>
+                            <div className="flex gap-1">
+                              {preset.tags.map(tag => (
+                                <span
+                                  key={tag}
+                                  className="px-1 bg-primary/10 text-primary rounded text-[10px]"
+                                >
+                                  {tag}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                          <div className="text-muted-foreground mt-1 font-mono">
+                            {preset.command}
+                          </div>
+                        </button>
+                        <button
+                          onClick={() => handleDeletePreset(preset.id)}
+                          className="p-1 hover:bg-destructive/10 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <X className="w-3 h-3 text-destructive" />
+                        </button>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
