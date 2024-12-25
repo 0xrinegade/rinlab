@@ -2,8 +2,7 @@
 export * from './components/pump-fun-screener';
 
 // Export UI components
-export * from './components/ui/button';
-export * from './components/ui/theme-switcher';
+export * from './components/ui';
 
 // Export layout components
 export * from './components/layout/grid';
