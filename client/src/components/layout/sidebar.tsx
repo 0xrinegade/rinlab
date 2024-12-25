@@ -18,6 +18,7 @@ export function Sidebar({ className = '' }: SidebarProps) {
         { name: "Network Topology", path: "/components/network-topology" },
         { name: "Blockchain Visualizer", path: "/components/blockchain-visualizer" },
         { name: "Transaction Complexity", path: "/components/transaction-complexity" },
+        { name: "Blockchain Explorer", path: "/components/blockchain-explorer" },
         { name: "Trend Predictor", path: "/components/trend-predictor" },
         { name: "Meme Generator", path: "/components/meme-generator" },
         { name: "Token Input", path: "/components/token-input" },
