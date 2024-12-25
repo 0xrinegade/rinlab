@@ -22,6 +22,7 @@ import { NetworkStatusDashboard } from "@/components/defi/network-status-dashboa
 import { TransactionReplay } from "@/components/defi/transaction-replay";
 import { ASCIINFTGallery } from "@/components/defi/ascii-nft-gallery";
 import { SmartOrderAgent } from "@/components/defi/smart-order-agent";
+import { Download } from "lucide-react";
 
 // Example of full component code for NetworkTopology
 const NETWORK_TOPOLOGY_CODE = `import { useState, useEffect, useCallback } from 'react';
@@ -239,16 +240,32 @@ sampleOrderBook.asks.forEach(ask => {
 });
 
 function App() {
+  const handleDownload = async () => {
+    try {
+      window.location.href = '/api/download-project';
+    } catch (error) {
+      console.error('Download failed:', error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background font-mono">
       <header className="border-b border-border/20 p-4 flex justify-between items-center">
         <div className="text-xs text-muted-foreground">⌃+T THEME</div>
-        <ThemeSwitcher />
+        <div className="flex items-center gap-4">
+          <button
+            onClick={handleDownload}
+            className="flex items-center gap-2 px-3 py-1.5 text-xs bg-primary/10 text-primary rounded hover:bg-primary/20 transition-colors"
+          >
+            <Download className="w-4 h-4" />
+            Download Project
+          </button>
+          <ThemeSwitcher />
+        </div>
       </header>
 
       <div className="flex">
         <Sidebar />
-
         <main className="flex-1 min-h-screen">
           <Switch>
             <Route path="/components/network-topology">

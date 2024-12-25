@@ -1,6 +1,9 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import Anthropic from '@anthropic-ai/sdk';
+import archiver from 'archiver';
+import path from 'path';
+import fs from 'fs';
 
 // the newest Anthropic model is "claude-3-5-sonnet-20241022" which was released October 22, 2024
 const anthropic = new Anthropic({
@@ -36,6 +39,66 @@ export function registerRoutes(app: Express): Server {
     } catch (error) {
       console.error('Meme generation error:', error);
       res.status(500).json({ error: 'Failed to generate meme' });
+    }
+  });
+
+  // Download project as ZIP
+  app.get('/api/download-project', (req, res) => {
+    try {
+      const archive = archiver('zip', {
+        zlib: { level: 9 } // Maximum compression
+      });
+
+      // Set the headers
+      res.attachment('defi-component-library.zip');
+      archive.pipe(res);
+
+      // Add files to the zip
+      const rootDir = path.resolve(__dirname, '..');
+      const excludePatterns = [
+        'node_modules',
+        '.git',
+        'dist',
+        '*.log',
+        '.env',
+        '.DS_Store'
+      ];
+
+      const addDirectoryToArchive = (dirPath: string, baseDir: string) => {
+        const files = fs.readdirSync(dirPath);
+
+        for (const file of files) {
+          const fullPath = path.join(dirPath, file);
+          const relative = path.relative(baseDir, fullPath);
+
+          // Skip excluded patterns
+          if (excludePatterns.some(pattern => 
+            pattern.includes('*') 
+              ? file.endsWith(pattern.replace('*', ''))
+              : file === pattern || relative.includes(`/${pattern}/`)
+          )) {
+            continue;
+          }
+
+          const stat = fs.statSync(fullPath);
+
+          if (stat.isDirectory()) {
+            addDirectoryToArchive(fullPath, baseDir);
+          } else {
+            archive.file(fullPath, { name: relative });
+          }
+        }
+      };
+
+      // Add all project files
+      addDirectoryToArchive(rootDir, rootDir);
+
+      // Finalize the archive
+      archive.finalize();
+
+    } catch (error) {
+      console.error('Error creating ZIP:', error);
+      res.status(500).json({ error: 'Failed to create ZIP file' });
     }
   });
 
