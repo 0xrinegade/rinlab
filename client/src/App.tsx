@@ -9,18 +9,18 @@ import { PriceChart } from "@/components/defi/price-chart";
 const sampleTransactions = [
   {
     id: '1',
-    type: 'send',
+    type: 'send' as const,
     amount: '1.5',
     token: 'SOL',
-    status: 'confirmed',
+    status: 'confirmed' as const,
     timestamp: Date.now() - 1000 * 60 * 5,
   },
   {
     id: '2',
-    type: 'receive',
+    type: 'receive' as const,
     amount: '100',
     token: 'USDC',
-    status: 'pending',
+    status: 'pending' as const,
     timestamp: Date.now() - 1000 * 60 * 10,
   },
 ];

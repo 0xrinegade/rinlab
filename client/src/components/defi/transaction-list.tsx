@@ -17,8 +17,6 @@ interface TransactionListProps {
 export function TransactionList({ transactions }: TransactionListProps) {
   return (
     <div className="font-mono">
-      <h3 className="text-sm text-muted-foreground mb-4">Recent Transactions</h3>
-      
       <div className="space-y-2">
         <AnimatePresence>
           {transactions.map((tx) => (
@@ -27,41 +25,38 @@ export function TransactionList({ transactions }: TransactionListProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="p-3 border rounded bg-black/50"
+              className="p-3 border"
+              style={{ borderColor: theme.colors.border }}
             >
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-center text-xs">
                 <div className="flex items-center gap-2">
-                  <span 
-                    className={`w-2 h-2 rounded-full ${
-                      tx.status === 'pending' ? 'bg-yellow-500' :
-                      tx.status === 'confirmed' ? 'bg-green-500' :
-                      'bg-red-500'
-                    }`}
-                  />
-                  <span className="text-sm">
-                    {tx.type.charAt(0).toUpperCase() + tx.type.slice(1)}
+                  <span className="text-muted-foreground">▸</span>
+                  <span>
+                    {tx.type.toUpperCase()}
                   </span>
                 </div>
-                
-                <span className="text-sm">
+
+                <span>
                   {tx.amount} {tx.token}
                 </span>
               </div>
 
-              <div className="mt-1 text-xs text-muted-foreground">
-                {new Date(tx.timestamp).toLocaleString()}
+              <div className="mt-1 text-[10px] text-muted-foreground flex justify-between items-center">
+                <span>{new Date(tx.timestamp).toLocaleString()}</span>
+                <span>{tx.status.toUpperCase()}</span>
               </div>
 
               {tx.status === 'pending' && (
                 <motion.div
-                  className="mt-2 h-0.5 bg-primary/30"
+                  className="mt-2 h-0.5"
+                  style={{ backgroundColor: theme.colors.primary }}
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
                   transition={{
                     duration: 2,
                     repeat: Infinity,
                   }}
-                  style={{ transformOrigin: 'left' }}
+                  layoutOrigin="left"
                 />
               )}
             </motion.div>
