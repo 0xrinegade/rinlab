@@ -11,6 +11,7 @@ import { TokenInput } from "@/components/defi/token-input";
 import { TransactionHistory } from "@/components/defi/transaction-history";
 import { ColorPaletteSelector } from "@/components/ui/color-palette-selector";
 import { BlockchainVisualizer } from "@/components/defi/blockchain-visualizer";
+import { TransactionComplexity } from "@/components/defi/transaction-complexity";
 
 // Sample analytics data
 const sampleAnalyticsData = Array.from({ length: 24 }, (_, i) => ({
@@ -230,6 +231,13 @@ function App() {
                 <h1>Blockchain Visualizer</h1>
                 <p>Real-time visualization of blockchain transactions with retro-style animations.</p>
                 <BlockchainVisualizer />
+              </ComponentLayout>
+            </Route>
+            <Route path="/components/transaction-complexity">
+              <ComponentLayout>
+                <h1>Transaction Complexity</h1>
+                <p>Visualize blockchain transaction complexity with retro computing metaphors.</p>
+                <TransactionComplexity />
               </ComponentLayout>
             </Route>
             <Route>
