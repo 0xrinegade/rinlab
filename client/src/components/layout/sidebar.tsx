@@ -16,6 +16,7 @@ export function Sidebar({ className = '' }: SidebarProps) {
         { name: "Order Book", path: "/components/order-book" },
         { name: "Price Chart", path: "/components/price-chart" },
         { name: "Network Topology", path: "/components/network-topology" },
+        { name: "Blockchain Visualizer", path: "/components/blockchain-visualizer" },
         { name: "Trend Predictor", path: "/components/trend-predictor" },
         { name: "Meme Generator", path: "/components/meme-generator" },
         { name: "Token Input", path: "/components/token-input" },

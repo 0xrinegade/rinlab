@@ -10,6 +10,7 @@ import { MemeGenerator } from "@/components/defi/meme-generator";
 import { TokenInput } from "@/components/defi/token-input";
 import { TransactionHistory } from "@/components/defi/transaction-history";
 import { ColorPaletteSelector } from "@/components/ui/color-palette-selector";
+import { BlockchainVisualizer } from "@/components/defi/blockchain-visualizer";
 
 // Sample analytics data
 const sampleAnalyticsData = Array.from({ length: 24 }, (_, i) => ({
@@ -224,7 +225,13 @@ function App() {
                 <ColorPaletteSelector />
               </ComponentLayout>
             </Route>
-
+            <Route path="/components/blockchain-visualizer">
+              <ComponentLayout>
+                <h1>Blockchain Visualizer</h1>
+                <p>Real-time visualization of blockchain transactions with retro-style animations.</p>
+                <BlockchainVisualizer />
+              </ComponentLayout>
+            </Route>
             <Route>
               <ComponentLayout>
                 <h1>SRCL DEFI Components</h1>
