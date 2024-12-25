@@ -8,34 +8,15 @@
   :root {
     --background: 240 100% 27%;
     --foreground: 0 0% 100%;
-
-    --card: 240 100% 27%;
-    --card-foreground: 0 0% 100%;
-
-    --popover: 240 100% 27%;
-    --popover-foreground: 0 0% 100%;
-
-    --primary: 240 100% 27%;
-    --primary-foreground: 0 0% 100%;
-
+    --primary: 0 0% 100%;
     --secondary: 240 30% 80%;
-    --secondary-foreground: 240 100% 27%;
-
-    --muted: 240 30% 80%;
-    --muted-foreground: 240 30% 80%;
-
     --accent: 240 30% 80%;
-    --accent-foreground: 240 100% 27%;
-
     --border: 240 50% 60%;
-    --input: 240 50% 60%;
-    --ring: 240 50% 60%;
-
+    --hover: 240 100% 32%;
+    --muted: 240 30% 80%;
     --radius: 0;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
   }
@@ -45,42 +26,64 @@
   }
 }
 
-/* Table styling matching the screenshot */
-.data-table {
-  @apply w-full font-mono text-sm;
-  border-spacing: 0;
+@layer components {
+  .data-table {
+    @apply w-full font-mono text-sm;
+    border-spacing: 0;
+  }
+
+  .data-table th {
+    @apply bg-background text-foreground p-2 text-left border-b border-border/20;
+  }
+
+  .data-table td {
+    @apply p-2 border-b border-border/10;
+  }
+
+  .data-table tr:hover {
+    @apply bg-hover transition-colors duration-150;
+  }
+
+  .terminal-container {
+    @apply bg-background border border-border/20 rounded-none;
+  }
+
+  .terminal-header {
+    @apply border-b border-border/20 p-2 text-xs text-foreground;
+  }
+
+  .terminal-grid {
+    @apply relative;
+    background-size: 20px 20px;
+    background-image: 
+      linear-gradient(to right, rgba(255,255,255,.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,.05) 1px, transparent 1px);
+  }
+
+  .terminal-text {
+    @apply text-foreground font-mono;
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.2);
+  }
 }
 
-.data-table th {
-  @apply bg-primary/30 text-foreground p-2 text-left border-b border-border/20;
+@layer utilities {
+  .theme-debug * {
+    outline: 1px solid rgba(255, 0, 0, 0.1);
+  }
+
+  .theme-debug-info {
+    @apply fixed bottom-0 right-0 bg-black/80 text-white p-2 text-xs font-mono z-50 hidden;
+  }
+
+  body.debug .theme-debug-info {
+    @apply block;
+  }
 }
 
-.data-table td {
-  @apply p-2 border-b border-border/10;
-}
-
-.data-table tr:hover {
-  @apply bg-primary/20;
-}
-
-/* Terminal container styles */
-.terminal-container {
-  @apply bg-background border border-border/20;
-}
-
-.terminal-header {
-  @apply border-b border-border/20 p-2 text-xs text-foreground;
-}
-
-/* Grid lines for terminal effect */
-.terminal-grid {
-  background-size: 20px 20px;
-  background-image: 
-    linear-gradient(to right, rgba(255,255,255,.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255,255,255,.05) 1px, transparent 1px);
-}
-
-/* Monospace font enforcement */
-input, textarea, button, .font-mono {
+/* Font enforcement */
+.font-mono,
+input,
+textarea,
+button {
   font-family: 'IBM Plex Mono', monospace !important;
 }
