@@ -21,10 +21,10 @@ import { TransactionReplay } from "@/components/defi/transaction-replay";
 import { ASCIINFTGallery } from "@/components/defi/ascii-nft-gallery";
 import { SmartOrderAgent } from "@/components/defi/smart-order-agent";
 
-// Sample analytics data
+// Sample analytics data with correct price property
 const sampleAnalyticsData = Array.from({ length: 24 }, (_, i) => ({
   timestamp: Date.now() - 1000 * 60 * 60 * (24 - i),
-  txVolume: 50000 + Math.random() * 20000,
+  price: 50000 + Math.random() * 20000,  // Changed from txVolume to price
 }));
 
 // Sample transaction data
@@ -193,7 +193,7 @@ function App() {
               <ComponentLayout>
                 <h1>Price Chart</h1>
                 <p>Interactive price chart with customizable time ranges.</p>
-                <PriceChart data={sampleAnalyticsData} valueKey="txVolume" />
+                <PriceChart data={sampleAnalyticsData} valueKey="price" /> {/* Changed valueKey to price */}
               </ComponentLayout>
             </Route>
 
