@@ -14,6 +14,7 @@ import { BlockchainVisualizer } from "@/components/defi/blockchain-visualizer";
 import { TransactionComplexity } from "@/components/defi/transaction-complexity";
 import { BlockchainExplorer } from "@/components/defi/blockchain-explorer";
 import { TransactionFlowChart } from "@/components/defi/transaction-flow-chart";
+import { BlockchainHeatmap } from "@/components/defi/blockchain-heatmap";
 
 // Sample analytics data
 const sampleAnalyticsData = Array.from({ length: 24 }, (_, i) => ({
@@ -256,6 +257,13 @@ function App() {
                 <h1>Transaction Flow Chart</h1>
                 <p>Animated blockchain transaction flow visualization with retro pixel art elements.</p>
                 <TransactionFlowChart />
+              </ComponentLayout>
+            </Route>
+            <Route path="/components/blockchain-heatmap">
+              <ComponentLayout>
+                <h1>Blockchain Heatmap</h1>
+                <p>Color-coded visualization of blockchain activity with retro terminal aesthetics.</p>
+                <BlockchainHeatmap />
               </ComponentLayout>
             </Route>
             <Route>
