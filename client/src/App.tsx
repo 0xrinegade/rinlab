@@ -7,6 +7,8 @@ import { OrderBook } from "@/components/defi/order-book";
 import { TransactionHistory } from "@/components/defi/transaction-history";
 import { ThemeSwitcher } from "@/components/ui/theme-switcher";
 import { NetworkTopology } from "@/components/defi/network-topology";
+import { TrendPredictor } from "@/components/defi/trend-predictor";
+import { MemeGenerator } from "@/components/defi/meme-generator";
 
 // Sample analytics data
 const sampleAnalyticsData = Array.from({ length: 24 }, (_, i) => ({
@@ -40,14 +42,67 @@ const sampleTransactions = [
   },
 ];
 
-
-// Sample price data for the chart
-const samplePriceData = Array.from({ length: 24 }, (_, i) => ({
-  timestamp: Date.now() - 1000 * 60 * 60 * (24 - i),
-  price: 50 + Math.random() * 10,
+// Sample prediction data
+const samplePredictions = Array.from({ length: 5 }, (_, i) => ({
+  timestamp: Date.now() + 1000 * 60 * 60 * (i + 1),
+  predictedValue: 50 + (Math.random() - 0.5) * 10,
+  confidence: 0.95 - (i * 0.15),
+  trend: ['up', 'down', 'sideways'][Math.floor(Math.random() * 3)] as 'up' | 'down' | 'sideways',
+  metrics: {
+    volatility: 0.2 + Math.random() * 0.3,
+    momentum: -1 + Math.random() * 2,
+    volume: 10000 + Math.random() * 5000,
+  },
 }));
 
-// Sample order book data (Reduced for brevity)
+// Sample market trend data for meme generator
+const sampleMarketTrend = {
+  symbol: 'SOL',
+  changePercent: 12.5,
+  price: 105.75,
+  timeframe: '24h'
+};
+
+// Sample network data
+const sampleNetworkNodes = [
+  {
+    id: 'node1',
+    connections: ['node2', 'node3'],
+    activity: 0.8,
+    latency: 50,
+    region: 'US-WEST'
+  },
+  {
+    id: 'node2',
+    connections: ['node1', 'node4'],
+    activity: 0.6,
+    latency: 75,
+    region: 'US-EAST'
+  },
+  {
+    id: 'node3',
+    connections: ['node1', 'node4', 'node5'],
+    activity: 0.9,
+    latency: 45,
+    region: 'EU-WEST'
+  },
+  {
+    id: 'node4',
+    connections: ['node2', 'node3'],
+    activity: 0.4,
+    latency: 90,
+    region: 'ASIA-EAST'
+  },
+  {
+    id: 'node5',
+    connections: ['node3'],
+    activity: 0.7,
+    latency: 60,
+    region: 'US-WEST'
+  }
+];
+
+// Sample order book data
 const sampleOrderBook = {
   bids: Array.from({ length: 8 }, (_, i) => ({
     price: 49.5 - i * 0.1,
@@ -101,12 +156,61 @@ function App() {
             {/* Analytics Dashboard */}
             <section>
               <h2 className="text-xs text-primary ascii-border mb-2">NETWORK ANALYTICS</h2>
-              <TerminalContainer title="Transaction Volume" className="terminal-border">
-                <div className="p-4">
-                  <PriceChart data={sampleAnalyticsData} className="h-48" valueKey="txVolume" />
-                </div>
-              </TerminalContainer>
+              <div className="grid grid-cols-3 gap-4">
+                {/* Single Combined Chart for Analytics */}
+                <TerminalContainer title="Transaction Volume" className="terminal-border">
+                  <div className="p-4">
+                    <PriceChart data={sampleAnalyticsData} className="h-48" valueKey="txVolume" />
+                  </div>
+                </TerminalContainer>
+
+                <TerminalContainer title="Network Status" className="terminal-border">
+                  <div className="p-4">
+                    <NetworkTopology 
+                      nodes={sampleNetworkNodes}
+                      width={32}
+                      height={16}
+                    />
+                  </div>
+                </TerminalContainer>
+
+                <TerminalContainer title="Order Book" className="terminal-border">
+                  <div className="p-4">
+                    <OrderBook 
+                      bids={sampleOrderBook.bids} 
+                      asks={sampleOrderBook.asks} 
+                      className="h-48"
+                    />
+                  </div>
+                </TerminalContainer>
+              </div>
             </section>
+
+            {/* Additional Features */}
+            <div className="grid grid-cols-2 gap-4">
+              <section>
+                <h2 className="text-xs text-primary ascii-border mb-2">AI TRADING</h2>
+                <TerminalContainer title="Trend Predictions" className="terminal-border">
+                  <TrendPredictor
+                    predictions={samplePredictions}
+                    currentPrice={105.75}
+                    className="p-4"
+                  />
+                </TerminalContainer>
+              </section>
+
+              <section>
+                <h2 className="text-xs text-primary ascii-border mb-2">MARKET SENTIMENT</h2>
+                <TerminalContainer title="Meme Analysis" className="terminal-border">
+                  <div className="p-4">
+                    <MemeGenerator 
+                      trend={sampleMarketTrend}
+                      className="h-48"
+                    />
+                  </div>
+                </TerminalContainer>
+              </section>
+            </div>
 
             {/* Trading Interface */}
             <div className="grid grid-cols-2 gap-4">
