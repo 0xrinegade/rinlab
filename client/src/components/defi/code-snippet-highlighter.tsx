@@ -24,6 +24,7 @@ export function CodeSnippetHighlighter({
   const [copied, setCopied] = useState(false);
   const [scanLine, setScanLine] = useState(0);
   const [hovered, setHovered] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Scanline animation
   useEffect(() => {
@@ -37,22 +38,34 @@ export function CodeSnippetHighlighter({
     try {
       await navigator.clipboard.writeText(code);
       setCopied(true);
+      setError(null);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       console.error('Failed to copy:', err);
+      setError('Failed to copy code');
+      setTimeout(() => setError(null), 2000);
     }
   };
 
   const handleDownload = () => {
-    const blob = new Blob([code], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `snippet.${language}`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    try {
+      // Ensure line endings are consistent
+      const processedCode = code.replace(/\r\n/g, '\n');
+      const blob = new Blob([processedCode], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `snippet.${language}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      setError(null);
+    } catch (err) {
+      console.error('Failed to download:', err);
+      setError('Failed to download code');
+      setTimeout(() => setError(null), 2000);
+    }
   };
 
   return (
@@ -106,7 +119,7 @@ export function CodeSnippetHighlighter({
             <Download className="w-3 h-3" />
             <pre className="font-mono">
               ┌──────┐
-              │SAVE │
+              │ SAVE │
               └──────┘
             </pre>
           </button>
@@ -164,6 +177,20 @@ export function CodeSnippetHighlighter({
       <pre className="text-primary text-xs mt-2">
         {ASCII_BORDERS.bottom}
       </pre>
+
+      {/* Error notification */}
+      <AnimatePresence>
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="absolute bottom-full left-0 mb-2 px-3 py-2 bg-destructive/90 text-destructive-foreground text-xs rounded"
+          >
+            {error}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
