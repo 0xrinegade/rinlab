@@ -1,0 +1,59 @@
+@import './styles/animations.css';
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 4%;
+    --foreground: 150 100% 50%;
+    
+    --card: 0 0% 4%;
+    --card-foreground: 150 100% 50%;
+    
+    --popover: 0 0% 4%;
+    --popover-foreground: 150 100% 50%;
+    
+    --primary: 180 100% 50%;
+    --primary-foreground: 0 0% 0%;
+    
+    --secondary: 300 100% 50%;
+    --secondary-foreground: 0 0% 0%;
+    
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 60%;
+    
+    --accent: 60 100% 50%;
+    --accent-foreground: 0 0% 0%;
+    
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 0 0% 0%;
+    
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 180 100% 50%;
+
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-mono antialiased bg-background text-foreground;
+  }
+
+  ::selection {
+    @apply bg-primary/30 text-foreground;
+  }
+}
+
+/* Terminal-specific styles */
+.terminal-text {
+  font-family: 'IBM Plex Mono', monospace;
+}
