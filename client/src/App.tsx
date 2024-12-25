@@ -1,15 +1,15 @@
 import { Switch, Route } from "wouter";
-import { TerminalContainer } from "@/components/layout/terminal-container";
-import { TokenInput } from "@/components/defi/token-input";
-import { WalletButton } from "@/components/defi/wallet-button";
-import { PriceChart } from "@/components/defi/price-chart";
-import { OrderBook } from "@/components/defi/order-book";
-import { TransactionHistory } from "@/components/defi/transaction-history";
 import { ThemeSwitcher } from "@/components/ui/theme-switcher";
+import { Sidebar } from "@/components/layout/sidebar";
+import { TokenScreener } from "@/components/defi/token-screener";
+import { OrderBook } from "@/components/defi/order-book";
+import { PriceChart } from "@/components/defi/price-chart";
 import { NetworkTopology } from "@/components/defi/network-topology";
 import { TrendPredictor } from "@/components/defi/trend-predictor";
 import { MemeGenerator } from "@/components/defi/meme-generator";
-import { TokenScreener } from "@/components/defi/token-screener";
+import { TokenInput } from "@/components/defi/token-input";
+import { TransactionHistory } from "@/components/defi/transaction-history";
+import { ColorPaletteSelector } from "@/components/ui/color-palette-selector";
 
 // Sample analytics data
 const sampleAnalyticsData = Array.from({ length: 24 }, (_, i) => ({
@@ -130,100 +130,112 @@ sampleOrderBook.asks.forEach(ask => {
   ask.total = cumTotal;
 });
 
+function ComponentLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="p-8 max-w-4xl mx-auto">
+      <div className="prose prose-invert mb-8">
+        {children}
+      </div>
+    </div>
+  );
+}
+
 function App() {
   return (
-    <Switch>
-      <Route path="/">
-        <div className="min-h-screen bg-background font-mono">
-          <header className="border-b border-primary/20 p-4">
-            <div className="flex justify-between items-center max-w-[1200px] mx-auto">
-              <div className="flex items-center gap-4">
-                <h1 className="text-2xl vintage-glow ascii-border">SRCL DEFI</h1>
-                <div className="text-xs text-muted-foreground terminal-text">
-                  ⌃+T THEME
-                </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <ThemeSwitcher />
-                <WalletButton 
-                  connected={false}
-                  onClick={() => console.log('connect wallet')}
-                />
-              </div>
-            </div>
-          </header>
+    <div className="min-h-screen bg-background font-mono">
+      <header className="border-b border-border/20 p-4 flex justify-between items-center">
+        <div className="text-xs text-muted-foreground">⌃+T THEME</div>
+        <ThemeSwitcher />
+      </header>
 
-          <main className="p-4 max-w-[1200px] mx-auto space-y-4 vintage-screen">
-            {/* Analytics Dashboard */}
-            <section>
-              <h2 className="text-xs text-primary ascii-border mb-2">NETWORK ANALYTICS</h2>
-              <div className="grid grid-cols-1 gap-4">
+      <div className="flex">
+        <Sidebar />
+
+        <main className="flex-1 min-h-screen">
+          <Switch>
+            <Route path="/components/token-screener">
+              <ComponentLayout>
+                <h1>Token Screener</h1>
+                <p>Real-time token screening with sorting and filtering capabilities.</p>
                 <TokenScreener />
-              </div>
-            </section>
+              </ComponentLayout>
+            </Route>
 
-            {/* Additional Features */}
-            <div className="grid grid-cols-2 gap-4">
-              <section>
-                <h2 className="text-xs text-primary ascii-border mb-2">AI TRADING</h2>
-                <TerminalContainer title="Trend Predictions" className="terminal-border">
-                  <TrendPredictor
-                    predictions={samplePredictions}
-                    currentPrice={105.75}
-                    className="p-4"
-                  />
-                </TerminalContainer>
-              </section>
+            <Route path="/components/order-book">
+              <ComponentLayout>
+                <h1>Order Book</h1>
+                <p>Live order book visualization with bids and asks.</p>
+                <OrderBook bids={sampleOrderBook.bids} asks={sampleOrderBook.asks} />
+              </ComponentLayout>
+            </Route>
 
-              <section>
-                <h2 className="text-xs text-primary ascii-border mb-2">MARKET SENTIMENT</h2>
-                <TerminalContainer title="Meme Analysis" className="terminal-border">
-                  <div className="p-4">
-                    <MemeGenerator 
-                      trend={sampleMarketTrend}
-                      className="h-48"
-                    />
-                  </div>
-                </TerminalContainer>
-              </section>
-            </div>
+            <Route path="/components/price-chart">
+              <ComponentLayout>
+                <h1>Price Chart</h1>
+                <p>Interactive price chart with customizable time ranges.</p>
+                <PriceChart data={sampleAnalyticsData} valueKey="txVolume" />
+              </ComponentLayout>
+            </Route>
 
-            {/* Trading Interface */}
-            <div className="grid grid-cols-2 gap-4">
-              <section>
-                <h2 className="text-xs text-primary ascii-border mb-2">TRADING</h2>
-                <TerminalContainer title="Swap Tokens" className="terminal-border">
-                  <div className="p-4 space-y-4">
-                    <TokenInput
-                      token="SOL"
-                      balance="1.5"
-                      onChange={(val) => console.log(val)}
-                      max="1.5"
-                    />
-                    <TokenInput
-                      token="USDC"
-                      balance="100"
-                      onChange={(val) => console.log(val)}
-                    />
-                  </div>
-                </TerminalContainer>
-              </section>
+            <Route path="/components/network-topology">
+              <ComponentLayout>
+                <h1>Network Topology</h1>
+                <p>Blockchain network visualization showing node connections and status.</p>
+                <NetworkTopology nodes={sampleNetworkNodes} width={32} height={16} />
+              </ComponentLayout>
+            </Route>
 
-              <section>
-                <h2 className="text-xs text-primary ascii-border mb-2">HISTORY</h2>
-                <TerminalContainer title="Transactions" className="terminal-border">
-                  <TransactionHistory 
-                    transactions={sampleTransactions}
-                    maxHeight="300px"
-                    className="p-4"
-                  />
-                </TerminalContainer>
-              </section>
-            </div>
-          </main>
-        </div>
-      </Route>
-    </Switch>
+            <Route path="/components/trend-predictor">
+              <ComponentLayout>
+                <h1>Trend Predictor</h1>
+                <p>AI-powered market trend predictions with confidence levels.</p>
+                <TrendPredictor predictions={samplePredictions} currentPrice={105.75} />
+              </ComponentLayout>
+            </Route>
+
+            <Route path="/components/meme-generator">
+              <ComponentLayout>
+                <h1>Meme Generator</h1>
+                <p>Market sentiment visualization through generated memes.</p>
+                <MemeGenerator trend={sampleMarketTrend} />
+              </ComponentLayout>
+            </Route>
+
+            <Route path="/components/token-input">
+              <ComponentLayout>
+                <h1>Token Input</h1>
+                <p>Token amount input with balance display and max button.</p>
+                <TokenInput token="SOL" balance="1.5" max="1.5" onChange={console.log} />
+              </ComponentLayout>
+            </Route>
+
+            <Route path="/components/transaction-history">
+              <ComponentLayout>
+                <h1>Transaction History</h1>
+                <p>Detailed transaction history with status indicators.</p>
+                <TransactionHistory transactions={sampleTransactions} />
+              </ComponentLayout>
+            </Route>
+
+            <Route path="/theme/colors">
+              <ComponentLayout>
+                <h1>Color Palette</h1>
+                <p>Customize the theme colors for the entire application.</p>
+                <ColorPaletteSelector />
+              </ComponentLayout>
+            </Route>
+
+            <Route>
+              <ComponentLayout>
+                <h1>SRCL DEFI Components</h1>
+                <p>A retro-computing themed React component library for Solana blockchain interfaces.</p>
+                <p>Select a component from the sidebar to view its documentation and demo.</p>
+              </ComponentLayout>
+            </Route>
+          </Switch>
+        </main>
+      </div>
+    </div>
   );
 }
 
