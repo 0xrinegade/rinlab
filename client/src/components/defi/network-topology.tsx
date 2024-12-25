@@ -13,7 +13,7 @@ interface Node {
 }
 
 interface NetworkTopologyProps {
-  nodes: Node[];
+  nodes?: Node[];
   width?: number;
   height?: number;
   className?: string;
@@ -41,6 +41,8 @@ const NODE_ASCII = {
 
 const COMPONENT_CODE = `import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Code } from 'lucide-react';
+import { CodeSnippetHighlighter } from './code-snippet-highlighter';
 
 interface Node {
   id: string;
@@ -52,7 +54,7 @@ interface Node {
 }
 
 export function NetworkTopology({ 
-  nodes,
+  nodes = [],
   width = 40,
   height = 20,
   className = '' 
@@ -65,8 +67,36 @@ export function NetworkTopology({
   // Rest of the implementation...
 }`;
 
+// Default test data
+const DEFAULT_NODES: Node[] = [
+  {
+    id: 'node1',
+    connections: ['node2', 'node3'],
+    activity: 0.8,
+    latency: 50,
+    region: 'US-WEST',
+    status: 'active'
+  },
+  {
+    id: 'node2',
+    connections: ['node1'],
+    activity: 0.6,
+    latency: 75,
+    region: 'EU-CENTRAL',
+    status: 'syncing'
+  },
+  {
+    id: 'node3',
+    connections: ['node1'],
+    activity: 0.3,
+    latency: 120,
+    region: 'ASIA-EAST',
+    status: 'offline'
+  }
+];
+
 export function NetworkTopology({
-  nodes,
+  nodes = DEFAULT_NODES,
   width = 40,
   height = 20,
   className = ''
@@ -75,7 +105,6 @@ export function NetworkTopology({
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [hoveredNode, setHoveredNode] = useState<Node | null>(null);
   const [scanline, setScanline] = useState(0);
-  const [copied, setCopied] = useState(false);
   const [showCode, setShowCode] = useState(false);
 
   // Network metrics
@@ -91,13 +120,11 @@ export function NetworkTopology({
   useEffect(() => {
     const newGrid = Array(height).fill(0).map(() => Array(width).fill(' '));
 
-    // Place nodes
     nodes.forEach((node, i) => {
       const x = Math.floor((i % (width / 2)) * 2 + 1);
       const y = Math.floor(i / (width / 2) * 2 + 1);
 
       if (y < height && x < width) {
-        // Use ASCII art based on node status
         const nodeArt = NODE_ASCII[node.status];
         const nodeLines = nodeArt.split('\n');
 
@@ -112,7 +139,6 @@ export function NetworkTopology({
           }
         });
 
-        // Draw connections
         node.connections.forEach(targetId => {
           const targetNode = nodes.find(n => n.id === targetId);
           if (targetNode) {
@@ -120,7 +146,6 @@ export function NetworkTopology({
             const tx = Math.floor((targetIndex % (width / 2)) * 2 + 1);
             const ty = Math.floor(targetIndex / (width / 2) * 2 + 1);
 
-            // Draw path between nodes
             const dx = Math.sign(tx - x);
             const dy = Math.sign(ty - y);
             let cx = x;
@@ -152,16 +177,6 @@ export function NetworkTopology({
     return () => clearInterval(interval);
   }, [height]);
 
-  const handleCopyCode = async () => {
-    try {
-      await navigator.clipboard.writeText(COMPONENT_CODE);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error('Failed to copy:', err);
-    }
-  };
-
   return (
     <div className="space-y-4">
       <div className="font-mono text-xs flex justify-between items-center">
@@ -173,10 +188,10 @@ export function NetworkTopology({
 
         <button
           onClick={() => setShowCode(prev => !prev)}
-          className="px-2 py-1 border border-primary/20 hover:bg-primary/10 text-primary text-xs flex items-center gap-2 transition-colors"
+          className="px-2 py-1 border border-primary/20 hover:bg-primary/10 text-primary text-xs flex items-center gap-2 transition-colors rounded-sm"
         >
           <Code className="w-3 h-3" />
-          <span>{showCode ? 'Hide Code' : 'View Code'}</span>
+          <span className="font-mono">{showCode ? 'Hide Code' : 'View Code'}</span>
         </button>
       </div>
 
@@ -202,7 +217,6 @@ export function NetworkTopology({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
-        {/* Scanline effect */}
         <motion.div
           className="absolute w-full h-[2px] bg-primary/10"
           style={{ top: `${(scanline / height) * 100}%` }}
@@ -225,7 +239,6 @@ export function NetworkTopology({
           ))}
         </div>
 
-        {/* Node details on hover */}
         <AnimatePresence>
           {hoveredNode && (
             <motion.div
