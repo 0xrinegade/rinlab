@@ -1,13 +1,17 @@
 {
   "variant": "professional",
-  "primary": "hsl(220 100% 98%)", 
   "appearance": "dark",
   "radius": 0,
+  "primary": "hsl(240 100% 27%)",
   "colors": {
-    "background": "hsl(220 100% 15%)",
-    "foreground": "hsl(220 100% 98%)",
-    "border": "hsl(220 100% 80% / 0.1)",
-    "muted": "hsl(220 100% 80% / 0.5)",
-    "accent": "hsl(220 100% 80%)"
+    "background": "hsl(240 100% 27%)",
+    "foreground": "hsl(0 0% 100%)",
+    "border": "hsl(240 50% 60% / 0.2)",
+    "muted": "hsl(240 30% 80%)",
+    "accent": "hsl(240 30% 80%)",
+    "card": {
+      "DEFAULT": "hsl(240 100% 27%)",
+      "foreground": "hsl(0 0% 100%)"
+    }
   }
 }
