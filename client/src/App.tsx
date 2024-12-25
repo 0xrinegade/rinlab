@@ -5,7 +5,17 @@ import { WalletButton } from "@/components/defi/wallet-button";
 import { PriceChart } from "@/components/defi/price-chart";
 import { OrderBook } from "@/components/defi/order-book";
 import { TransactionHistory } from "@/components/defi/transaction-history";
+import { AnalyticsDashboard } from "@/components/defi/analytics-dashboard";
 import { ThemeSwitcher } from "@/components/ui/theme-switcher";
+
+// Sample analytics data
+const sampleAnalyticsData = Array.from({ length: 24 }, (_, i) => ({
+  timestamp: Date.now() - 1000 * 60 * 60 * (24 - i),
+  txVolume: 50000 + Math.random() * 20000,
+  gasPrice: 30 + Math.random() * 10,
+  activeAddresses: 100000 + Math.random() * 50000,
+  networkTps: 2000 + Math.random() * 500,
+}));
 
 // Sample transaction data
 const sampleTransactions = [
@@ -97,6 +107,12 @@ function App() {
           </header>
 
           <main className="p-4 max-w-[1200px] mx-auto space-y-4">
+            {/* Analytics Dashboard */}
+            <section>
+              <h2 className="text-xs text-muted-foreground mb-2">NETWORK ANALYTICS</h2>
+              <AnalyticsDashboard data={sampleAnalyticsData} />
+            </section>
+
             {/* Market Overview */}
             <section>
               <h2 className="text-xs text-muted-foreground mb-2">MARKET DATA</h2>
