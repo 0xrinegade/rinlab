@@ -100,6 +100,15 @@
       pointer-events: none;
     }
   }
+
+  .chart-container {
+    @apply p-4 bg-background border border-border/20;
+  }
+
+  .terminal-border {
+    @apply border border-border/20 shadow-sm;
+    box-shadow: inset 0 0 0 1px hsl(var(--border) / 0.1);
+  }
 }
 
 @layer utilities {
