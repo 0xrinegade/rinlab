@@ -2,5 +2,22 @@
   "variant": "professional",
   "primary": "hsl(150 100% 50%)",
   "appearance": "dark",
-  "radius": 0
+  "radius": 0.5,
+  "vintageThemes": {
+    "green": {
+      "primary": "hsl(150 100% 50%)",
+      "secondary": "hsl(150 100% 30%)",
+      "glow": "rgba(0, 255, 0, 0.2)"
+    },
+    "amber": {
+      "primary": "hsl(39 100% 50%)",
+      "secondary": "hsl(39 100% 30%)",
+      "glow": "rgba(255, 191, 0, 0.2)"
+    },
+    "blue": {
+      "primary": "hsl(195 100% 50%)",
+      "secondary": "hsl(195 100% 30%)",
+      "glow": "rgba(0, 191, 255, 0.2)"
+    }
+  }
 }

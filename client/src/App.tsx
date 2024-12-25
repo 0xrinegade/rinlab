@@ -148,19 +148,22 @@ function App() {
           <header className="border-b border-border p-4">
             <div className="flex justify-between items-center max-w-[1200px] mx-auto">
               <div className="flex items-center gap-4">
-                <h1 className="text-2xl">SRCL DEFI</h1>
+                <h1 className="text-2xl vintage-glow">SRCL DEFI</h1>
                 <div className="text-xs text-muted-foreground">
                   ⌃+T THEME
                 </div>
               </div>
-              <WalletButton 
-                connected={false}
-                onClick={() => console.log('connect wallet')}
-              />
+              <div className="flex items-center gap-4">
+                <ThemeSwitcher />
+                <WalletButton 
+                  connected={false}
+                  onClick={() => console.log('connect wallet')}
+                />
+              </div>
             </div>
           </header>
 
-          <main className="p-4 max-w-[1200px] mx-auto space-y-4">
+          <main className="p-4 max-w-[1200px] mx-auto space-y-4 vintage-screen">
             {/* Analytics Dashboard */}
             <section>
               <h2 className="text-xs text-muted-foreground mb-2">NETWORK ANALYTICS</h2>
