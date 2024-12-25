@@ -36,8 +36,13 @@ function App() {
       <Route path="/">
         <div className="min-h-screen bg-background p-4">
           <GridContainer columns={1} gap={4}>
-            <header className="flex justify-between items-center">
-              <h1 className="text-2xl font-mono">SRCL DeFi</h1>
+            <header className="flex justify-between items-center border-b border-border pb-4">
+              <div className="flex items-center gap-4">
+                <h1 className="text-2xl font-mono">SRCL DEFI</h1>
+                <div className="text-xs text-muted-foreground">
+                  ⌃+T THEME
+                </div>
+              </div>
               <WalletButton 
                 connected={false}
                 onClick={() => console.log('connect wallet')}
@@ -45,7 +50,7 @@ function App() {
             </header>
 
             <GridContainer columns={2} gap={4}>
-              <TerminalContainer title="Swap">
+              <TerminalContainer title="Token Swap" shortcut="⌘+S">
                 <div className="p-4 space-y-4">
                   <TokenInput
                     token="SOL"
@@ -61,14 +66,14 @@ function App() {
                 </div>
               </TerminalContainer>
 
-              <TerminalContainer title="Price Chart">
+              <TerminalContainer title="Market Data" shortcut="⌘+M">
                 <div className="p-4">
                   <PriceChart data={samplePriceData} />
                 </div>
               </TerminalContainer>
             </GridContainer>
 
-            <TerminalContainer title="Transaction History">
+            <TerminalContainer title="Transaction History" shortcut="⌘+H">
               <div className="p-4">
                 <TransactionList transactions={sampleTransactions} />
               </div>

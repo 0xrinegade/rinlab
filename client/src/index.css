@@ -9,33 +9,33 @@
   :root {
     --background: 0 0% 4%;
     --foreground: 150 100% 50%;
-    
+
     --card: 0 0% 4%;
     --card-foreground: 150 100% 50%;
-    
+
     --popover: 0 0% 4%;
     --popover-foreground: 150 100% 50%;
-    
-    --primary: 180 100% 50%;
+
+    --primary: 150 100% 50%;
     --primary-foreground: 0 0% 0%;
-    
+
     --secondary: 300 100% 50%;
     --secondary-foreground: 0 0% 0%;
-    
+
     --muted: 0 0% 20%;
     --muted-foreground: 0 0% 60%;
-    
+
     --accent: 60 100% 50%;
     --accent-foreground: 0 0% 0%;
-    
+
     --destructive: 0 100% 50%;
     --destructive-foreground: 0 0% 0%;
-    
+
     --border: 0 0% 20%;
     --input: 0 0% 20%;
-    --ring: 180 100% 50%;
+    --ring: 150 100% 50%;
 
-    --radius: 0.5rem;
+    --radius: 0;
   }
 }
 
@@ -56,4 +56,24 @@
 /* Terminal-specific styles */
 .terminal-text {
   font-family: 'IBM Plex Mono', monospace;
+}
+
+.terminal-scanline {
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 255, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0) 50%
+  );
+  background-size: 100% 4px;
+  animation: scanline 10s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes scanline {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 100%;
+  }
 }
