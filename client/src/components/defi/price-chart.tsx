@@ -29,14 +29,14 @@ export function PriceChart({
         <LineChart data={data}>
           <defs>
             <linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="hsl(150 100% 50%)" stopOpacity={0.8}/>
-              <stop offset="95%" stopColor="hsl(150 100% 50%)" stopOpacity={0}/>
+              <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8}/>
+              <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
             </linearGradient>
           </defs>
           <Line
             type="monotone"
             dataKey="price"
-            stroke="hsl(150 100% 50%)"
+            stroke="hsl(var(--primary))"
             strokeWidth={1.5}
             dot={false}
             fill="url(#colorPrice)"
@@ -48,8 +48,8 @@ export function PriceChart({
               if (typeof value !== 'number') return null;
 
               return (
-                <div className="bg-black border border-[hsl(150_100%_50%)] p-2 text-xs">
-                  <div className="text-[hsl(150_100%_50%)]">
+                <div className="bg-black border border-primary p-2 text-xs">
+                  <div className="text-primary">
                     ${value.toFixed(2)}
                   </div>
                   <div className="text-muted-foreground text-[10px]">
