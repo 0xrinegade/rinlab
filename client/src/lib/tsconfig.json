@@ -1,18 +1,19 @@
 {
-  "include": ["**/*.ts", "**/*.tsx"],
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["node_modules", "dist"],
   "compilerOptions": {
     "module": "ESNext",
     "target": "ES2020",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "jsx": "react",
+    "jsx": "react-jsx",
     "moduleResolution": "bundler",
     "strict": true,
     "declaration": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
+    "outDir": "dist",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./src/*"]
     }
   }
 }
