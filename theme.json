@@ -1,23 +1,13 @@
 {
   "variant": "professional",
-  "primary": "hsl(150 100% 50%)",
+  "primary": "hsl(220 100% 98%)", 
   "appearance": "dark",
-  "radius": 0.5,
-  "vintageThemes": {
-    "green": {
-      "primary": "hsl(150 100% 50%)",
-      "secondary": "hsl(150 100% 30%)",
-      "glow": "rgba(0, 255, 0, 0.2)"
-    },
-    "amber": {
-      "primary": "hsl(39 100% 50%)",
-      "secondary": "hsl(39 100% 30%)",
-      "glow": "rgba(255, 191, 0, 0.2)"
-    },
-    "blue": {
-      "primary": "hsl(195 100% 50%)",
-      "secondary": "hsl(195 100% 30%)",
-      "glow": "rgba(0, 191, 255, 0.2)"
-    }
+  "radius": 0,
+  "colors": {
+    "background": "hsl(220 100% 15%)",
+    "foreground": "hsl(220 100% 98%)",
+    "border": "hsl(220 100% 80% / 0.1)",
+    "muted": "hsl(220 100% 80% / 0.5)",
+    "accent": "hsl(220 100% 80%)"
   }
 }
