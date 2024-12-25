@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Rocket, Sparkles, TrendingUp, Flame, Skull } from 'lucide-react';
 
 interface Token {
+  id: string; // Added stable ID
   symbol: string;
   name: string;
   price: number;
@@ -23,38 +24,44 @@ export function PumpFunScreener({ className = '' }: PumpFunScreenerProps) {
   const [sortKey, setSortKey] = useState<keyof Token>('pumpScore');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [scanLine, setScanLine] = useState(0);
+  const [error, setError] = useState<string | null>(null);
 
-  // Generate sample token data
+  // Generate sample token data with stable IDs
   useEffect(() => {
-    const generateToken = (index: number): Token => ({
-      symbol: ['PEPE', 'DOGE', 'SHIB', 'FLOKI', 'WOJAK'][index % 5],
-      name: ['PepeCoin', 'Dogecoin', 'Shiba Inu', 'Floki Inu', 'Wojak'][index % 5],
-      price: Math.random() * 10,
-      change24h: (Math.random() - 0.5) * 100,
-      volume24h: Math.random() * 1000000,
-      memeScore: Math.random() * 100,
-      pumpScore: Math.random() * 100,
-      fomoLevel: Math.random() * 100,
-      lastPump: Date.now() - Math.random() * 1000 * 60 * 60 * 24
-    });
+    try {
+      const generateToken = (index: number): Token => ({
+        id: `token-${index}`, // Stable ID for React key
+        symbol: ['PEPE', 'DOGE', 'SHIB', 'FLOKI', 'WOJAK'][index % 5],
+        name: ['PepeCoin', 'Dogecoin', 'Shiba Inu', 'Floki Inu', 'Wojak'][index % 5],
+        price: Math.random() * 10,
+        change24h: (Math.random() - 0.5) * 100,
+        volume24h: Math.random() * 1000000,
+        memeScore: Math.random() * 100,
+        pumpScore: Math.random() * 100,
+        fomoLevel: Math.random() * 100,
+        lastPump: Date.now() - Math.random() * 1000 * 60 * 60 * 24
+      });
 
-    // Initialize tokens immediately
-    const initialTokens = Array.from({ length: 10 }, (_, i) => generateToken(i));
-    setTokens(initialTokens);
+      const initialTokens = Array.from({ length: 10 }, (_, i) => generateToken(i));
+      setTokens(initialTokens);
 
-    const interval = setInterval(() => {
-      setTokens(prev => 
-        prev.map(token => ({
-          ...token,
-          price: token.price * (1 + (Math.random() - 0.5) * 0.1),
-          change24h: token.change24h + (Math.random() - 0.5) * 5,
-          pumpScore: Math.min(100, Math.max(0, token.pumpScore + (Math.random() - 0.5) * 10)),
-          fomoLevel: Math.min(100, Math.max(0, token.fomoLevel + (Math.random() - 0.5) * 10))
-        }))
-      );
-    }, 5000);
+      const interval = setInterval(() => {
+        setTokens(prev => 
+          prev.map(token => ({
+            ...token, // Preserve stable ID
+            price: token.price * (1 + (Math.random() - 0.5) * 0.1),
+            change24h: token.change24h + (Math.random() - 0.5) * 5,
+            pumpScore: Math.min(100, Math.max(0, token.pumpScore + (Math.random() - 0.5) * 10)),
+            fomoLevel: Math.min(100, Math.max(0, token.fomoLevel + (Math.random() - 0.5) * 10))
+          }))
+        );
+      }, 5000);
 
-    return () => clearInterval(interval);
+      return () => clearInterval(interval);
+    } catch (err) {
+      console.error('Error generating tokens:', err);
+      setError('Failed to generate token data');
+    }
   }, []);
 
   // Animate scan line
@@ -73,32 +80,19 @@ export function PumpFunScreener({ className = '' }: PumpFunScreenerProps) {
     return <Skull className="w-4 h-4 text-muted-foreground" />;
   };
 
-  const formatNumber = (num: number) => {
-    if (num > 1000000) return `${(num / 1000000).toFixed(2)}M`;
-    if (num > 1000) return `${(num / 1000).toFixed(2)}K`;
-    return num.toFixed(2);
-  };
-
-  const getTimeSinceLastPump = (timestamp: number) => {
-    const hours = Math.floor((Date.now() - timestamp) / (1000 * 60 * 60));
-    if (hours < 1) return 'Just now!';
-    if (hours < 24) return `${hours}h ago`;
-    return `${Math.floor(hours / 24)}d ago`;
-  };
-
   const getPumpIndicator = (score: number) => {
     const rocketCount = Math.floor(score / 20);
     return (
       <div className="flex space-x-1">
         {Array.from({ length: rocketCount }).map((_, i) => (
-          <Rocket key={i} className="w-4 h-4" />
+          <Rocket key={`rocket-${i}`} className="w-4 h-4" />
         ))}
       </div>
     );
   };
 
-  // Safely sort tokens with null checks
-  const sortedTokens = [...(tokens || [])].sort((a, b) => {
+  // Safely sort tokens with null checks and stable sorting
+  const sortedTokens = [...tokens].sort((a, b) => {
     if (!a || !b) return 0;
     const aValue = a[sortKey];
     const bValue = b[sortKey];
@@ -108,7 +102,19 @@ export function PumpFunScreener({ className = '' }: PumpFunScreenerProps) {
       (aValue < bValue ? 1 : -1);
   });
 
-  // Early return if tokens aren't loaded
+  if (error) {
+    return (
+      <div className={`terminal-container p-4 ${className}`}>
+        <div className="terminal-header">
+          ┌── PUMP FUN SCREENER ──┐
+        </div>
+        <div className="p-4 text-center text-destructive">
+          {error}
+        </div>
+      </div>
+    );
+  }
+
   if (!tokens.length) {
     return (
       <div className={`terminal-container p-4 ${className}`}>
@@ -137,80 +143,37 @@ export function PumpFunScreener({ className = '' }: PumpFunScreenerProps) {
 
         {/* Table header */}
         <div className="grid grid-cols-6 gap-4 p-4 text-xs border-b border-border/20">
-          <button 
-            onClick={() => {
-              if (sortKey === 'symbol') {
-                setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
-              } else {
-                setSortKey('symbol');
-                setSortDirection('asc');
-              }
-            }}
-            className="text-left hover:text-primary"
-          >
-            TOKEN
-          </button>
-          <button 
-            onClick={() => {
-              if (sortKey === 'price') {
-                setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
-              } else {
-                setSortKey('price');
-                setSortDirection('desc');
-              }
-            }}
-            className="text-right hover:text-primary"
-          >
-            PRICE
-          </button>
-          <button 
-            onClick={() => {
-              if (sortKey === 'change24h') {
-                setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
-              } else {
-                setSortKey('change24h');
-                setSortDirection('desc');
-              }
-            }}
-            className="text-right hover:text-primary"
-          >
-            24H %
-          </button>
-          <button 
-            onClick={() => {
-              if (sortKey === 'pumpScore') {
-                setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
-              } else {
-                setSortKey('pumpScore');
-                setSortDirection('desc');
-              }
-            }}
-            className="text-center hover:text-primary"
-          >
-            PUMP SCORE
-          </button>
-          <button 
-            onClick={() => {
-              if (sortKey === 'fomoLevel') {
-                setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
-              } else {
-                setSortKey('fomoLevel');
-                setSortDirection('desc');
-              }
-            }}
-            className="text-center hover:text-primary"
-          >
-            FOMO LEVEL
-          </button>
-          <div className="text-right">LAST PUMP</div>
+          {[
+            { key: 'symbol', label: 'TOKEN' },
+            { key: 'price', label: 'PRICE' },
+            { key: 'change24h', label: '24H %' },
+            { key: 'pumpScore', label: 'PUMP SCORE' },
+            { key: 'fomoLevel', label: 'FOMO LEVEL' },
+            { key: 'lastPump', label: 'LAST PUMP' }
+          ].map(({ key, label }) => (
+            <button 
+              key={key}
+              onClick={() => {
+                if (sortKey === key) {
+                  setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
+                } else {
+                  setSortKey(key as keyof Token);
+                  setSortDirection('desc');
+                }
+              }}
+              className={`text-${key === 'symbol' ? 'left' : key === 'lastPump' ? 'right' : 'center'} hover:text-primary`}
+            >
+              {label}
+            </button>
+          ))}
         </div>
 
         {/* Token rows */}
         <div className="space-y-[1px]">
-          <AnimatePresence>
+          <AnimatePresence mode="wait">
             {sortedTokens.map((token) => (
               <motion.div
-                key={token.symbol}
+                key={token.id}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
@@ -236,7 +199,7 @@ export function PumpFunScreener({ className = '' }: PumpFunScreenerProps) {
                   <span className="font-mono">{token.fomoLevel.toFixed(0)}%</span>
                 </div>
                 <div className="text-right font-mono text-muted-foreground">
-                  {getTimeSinceLastPump(token.lastPump)}
+                  {Math.floor((Date.now() - token.lastPump) / (1000 * 60 * 60))}h ago
                 </div>
               </motion.div>
             ))}
@@ -249,18 +212,27 @@ export function PumpFunScreener({ className = '' }: PumpFunScreenerProps) {
             ┌── MARKET STATS ──┐
           </div>
           <div className="grid grid-cols-3 gap-4 mt-2 text-xs">
-            <div>
-              Top Gainer: {sortedTokens[0]?.symbol || 'N/A'}
-              ({(sortedTokens[0]?.change24h || 0).toFixed(2)}%)
-            </div>
-            <div>
-              Highest FOMO: {sortedTokens[0]?.symbol || 'N/A'}
-              ({(sortedTokens[0]?.fomoLevel || 0).toFixed(0)}%)
-            </div>
-            <div>
-              Best Pump Score: {sortedTokens[0]?.symbol || 'N/A'}
-              ({(sortedTokens[0]?.pumpScore || 0).toFixed(0)})
-            </div>
+            {[
+              {
+                label: 'Top Gainer',
+                value: sortedTokens[0]?.symbol,
+                metric: sortedTokens[0]?.change24h
+              },
+              {
+                label: 'Highest FOMO',
+                value: sortedTokens[0]?.symbol,
+                metric: sortedTokens[0]?.fomoLevel
+              },
+              {
+                label: 'Best Pump Score',
+                value: sortedTokens[0]?.symbol,
+                metric: sortedTokens[0]?.pumpScore
+              }
+            ].map(({ label, value, metric }, index) => (
+              <div key={`stat-${index}`}>
+                {label}: {value || 'N/A'} ({metric ? metric.toFixed(2) : 0}%)
+              </div>
+            ))}
           </div>
         </div>
       </div>
