@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Terminal, ArrowRight, AlertCircle, CheckCircle2, Code, Cpu, ChevronRight, HelpCircle, Save, Bookmark, X, Download, Upload, Copy, Share2, ThumbsUp, Medal, Trophy, Users, Star, Award, Target, Zap } from 'lucide-react';
+import { Terminal, ArrowRight, AlertCircle, CheckCircle2, Code, Cpu, ChevronRight, HelpCircle, Save, Bookmark, X, Download, Upload, Copy, Share2, ThumbsUp, Medal, Trophy, Users, Star, Award, Target, Zap, Crown } from 'lucide-react';
 
 interface OrderTemplate {
   id: string;
@@ -79,6 +79,23 @@ interface Achievement {
   icon: string;
   unlockedAt?: number;
   pixelArt: string;
+}
+
+interface LeaderboardEntry {
+  id: string;
+  username: string;
+  rank: number;
+  score: number;
+  winRate: number;
+  pixelAvatar: string;
+  achievements: Achievement[];
+  recentTrades: {
+    type: 'win' | 'loss';
+    amount: number;
+    timestamp: number;
+  }[];
+  level: number;
+  experience: number;
 }
 
 export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
@@ -731,6 +748,70 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
     setAchievements(newAchievements);
   };
 
+
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([
+    {
+      id: 'l1',
+      username: 'CryptoLegend',
+      rank: 1,
+      score: 15000,
+      winRate: 0.75,
+      pixelAvatar: `
+   ┌────┐
+   │ 👑 │
+   │ 😎 │
+   └────┘`,
+      achievements: [],
+      recentTrades: [
+        { type: 'win', amount: 500, timestamp: Date.now() - 1000 * 60 * 30 },
+        { type: 'win', amount: 300, timestamp: Date.now() - 1000 * 60 * 60 },
+        { type: 'loss', amount: -100, timestamp: Date.now() - 1000 * 60 * 90 }
+      ],
+      level: 42,
+      experience: 8750
+    },
+    {
+      id: 'l2',
+      username: 'PixelTrader',
+      rank: 2,
+      score: 12000,
+      winRate: 0.70,
+      pixelAvatar: `
+   ┌────┐
+   │ 🥈 │
+   │ 🤖 │
+   └────┘`,
+      achievements: [],
+      recentTrades: [
+        { type: 'win', amount: 400, timestamp: Date.now() - 1000 * 60 * 45 },
+        { type: 'loss', amount: -200, timestamp: Date.now() - 1000 * 60 * 75 },
+        { type: 'win', amount: 300, timestamp: Date.now() - 1000 * 60 * 105 }
+      ],
+      level: 38,
+      experience: 7200
+    },
+    {
+      id: 'l3',
+      username: 'RetroWhale',
+      rank: 3,
+      score: 10000,
+      winRate: 0.65,
+      pixelAvatar: `
+   ┌────┐
+   │ 🥉 │
+   │ 🐋 │
+   └────┘`,
+      achievements: [],
+      recentTrades: [
+        { type: 'win', amount: 350, timestamp: Date.now() - 1000 * 60 * 40 },
+        { type: 'win', amount: 250, timestamp: Date.now() - 1000 * 60 * 70 },
+        { type: 'loss', amount: -150, timestamp: Date.now() - 1000 * 60 * 100 }
+      ],
+      level: 35,
+      experience: 6500
+    }
+  ]);
 
   return (
     <div className={`terminal-container p-4 relative ${className}`}>
