@@ -27,19 +27,12 @@ export function PriceChart({
     >
       <ResponsiveContainer width="100%" height={height}>
         <LineChart data={data}>
-          <defs>
-            <linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="currentColor" stopOpacity={0.8}/>
-              <stop offset="95%" stopColor="currentColor" stopOpacity={0}/>
-            </linearGradient>
-          </defs>
           <Line
             type="monotone"
             dataKey="price"
             stroke="currentColor"
             strokeWidth={1.5}
             dot={false}
-            fill="url(#colorPrice)"
           />
           <Tooltip
             content={({ active, payload }) => {
