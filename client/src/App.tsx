@@ -111,11 +111,13 @@ const sampleOrderBook = {
     price: 49.5 - i * 0.1,
     size: Math.random() * 100 + 50,
     total: 0,
+    count: Math.floor(Math.random() * 10) + 1, // Random number of orders between 1-10
   })),
   asks: Array.from({ length: 8 }, (_, i) => ({
     price: 50.5 + i * 0.1,
     size: Math.random() * 100 + 50,
     total: 0,
+    count: Math.floor(Math.random() * 10) + 1, // Random number of orders between 1-10
   }))
 };
 
