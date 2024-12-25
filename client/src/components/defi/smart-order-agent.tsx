@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Terminal, ArrowRight, AlertCircle, CheckCircle2, Code, Cpu, ChevronRight, HelpCircle, Save, Bookmark, X } from 'lucide-react';
+import { Terminal, ArrowRight, AlertCircle, CheckCircle2, Code, Cpu, ChevronRight, HelpCircle, Save, Bookmark, X, Download, Upload, Copy } from 'lucide-react';
 
 interface OrderTemplate {
   id: string;
@@ -45,6 +45,12 @@ interface CommandTooltip {
   example: string;
 }
 
+interface ImportedStrategies {
+  version: string;
+  timestamp: number;
+  presets: StrategyPreset[];
+}
+
 interface SmartOrderAgentProps {
   className?: string;
 }
@@ -84,6 +90,9 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
   ]);
   const inputRef = useRef<HTMLInputElement>(null);
   const [tooltipContent, setTooltipContent] = useState<CommandTooltip | null>(null);
+  const [showImportExport, setShowImportExport] = useState(false);
+  const [importError, setImportError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const orderTemplates: OrderTemplate[] = [
     {
@@ -450,6 +459,54 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
     return () => clearInterval(interval);
   }, []);
 
+  const handleExportStrategies = () => {
+    const exportData: ImportedStrategies = {
+      version: '1.0',
+      timestamp: Date.now(),
+      presets: presets
+    };
+
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `trading-strategies-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleImportStrategies = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const content = e.target?.result as string;
+        const imported: ImportedStrategies = JSON.parse(content);
+
+        if (!imported.version || !imported.timestamp || !Array.isArray(imported.presets)) {
+          throw new Error('Invalid strategy file format');
+        }
+
+        setPresets(prev => {
+          const existing = new Set(prev.map(p => p.command));
+          const newPresets = imported.presets.filter(p => !existing.has(p.command));
+          return [...prev, ...newPresets];
+        });
+
+        setImportError(null);
+        setShowImportExport(false);
+      } catch (error) {
+        setImportError('Failed to import strategies. Please check the file format.');
+      }
+    };
+    reader.readAsText(file);
+  };
+
+
   return (
     <div className={`terminal-container p-4 relative ${className}`}>
       <div
@@ -544,6 +601,12 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
               className="p-1 hover:bg-muted rounded"
             >
               <Bookmark className="w-4 h-4 text-primary" />
+            </button>
+            <button
+              onClick={() => setShowImportExport(prev => !prev)}
+              className="p-1 hover:bg-muted rounded"
+            >
+              <Download className="w-4 h-4 text-primary" />
             </button>
             <span className="text-primary flex-shrink-0 w-2">
               {cursorPosition === 0 ? '█' : ' '}
