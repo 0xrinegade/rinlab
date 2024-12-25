@@ -9,6 +9,7 @@ import { AnalyticsDashboard } from "@/components/defi/analytics-dashboard";
 import { ThemeSwitcher } from "@/components/ui/theme-switcher";
 import { TrendPredictor } from "@/components/defi/trend-predictor";
 import { NetworkTopology } from "@/components/defi/network-topology";
+import { MemeGenerator } from "@/components/defi/meme-generator";
 
 // Sample analytics data
 const sampleAnalyticsData = Array.from({ length: 24 }, (_, i) => ({
@@ -140,6 +141,14 @@ const sampleNetworkNodes = [
   }
 ];
 
+// Add sample market trend data for meme generator
+const sampleMarketTrend = {
+  symbol: 'SOL',
+  changePercent: 12.5,
+  price: 105.75,
+  timeframe: '24h'
+};
+
 function App() {
   return (
     <Switch>
@@ -205,6 +214,16 @@ function App() {
                     currentPrice={samplePriceData[samplePriceData.length - 1].price}
                     className="p-4"
                   />
+                </TerminalContainer>
+
+                {/* Add Meme Generator */}
+                <TerminalContainer title="Market Memes">
+                  <div className="p-4">
+                    <MemeGenerator 
+                      trend={sampleMarketTrend}
+                      className="h-48"
+                    />
+                  </div>
                 </TerminalContainer>
               </div>
             </section>
