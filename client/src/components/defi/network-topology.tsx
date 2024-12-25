@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Copy, Check } from 'lucide-react';
 
 interface Node {
   id: string;
@@ -37,16 +38,17 @@ const NODE_ASCII = {
 └───┘`
 };
 
-export function NetworkTopology({ 
+export function NetworkTopology({
   nodes,
   width = 40,
   height = 20,
-  className = '' 
+  className = ''
 }: NetworkTopologyProps) {
   const [grid, setGrid] = useState<string[][]>([]);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [hoveredNode, setHoveredNode] = useState<Node | null>(null);
   const [scanline, setScanline] = useState(0);
+  const [copied, setCopied] = useState(false);
 
   // Network metrics
   const avgLatency = useCallback(() => {
@@ -63,8 +65,8 @@ export function NetworkTopology({
 
     // Place nodes
     nodes.forEach((node, i) => {
-      const x = Math.floor((i % (width/2)) * 2 + 1);
-      const y = Math.floor(i / (width/2) * 2 + 1);
+      const x = Math.floor((i % (width / 2)) * 2 + 1);
+      const y = Math.floor(i / (width / 2) * 2 + 1);
 
       if (y < height && x < width) {
         // Use ASCII art based on node status
@@ -87,8 +89,8 @@ export function NetworkTopology({
           const targetNode = nodes.find(n => n.id === targetId);
           if (targetNode) {
             const targetIndex = nodes.indexOf(targetNode);
-            const tx = Math.floor((targetIndex % (width/2)) * 2 + 1);
-            const ty = Math.floor(targetIndex / (width/2) * 2 + 1);
+            const tx = Math.floor((targetIndex % (width / 2)) * 2 + 1);
+            const ty = Math.floor(targetIndex / (width / 2) * 2 + 1);
 
             // Draw path between nodes
             const dx = Math.sign(tx - x);
@@ -122,30 +124,86 @@ export function NetworkTopology({
     return () => clearInterval(interval);
   }, [height]);
 
+  const handleCopyCode = async () => {
+    try {
+      const componentCode = `import { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+interface Node {
+  id: string;
+  connections: string[];
+  activity: number;
+  latency: number;
+  region: string;
+  status: 'active' | 'syncing' | 'offline';
+}
+
+export function NetworkTopology({ 
+  nodes,
+  width = 40,
+  height = 20,
+  className = '' 
+}: NetworkTopologyProps) {
+  // Component implementation
+}`;
+
+      await navigator.clipboard.writeText(componentCode);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  };
+
   return (
     <div className="space-y-4">
-      <div className="font-mono text-xs">
+      <div className="font-mono text-xs flex justify-between items-center">
         <pre className="text-primary">
 {`┌── NETWORK TOPOLOGY ───────────┐
 │ NODES: ${activeNodes()}/${nodes.length} LATENCY: ${avgLatency()}ms │
 └─────────────────────────────────┘`}
         </pre>
+
+        <button
+          onClick={handleCopyCode}
+          className="px-2 py-1 border border-primary/20 hover:bg-primary/10 text-primary text-xs flex items-center gap-2 transition-colors"
+        >
+          {copied ? (
+            <>
+              <Check className="w-3 h-3" />
+              <pre className="font-mono">
+                ┌──────┐
+                │COPIED│
+                └──────┘
+              </pre>
+            </>
+          ) : (
+            <>
+              <Copy className="w-3 h-3" />
+              <pre className="font-mono">
+                ┌──────┐
+                │EXPORT│
+                └──────┘
+              </pre>
+            </>
+          )}
+        </button>
       </div>
 
-      <motion.div 
+      <motion.div
         className={`relative font-mono ${className}`}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
         {/* Scanline effect */}
-        <motion.div 
+        <motion.div
           className="absolute w-full h-[2px] bg-primary/10"
           style={{ top: `${(scanline / height) * 100}%` }}
         />
 
         <div className="relative">
           {grid.map((row, i) => (
-            <motion.div 
+            <motion.div
               key={i}
               initial={{ x: -20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
