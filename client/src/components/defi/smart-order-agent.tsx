@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Terminal, ArrowRight, AlertCircle, CheckCircle2, Code, Cpu, ChevronRight, HelpCircle, Save, Bookmark, X, Download, Upload, Copy, Share2, ThumbsUp, Medal, Trophy, Users } from 'lucide-react';
+import { Terminal, ArrowRight, AlertCircle, CheckCircle2, Code, Cpu, ChevronRight, HelpCircle, Save, Bookmark, X, Download, Upload, Copy, Share2, ThumbsUp, Medal, Trophy, Users, Star, Award, Target, Zap } from 'lucide-react';
 
 interface OrderTemplate {
   id: string;
@@ -65,6 +65,20 @@ interface CommunityStrategy extends StrategyPreset {
 
 interface SmartOrderAgentProps {
   className?: string;
+}
+
+interface Achievement {
+  id: string;
+  name: string;
+  description: string;
+  category: 'trader' | 'strategist' | 'community' | 'master';
+  progress: number;
+  maxProgress: number;
+  unlocked: boolean;
+  rarity: 'common' | 'rare' | 'legendary';
+  icon: string;
+  unlockedAt?: number;
+  pixelArt: string;
 }
 
 export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
@@ -267,6 +281,7 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
     setPresets(prev => [...prev, newPreset]);
     setPresetNameInput('');
     setShowPresets(false);
+    checkAchievements('strategy');
   };
 
   const handleLoadPreset = (preset: StrategyPreset) => {
@@ -439,6 +454,7 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
       if (newOrder) {
         setOrders(prev => [...prev, newOrder!]);
         setCommandInput('');
+        checkAchievements('order');
 
         if (newOrder.status === 'validating') {
           setTimeout(() => {
@@ -602,7 +618,119 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
           : strategy
       )
     );
+    checkAchievements('vote');
   };
+
+  const [showAchievements, setShowAchievements] = useState(false);
+  const [recentAchievement, setRecentAchievement] = useState<Achievement | null>(null);
+  const [achievements, setAchievements] = useState<Achievement[]>([
+    {
+      id: 'first-order',
+      name: 'First Steps',
+      description: 'Execute your first trading order',
+      category: 'trader',
+      progress: 0,
+      maxProgress: 1,
+      unlocked: false,
+      rarity: 'common',
+      icon: '🎯',
+      pixelArt: `
+   ⭐️ FIRST
+   ┌─────┐
+   │ >>> │
+   │ $$$ │
+   └─────┘
+      `
+    },
+    {
+      id: 'strategy-master',
+      name: 'Strategy Master',
+      description: 'Create 5 custom trading strategies',
+      category: 'strategist',
+      progress: 0,
+      maxProgress: 5,
+      unlocked: false,
+      rarity: 'rare',
+      icon: '🧠',
+      pixelArt: `
+   🧠 MASTER
+   ┌─────┐
+   │ >>> │
+   │ ⚡️⚡️⚡️ │
+   └─────┘
+      `
+    },
+    {
+      id: 'community-star',
+      name: 'Community Star',
+      description: 'Get 100 votes on your strategies',
+      category: 'community',
+      progress: 0,
+      maxProgress: 100,
+      unlocked: false,
+      rarity: 'legendary',
+      icon: '⭐️',
+      pixelArt: `
+   ⭐️ STAR
+   ┌─────┐
+   │ >>> │
+   │ 💫💫💫 │
+   └─────┘
+      `
+    }
+  ]);
+
+  const checkAchievements = (action: 'order' | 'strategy' | 'vote') => {
+    const newAchievements = achievements.map(achievement => {
+      let shouldUpdate = false;
+      let newProgress = achievement.progress;
+
+      switch (action) {
+        case 'order':
+          if (achievement.id === 'first-order') {
+            newProgress = Math.min(achievement.progress + 1, achievement.maxProgress);
+            shouldUpdate = true;
+          }
+          break;
+        case 'strategy':
+          if (achievement.id === 'strategy-master') {
+            newProgress = Math.min(achievement.progress + 1, achievement.maxProgress);
+            shouldUpdate = true;
+          }
+          break;
+        case 'vote':
+          if (achievement.id === 'community-star') {
+            newProgress = Math.min(achievement.progress + 1, achievement.maxProgress);
+            shouldUpdate = true;
+          }
+          break;
+      }
+
+      if (shouldUpdate) {
+        const justUnlocked = !achievement.unlocked && newProgress >= achievement.maxProgress;
+        if (justUnlocked) {
+          setRecentAchievement({
+            ...achievement,
+            progress: newProgress,
+            unlocked: true,
+            unlockedAt: Date.now()
+          });
+        }
+
+        return {
+          ...achievement,
+          progress: newProgress,
+          unlocked: newProgress >= achievement.maxProgress,
+          unlockedAt: justUnlocked ? Date.now() : achievement.unlockedAt
+        };
+      }
+
+      return achievement;
+    });
+
+    setAchievements(newAchievements);
+  };
+
 
   return (
     <div className={`terminal-container p-4 relative ${className}`}>
