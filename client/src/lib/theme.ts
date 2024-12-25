@@ -94,11 +94,13 @@ type ThemeStore = {
   setTheme: (palette: ThemePalette) => void;
   updateColor: (key: keyof ThemePalette['colors'], value: string) => void;
   resetTheme: () => void;
+  exportTheme: () => string;
+  importTheme: (themeString: string) => boolean;
 };
 
 export const useTheme = create<ThemeStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       currentPalette: themePalettes[2], // DOS theme as default
       setTheme: (palette) => {
         set({ currentPalette: palette });
@@ -118,6 +120,31 @@ export const useTheme = create<ThemeStore>()(
         const defaultPalette = themePalettes[2];
         set({ currentPalette: defaultPalette });
         updateCssVariables(defaultPalette.colors);
+      },
+      exportTheme: () => {
+        const state = get();
+        const themeData = {
+          name: state.currentPalette.name,
+          label: state.currentPalette.label,
+          colors: state.currentPalette.colors
+        };
+        return btoa(JSON.stringify(themeData));
+      },
+      importTheme: (themeString: string) => {
+        try {
+          const themeData = JSON.parse(atob(themeString));
+          const newPalette: ThemePalette = {
+            name: themeData.name,
+            label: themeData.label,
+            colors: themeData.colors
+          };
+          set({ currentPalette: newPalette });
+          updateCssVariables(newPalette.colors);
+          return true;
+        } catch (error) {
+          console.error('Failed to import theme:', error);
+          return false;
+        }
       }
     }),
     {
