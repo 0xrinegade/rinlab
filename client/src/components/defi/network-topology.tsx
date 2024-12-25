@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Copy, Check } from 'lucide-react';
+import { Copy, Check, Code } from 'lucide-react';
+import { CodeSnippetHighlighter } from './code-snippet-highlighter';
 
 interface Node {
   id: string;
@@ -38,6 +39,32 @@ const NODE_ASCII = {
 └───┘`
 };
 
+const COMPONENT_CODE = `import { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+interface Node {
+  id: string;
+  connections: string[];
+  activity: number;
+  latency: number;
+  region: string;
+  status: 'active' | 'syncing' | 'offline';
+}
+
+export function NetworkTopology({ 
+  nodes,
+  width = 40,
+  height = 20,
+  className = '' 
+}: NetworkTopologyProps) {
+  const [grid, setGrid] = useState<string[][]>([]);
+  const [selectedNode, setSelectedNode] = useState<Node | null>(null);
+  const [hoveredNode, setHoveredNode] = useState<Node | null>(null);
+  const [scanline, setScanline] = useState(0);
+
+  // Rest of the implementation...
+}`;
+
 export function NetworkTopology({
   nodes,
   width = 40,
@@ -49,6 +76,7 @@ export function NetworkTopology({
   const [hoveredNode, setHoveredNode] = useState<Node | null>(null);
   const [scanline, setScanline] = useState(0);
   const [copied, setCopied] = useState(false);
+  const [showCode, setShowCode] = useState(false);
 
   // Network metrics
   const avgLatency = useCallback(() => {
@@ -126,28 +154,7 @@ export function NetworkTopology({
 
   const handleCopyCode = async () => {
     try {
-      const componentCode = `import { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-
-interface Node {
-  id: string;
-  connections: string[];
-  activity: number;
-  latency: number;
-  region: string;
-  status: 'active' | 'syncing' | 'offline';
-}
-
-export function NetworkTopology({ 
-  nodes,
-  width = 40,
-  height = 20,
-  className = '' 
-}: NetworkTopologyProps) {
-  // Component implementation
-}`;
-
-      await navigator.clipboard.writeText(componentCode);
+      await navigator.clipboard.writeText(COMPONENT_CODE);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
@@ -165,30 +172,30 @@ export function NetworkTopology({
         </pre>
 
         <button
-          onClick={handleCopyCode}
+          onClick={() => setShowCode(prev => !prev)}
           className="px-2 py-1 border border-primary/20 hover:bg-primary/10 text-primary text-xs flex items-center gap-2 transition-colors"
         >
-          {copied ? (
-            <>
-              <Check className="w-3 h-3" />
-              <pre className="font-mono">
-                ┌──────┐
-                │COPIED│
-                └──────┘
-              </pre>
-            </>
-          ) : (
-            <>
-              <Copy className="w-3 h-3" />
-              <pre className="font-mono">
-                ┌──────┐
-                │EXPORT│
-                └──────┘
-              </pre>
-            </>
-          )}
+          <Code className="w-3 h-3" />
+          <span>{showCode ? 'Hide Code' : 'View Code'}</span>
         </button>
       </div>
+
+      <AnimatePresence>
+        {showCode && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="overflow-hidden"
+          >
+            <CodeSnippetHighlighter
+              code={COMPONENT_CODE}
+              language="typescript"
+              title="NETWORK TOPOLOGY COMPONENT"
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <motion.div
         className={`relative font-mono ${className}`}
