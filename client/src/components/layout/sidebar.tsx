@@ -20,6 +20,7 @@ export function Sidebar({ className = '' }: SidebarProps) {
         { name: "Transaction Complexity", path: "/components/transaction-complexity" },
         { name: "Blockchain Explorer", path: "/components/blockchain-explorer" },
         { name: "Transaction Flow", path: "/components/transaction-flow" },
+        { name: "Blockchain Heatmap", path: "/components/blockchain-heatmap" },
         { name: "Trend Predictor", path: "/components/trend-predictor" },
         { name: "Meme Generator", path: "/components/meme-generator" },
         { name: "Token Input", path: "/components/token-input" },
