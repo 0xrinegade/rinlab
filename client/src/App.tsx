@@ -10,6 +10,7 @@ import { ThemeSwitcher } from "@/components/ui/theme-switcher";
 import { TrendPredictor } from "@/components/defi/trend-predictor";
 import { NetworkTopology } from "@/components/defi/network-topology";
 import { MemeGenerator } from "@/components/defi/meme-generator";
+import { ColorPaletteSelector } from "@/components/ui/color-palette-selector";
 
 // Sample analytics data
 const sampleAnalyticsData = Array.from({ length: 24 }, (_, i) => ({
@@ -163,6 +164,7 @@ function App() {
                 </div>
               </div>
               <div className="flex items-center gap-4">
+                <ColorPaletteSelector />
                 <ThemeSwitcher />
                 <WalletButton 
                   connected={false}

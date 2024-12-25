@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 export type ThemePalette = {
   name: string;
@@ -32,22 +33,53 @@ const terminalTheme: ThemePalette = {
 type ThemeStore = {
   currentPalette: ThemePalette;
   setTheme: (palette: ThemePalette) => void;
+  updateColor: (key: keyof ThemePalette['colors'], value: string) => void;
+  resetTheme: () => void;
 };
 
-// Initialize store with terminal theme
-export const useTheme = create<ThemeStore>((set) => ({
-  currentPalette: terminalTheme,
-  setTheme: (palette) => {
-    set({ currentPalette: palette });
-    // Update CSS variables
-    if (typeof window !== 'undefined') {
-      const root = document.documentElement;
-      Object.entries(palette.colors).forEach(([key, value]) => {
-        root.style.setProperty(`--${key}`, value);
-      });
+// Initialize store with terminal theme and persistence
+export const useTheme = create<ThemeStore>()(
+  persist(
+    (set) => ({
+      currentPalette: terminalTheme,
+      setTheme: (palette) => {
+        set({ currentPalette: palette });
+        updateCssVariables(palette.colors);
+      },
+      updateColor: (key, value) => {
+        set((state) => ({
+          currentPalette: {
+            ...state.currentPalette,
+            colors: {
+              ...state.currentPalette.colors,
+              [key]: value
+            }
+          }
+        }));
+        updateCssVariables({
+          ...terminalTheme.colors,
+          [key]: value
+        });
+      },
+      resetTheme: () => {
+        set({ currentPalette: terminalTheme });
+        updateCssVariables(terminalTheme.colors);
+      }
+    }),
+    {
+      name: 'theme-storage'
     }
+  )
+);
+
+function updateCssVariables(colors: ThemePalette['colors']) {
+  if (typeof window !== 'undefined') {
+    const root = document.documentElement;
+    Object.entries(colors).forEach(([key, value]) => {
+      root.style.setProperty(`--${key}`, value);
+    });
   }
-}));
+}
 
 export const defaultTheme = terminalTheme;
 
