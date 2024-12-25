@@ -5,6 +5,7 @@ import { TokenInput } from "@/components/defi/token-input";
 import { WalletButton } from "@/components/defi/wallet-button";
 import { TransactionList } from "@/components/defi/transaction-list";
 import { PriceChart } from "@/components/defi/price-chart";
+import { ThemeSwitcher } from "@/components/ui/theme-switcher";
 
 const sampleTransactions = [
   {
@@ -66,11 +67,19 @@ function App() {
                 </div>
               </TerminalContainer>
 
-              <TerminalContainer title="Market Data" shortcut="⌘+M">
-                <div className="p-4">
-                  <PriceChart data={samplePriceData} />
-                </div>
-              </TerminalContainer>
+              <GridContainer columns={1} gap={4}>
+                <TerminalContainer title="Theme" shortcut="⌃+T">
+                  <div className="p-4">
+                    <ThemeSwitcher />
+                  </div>
+                </TerminalContainer>
+
+                <TerminalContainer title="Market Data" shortcut="⌘+M">
+                  <div className="p-4">
+                    <PriceChart data={samplePriceData} />
+                  </div>
+                </TerminalContainer>
+              </GridContainer>
             </GridContainer>
 
             <TerminalContainer title="Transaction History" shortcut="⌘+H">
