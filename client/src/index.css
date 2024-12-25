@@ -6,30 +6,30 @@
 
 @layer base {
   :root {
-    --background: 220 100% 15%;
-    --foreground: 220 100% 98%;
+    --background: 240 100% 27%;
+    --foreground: 0 0% 100%;
 
-    --card: 220 100% 15%;
-    --card-foreground: 220 100% 98%;
+    --card: 240 100% 27%;
+    --card-foreground: 0 0% 100%;
 
-    --popover: 220 100% 15%;
-    --popover-foreground: 220 100% 98%;
+    --popover: 240 100% 27%;
+    --popover-foreground: 0 0% 100%;
 
-    --primary: 220 100% 98%;
-    --primary-foreground: 220 100% 15%;
+    --primary: 240 100% 27%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 100% 80%;
-    --secondary-foreground: 220 100% 15%;
+    --secondary: 240 30% 80%;
+    --secondary-foreground: 240 100% 27%;
 
-    --muted: 220 100% 80%;
-    --muted-foreground: 220 100% 60%;
+    --muted: 240 30% 80%;
+    --muted-foreground: 240 30% 80%;
 
-    --accent: 220 100% 80%;
-    --accent-foreground: 220 100% 15%;
+    --accent: 240 30% 80%;
+    --accent-foreground: 240 100% 27%;
 
-    --border: 220 100% 80%;
-    --input: 220 100% 80%;
-    --ring: 220 100% 80%;
+    --border: 240 50% 60%;
+    --input: 240 50% 60%;
+    --ring: 240 50% 60%;
 
     --radius: 0;
   }
@@ -43,70 +43,44 @@
   body {
     @apply font-mono antialiased bg-background text-foreground;
   }
-
-  ::selection {
-    @apply bg-primary/30 text-foreground;
-  }
-}
-
-/* Terminal styling */
-.terminal-container {
-  @apply bg-background border border-border/20;
-}
-
-.terminal-header {
-  @apply border-b border-border/20 p-2 text-xs text-muted-foreground;
 }
 
 /* Table styling matching the screenshot */
 .data-table {
   @apply w-full font-mono text-sm;
+  border-spacing: 0;
 }
 
 .data-table th {
-  @apply bg-blue-900/30 text-muted-foreground p-2 text-left;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  @apply bg-primary/30 text-foreground p-2 text-left border-b border-border/20;
 }
 
 .data-table td {
-  @apply p-2;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  @apply p-2 border-b border-border/10;
 }
 
 .data-table tr:hover {
-  @apply bg-blue-900/20;
+  @apply bg-primary/20;
 }
 
-/* Grid background */
+/* Terminal container styles */
+.terminal-container {
+  @apply bg-background border border-border/20;
+}
+
+.terminal-header {
+  @apply border-b border-border/20 p-2 text-xs text-foreground;
+}
+
+/* Grid lines for terminal effect */
 .terminal-grid {
-  background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
   background-size: 20px 20px;
+  background-image: 
+    linear-gradient(to right, rgba(255,255,255,.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,.05) 1px, transparent 1px);
 }
 
-.terminal-text {
-  font-family: 'IBM Plex Mono', monospace;
-}
-
-/* Status indicators */
-.status-indicator {
-  @apply w-2 h-2 rounded-full inline-block mr-2;
-}
-
-.status-active {
-  @apply bg-green-500;
-}
-
-.status-inactive {
-  @apply bg-red-500;
-}
-
-/* Theme transition */
-* {
-  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
-}
-
-/* Monospace inputs */
-input, textarea, button {
+/* Monospace font enforcement */
+input, textarea, button, .font-mono {
   font-family: 'IBM Plex Mono', monospace !important;
 }
