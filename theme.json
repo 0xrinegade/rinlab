@@ -1,17 +1,29 @@
 {
   "variant": "professional",
   "appearance": "dark",
-  "radius": 0,
-  "primary": "hsl(240 100% 27%)",
+  "radius": 0.5,
+  "primary": "hsl(150 80% 50%)",
   "colors": {
-    "background": "hsl(240 100% 27%)",
-    "foreground": "hsl(0 0% 100%)",
-    "border": "hsl(240 50% 60% / 0.2)",
-    "muted": "hsl(240 30% 80%)",
-    "accent": "hsl(240 30% 80%)",
+    "background": "hsl(230 15% 15%)",
+    "foreground": "hsl(150 80% 50%)",
+    "muted": "hsl(230 20% 30%)",
+    "muted-foreground": "hsl(150 60% 60%)",
+    "popover": "hsl(230 15% 15%)",
+    "popover-foreground": "hsl(150 80% 50%)",
+    "border": "hsl(150 80% 50% / 0.2)",
+    "input": "hsl(230 20% 20%)",
+    "primary": "hsl(150 80% 50%)",
+    "primary-foreground": "hsl(230 15% 15%)",
+    "secondary": "hsl(230 20% 30%)",
+    "secondary-foreground": "hsl(150 80% 50%)",
+    "accent": "hsl(150 80% 50%)",
+    "accent-foreground": "hsl(230 15% 15%)",
+    "destructive": "hsl(0 80% 50%)",
+    "destructive-foreground": "hsl(0 0% 100%)",
+    "ring": "hsl(150 80% 50%)",
     "card": {
-      "DEFAULT": "hsl(240 100% 27%)",
-      "foreground": "hsl(0 0% 100%)"
+      "DEFAULT": "hsl(230 15% 15%)",
+      "foreground": "hsl(150 80% 50%)"
     }
   }
 }
