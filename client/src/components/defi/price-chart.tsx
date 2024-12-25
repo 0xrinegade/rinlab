@@ -25,18 +25,18 @@ export function PriceChart({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height={height}>
         <LineChart data={data}>
           <defs>
             <linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8}/>
-              <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+              <stop offset="5%" stopColor="currentColor" stopOpacity={0.8}/>
+              <stop offset="95%" stopColor="currentColor" stopOpacity={0}/>
             </linearGradient>
           </defs>
           <Line
             type="monotone"
             dataKey="price"
-            stroke="hsl(var(--primary))"
+            stroke="currentColor"
             strokeWidth={1.5}
             dot={false}
             fill="url(#colorPrice)"
@@ -48,8 +48,8 @@ export function PriceChart({
               if (typeof value !== 'number') return null;
 
               return (
-                <div className="bg-black border border-primary p-2 text-xs">
-                  <div className="text-primary">
+                <div className="bg-background border border-border p-2 text-xs">
+                  <div className="text-foreground">
                     ${value.toFixed(2)}
                   </div>
                   <div className="text-muted-foreground text-[10px]">
