@@ -1,25 +1,12 @@
 import { motion } from 'framer-motion';
-import { useTheme, type ThemePalette } from '@/lib/theme';
-import { useEffect } from 'react';
+import { useTheme, themePalettes } from '@/lib/theme';
 
 interface ThemeSwitcherProps {
   className?: string;
 }
 
-// Create a single theme option since we're using a fixed theme
-const themeOption = {
-  name: 'Terminal',
-  label: 'SACRED COMPUTER',
-  description: 'Deep blue terminal theme with vintage computing aesthetics'
-};
-
 export function ThemeSwitcher({ className = '' }: ThemeSwitcherProps) {
-  const { currentPalette } = useTheme();
-
-  // Ensure theme values are available
-  if (!currentPalette?.colors) {
-    return null;
-  }
+  const { currentPalette, setTheme } = useTheme();
 
   return (
     <motion.div 
@@ -27,23 +14,27 @@ export function ThemeSwitcher({ className = '' }: ThemeSwitcherProps) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >
-      <div className="text-xs text-muted-foreground mb-2">TERMINAL THEME</div>
+      <div className="text-xs text-muted-foreground mb-2">SELECT THEME</div>
       <div className="space-y-1">
-        <div
-          className="w-full px-3 py-2 text-xs border border-border"
-          style={{
-            borderColor: `hsl(${currentPalette.colors.border})`,
-            color: `hsl(${currentPalette.colors.foreground})`
-          }}
-        >
-          <div className="flex items-center gap-2">
-            <span className="text-muted">▸</span>
-            {themeOption.label}
-          </div>
-          <div className="mt-1 text-[10px] text-muted">
-            {themeOption.description}
-          </div>
-        </div>
+        {themePalettes.map((palette) => (
+          <button
+            key={palette.name}
+            onClick={() => setTheme(palette)}
+            className={`w-full px-3 py-2 text-xs text-left border transition-colors hover:bg-hover
+              ${currentPalette.name === palette.name ? 'border-primary' : 'border-border'}`}
+            style={{
+              borderColor: currentPalette.name === palette.name ? `hsl(${palette.colors.primary})` : undefined,
+              color: `hsl(${palette.colors.foreground})`
+            }}
+          >
+            <div className="flex items-center gap-2">
+              <span className="text-muted-foreground">
+                {currentPalette.name === palette.name ? '▸' : ' '}
+              </span>
+              {palette.label}
+            </div>
+          </button>
+        ))}
       </div>
     </motion.div>
   );
