@@ -100,21 +100,21 @@ A long loader is a visual element that signals ongoing activity or progress, rea
 
 A block loader is a visual indicator that signals ongoing activity or progress while occupying only a single character of space. It reassures users that a task is being processed or that activity is occurring.
 
-⠠
+⠁
 
-⣟
+⣾
 
-▘
+▖
 
-█
+▁
 
-▍
+▉
 
-↘
+←
 
-┌
+┤
 
-◣
+◢
 
 ◰
 
@@ -291,44 +291,44 @@ Data tables are for organizing large datasets into rows and columns for clear vi
 |     |     |     |     |
 | --- | --- | --- | --- |
 | NAME | SYMBOL | PRICE | HOLDINGS |
-| Whale | WHL | $124.00 | 25 |
-| Shark | SHK | $93.87 | 50 |
-| Octopus | OCT | $87.58 | 37 |
-| Panda | PND | $78.26 | 47 |
-| Dolphin | DLP | $75.15 | 48 |
-| Zebra | ZBR | $71.11 | 62 |
-| Lion | LION | $70.10 | 66 |
-| Turtle | TRL | $69.15 | 54 |
-| Bear | BR | $57.76 | 192 |
-| Horse | HRS | $54.69 | 68 |
-| Camel | CML | $54.52 | 76 |
-| Eagle | EGL | $45.07 | 78 |
-| Giraffe | GRF | $43.38 | 92 |
-| Falcon | FLC | $37.47 | 82 |
-| Penguin | PNG | $33.73 | 95 |
-| Tiger | TGR | $32.35 | 119 |
-| Deer | DER | $30.30 | 115 |
-| Wolf | WLF | $22.56 | 155 |
-| Koala | KLA | $21.67 | 142 |
-| Otter | OTR | $19.77 | 172 |
-| Raccoon | RCC | $19.36 | 162 |
-| Owl | OWL | $19.30 | 142 |
-| Porcupine | PRC | $17.20 | 145 |
-| Lynx | LNX | $16.64 | 116 |
-| Crab | CRB | $16.28 | 259 |
-| Kangaroo | KNG | $15.72 | 122 |
-| Leopard | LPR | $14.85 | 116 |
-| Cheetah | CHT | $13.35 | 143 |
-| Peacock | PCK | $12.60 | 98 |
-| Fox | FOX | $12.12 | 102 |
-| Hedgehog | HDG | $11.96 | 201 |
-| Lemur | LMR | $11.48 | 319 |
-| Snake | SNK | $10.40 | 303 |
-| Squirrel | SQL | $9.88 | 256 |
-| Rabbit | RBT | $9.82 | 337 |
-| Bat | BAT | $9.66 | 392 |
-| Frog | FRG | $8.08 | 391 |
-| Mouse | MSE | $5.10 | 499 |
+| Bat | BAT | $9.01 | 400 |
+| Bear | BR | $56.78 | 200 |
+| Camel | CML | $55.67 | 70 |
+| Cheetah | CHT | $13.45 | 150 |
+| Crab | CRB | $15.67 | 250 |
+| Deer | DER | $29.99 | 110 |
+| Dolphin | DLP | $77.89 | 50 |
+| Eagle | EGL | $45.67 | 90 |
+| Falcon | FLC | $40.22 | 85 |
+| Fox | FOX | $12.34 | 100 |
+| Frog | FRG | $7.89 | 400 |
+| Giraffe | GRF | $44.56 | 80 |
+| Hedgehog | HDG | $11.23 | 200 |
+| Horse | HRS | $54.32 | 70 |
+| Kangaroo | KNG | $15.67 | 120 |
+| Koala | KLA | $22.34 | 150 |
+| Leopard | LPR | $14.56 | 110 |
+| Lemur | LMR | $11.12 | 320 |
+| Lion | LION | $67.89 | 80 |
+| Lynx | LNX | $16.78 | 130 |
+| Mouse | MSE | $5.12 | 500 |
+| Octopus | OCT | $88.90 | 40 |
+| Otter | OTR | $20.21 | 180 |
+| Owl | OWL | $19.01 | 160 |
+| Panda | PND | $78.90 | 55 |
+| Peacock | PCK | $12.34 | 100 |
+| Penguin | PNG | $33.45 | 90 |
+| Porcupine | PRC | $17.89 | 140 |
+| Rabbit | RBT | $9.10 | 350 |
+| Raccoon | RCC | $18.90 | 150 |
+| Shark | SHK | $89.01 | 50 |
+| Snake | SNK | $10.11 | 300 |
+| Squirrel | SQL | $10.12 | 250 |
+| Tiger | TGR | $34.56 | 120 |
+| Turtle | TRL | $66.78 | 60 |
+| Whale | WHL | $123.45 | 30 |
+| Wolf | WLF | $23.45 | 150 |
+| Zebra | ZBR | $65.43 | 60 |
 
 ▾DATE PICKER
 
@@ -558,7 +558,7 @@ CUSTOM CARET TEXT
 
 CUSTOM CARET LOADER
 
-├
+┤
 
 ▾FORM
 
@@ -777,13 +777,9 @@ Text areas are UI elements that allow users to input multiple lines of text, ide
 
 There he took up again his great Ring in Barad-dur.
 
-The doom of the Elves is to be immortal,
+T
 
-The doom of the Elves is to be immortal,
-
-All of us who do cre
-
-All of us who do cre
+T
 
 ▾TOOLTIP
 
