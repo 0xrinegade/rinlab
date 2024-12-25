@@ -4,45 +4,43 @@ import { theme } from '@/lib/theme';
 interface TerminalContainerProps {
   children: React.ReactNode;
   title?: string;
+  shortcut?: string;
   className?: string;
 }
 
 export function TerminalContainer({ 
   children, 
   title,
+  shortcut,
   className = ''
 }: TerminalContainerProps) {
   return (
     <motion.div
-      className={`relative border rounded-md overflow-hidden ${className}`}
+      className={`relative border ${className}`}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       style={{
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        backgroundColor: 'rgba(0, 0, 0, 0.9)',
         borderColor: theme.colors.border,
       }}
     >
       {title && (
         <div 
-          className="px-4 py-2 border-b font-mono text-sm"
+          className="px-4 py-2 border-b font-mono text-sm flex justify-between items-center"
           style={{ borderColor: theme.colors.border }}
         >
-          <div className="flex items-center gap-2">
-            <div className="flex gap-1">
-              <div className="w-2 h-2 rounded-full bg-red-500" />
-              <div className="w-2 h-2 rounded-full bg-yellow-500" />
-              <div className="w-2 h-2 rounded-full bg-green-500" />
-            </div>
+          <span className="text-foreground">▾{title.toUpperCase()}</span>
+          {shortcut && (
             <span className="text-muted-foreground">
-              {title}
+              {shortcut}
             </span>
-          </div>
+          )}
         </div>
       )}
 
       <div className="relative">
         {children}
-        <div className="terminal-scanline" />
+        <div className="terminal-scanline absolute inset-0 pointer-events-none" />
       </div>
     </motion.div>
   );

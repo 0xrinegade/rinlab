@@ -1,12 +1,13 @@
 export const theme = {
   colors: {
-    background: '#0a0a0a',
+    background: '#000000',
     foreground: '#00ff00',
-    primary: '#00ffff',
+    primary: '#00ff00',
     secondary: '#ff00ff',
     accent: '#ffff00',
     border: '#333333',
-    hover: '#1a1a1a'
+    hover: '#1a1a1a',
+    glow: 'rgba(0, 255, 0, 0.2)'
   },
   fonts: {
     mono: "'IBM Plex Mono', monospace",
