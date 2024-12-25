@@ -385,14 +385,14 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
           </div>
         </div>
 
-        <div className="border border-border/20 p-4 relative">
+        <div className="border border-border/20 p-4 relative h-[52px] flex items-center">
           <AnimatePresence>
             {tooltipContent && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 10 }}
-                className="absolute bottom-full left-0 right-0 mb-2 border border-border/20 bg-background/95 backdrop-blur-sm p-3"
+                className="absolute bottom-full left-0 right-0 mb-2 border border-border/20 bg-background/95 backdrop-blur-sm p-3 z-20"
               >
                 <div className="relative">
                   <div className="text-xs text-primary mb-2 flex items-center gap-2">
@@ -426,6 +426,7 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
               </motion.div>
             )}
           </AnimatePresence>
+
           <div className="flex items-center gap-2 font-mono w-full">
             <Terminal className="w-4 h-4 text-primary flex-shrink-0" />
             <input
@@ -434,10 +435,10 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
               value={commandInput}
               onChange={e => setCommandInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="bg-transparent border-none outline-none flex-1 text-sm min-w-0"
+              className="bg-transparent border-none outline-none flex-1 text-sm min-w-0 h-6"
               placeholder="Enter order command..."
             />
-            <span className="text-primary flex-shrink-0">
+            <span className="text-primary flex-shrink-0 w-2">
               {cursorPosition === 0 ? '█' : ' '}
             </span>
           </div>
@@ -448,12 +449,12 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="absolute left-0 right-0 top-full mt-1 border border-border/20 bg-background z-10 max-h-[200px] overflow-y-auto"
+                className="absolute left-0 right-0 top-[calc(100%+1px)] border border-border/20 bg-background/95 backdrop-blur-sm z-10 max-h-[200px] overflow-y-auto"
               >
                 {suggestions.map((suggestion, index) => (
                   <motion.div
                     key={suggestion.command}
-                    className={`p-2 text-xs font-mono cursor-pointer flex items-center gap-2
+                    className={`p-2 text-xs font-mono cursor-pointer flex items-center gap-2 h-8
                       ${index === selectedSuggestion ? 'bg-primary/10 text-primary' : 'hover:bg-hover'}
                     `}
                     onClick={() => {
@@ -466,8 +467,8 @@ export function SmartOrderAgent({ className = '' }: SmartOrderAgentProps) {
                     <ChevronRight className={`w-3 h-3 ${
                       index === selectedSuggestion ? 'text-primary' : 'text-muted-foreground'
                     }`} />
-                    <span className="flex-1">{suggestion.command}</span>
-                    <span className="text-muted-foreground">{suggestion.description}</span>
+                    <span className="flex-1 truncate">{suggestion.command}</span>
+                    <span className="text-muted-foreground truncate">{suggestion.description}</span>
                   </motion.div>
                 ))}
               </motion.div>
