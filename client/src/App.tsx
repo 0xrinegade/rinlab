@@ -7,6 +7,7 @@ import { OrderBook } from "@/components/defi/order-book";
 import { TransactionHistory } from "@/components/defi/transaction-history";
 import { AnalyticsDashboard } from "@/components/defi/analytics-dashboard";
 import { ThemeSwitcher } from "@/components/ui/theme-switcher";
+import { TrendPredictor } from "@/components/defi/trend-predictor";
 
 // Sample analytics data
 const sampleAnalyticsData = Array.from({ length: 24 }, (_, i) => ({
@@ -53,6 +54,19 @@ const sampleTransactions = [
     to: '0xcdef1234567890abcdef1234567890abcdef1234',
   },
 ];
+
+// Sample prediction data
+const samplePredictions = Array.from({ length: 5 }, (_, i) => ({
+  timestamp: Date.now() + 1000 * 60 * 60 * (i + 1),
+  predictedValue: 50 + (Math.random() - 0.5) * 10,
+  confidence: 0.95 - (i * 0.15),
+  trend: ['up', 'down', 'sideways'][Math.floor(Math.random() * 3)] as 'up' | 'down' | 'sideways',
+  metrics: {
+    volatility: 0.2 + Math.random() * 0.3,
+    momentum: -1 + Math.random() * 2,
+    volume: 10000 + Math.random() * 5000,
+  },
+}));
 
 const samplePriceData = Array.from({ length: 24 }, (_, i) => ({
   timestamp: Date.now() - 1000 * 60 * 60 * (24 - i),
@@ -116,7 +130,7 @@ function App() {
             {/* Market Overview */}
             <section>
               <h2 className="text-xs text-muted-foreground mb-2">MARKET DATA</h2>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-3 gap-4">
                 <TerminalContainer title="Price Chart">
                   <div className="p-4">
                     <PriceChart data={samplePriceData} className="h-48" />
@@ -131,6 +145,14 @@ function App() {
                       className="h-48"
                     />
                   </div>
+                </TerminalContainer>
+
+                <TerminalContainer title="AI Predictions">
+                  <TrendPredictor
+                    predictions={samplePredictions}
+                    currentPrice={samplePriceData[samplePriceData.length - 1].price}
+                    className="p-4"
+                  />
                 </TerminalContainer>
               </div>
             </section>
