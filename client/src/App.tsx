@@ -17,6 +17,7 @@ import { TransactionFlowChart } from "@/components/defi/transaction-flow-chart";
 import { BlockchainHeatmap } from "@/components/defi/blockchain-heatmap";
 import { PumpFunScreener } from "@/components/defi/pump-fun-screener";
 import { NetworkStatusDashboard } from "@/components/defi/network-status-dashboard";
+import { TransactionReplay } from "@/components/defi/transaction-replay";
 
 // Sample analytics data
 const sampleAnalyticsData = Array.from({ length: 24 }, (_, i) => ({
@@ -280,6 +281,13 @@ function App() {
                 <h1>Network Status Dashboard</h1>
                 <p>Pixel art visualization of blockchain network node status and connectivity.</p>
                 <NetworkStatusDashboard />
+              </ComponentLayout>
+            </Route>
+            <Route path="/components/transaction-replay">
+              <ComponentLayout>
+                <h1>Transaction Replay</h1>
+                <p>Retro terminal-style visualization and replay of blockchain transactions.</p>
+                <TransactionReplay />
               </ComponentLayout>
             </Route>
             <Route>
