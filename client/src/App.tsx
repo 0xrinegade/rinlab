@@ -6,8 +6,10 @@ import { TokenInput } from "@/components/defi/token-input";
 import { WalletButton } from "@/components/defi/wallet-button";
 import { TransactionList } from "@/components/defi/transaction-list";
 import { PriceChart } from "@/components/defi/price-chart";
+import { OrderBook } from "@/components/defi/order-book";
 import { ThemeSwitcher } from "@/components/ui/theme-switcher";
 
+// Sample data
 const sampleTransactions = [
   {
     id: '1',
@@ -32,17 +34,44 @@ const samplePriceData = Array.from({ length: 24 }, (_, i) => ({
   price: 50 + Math.random() * 10,
 }));
 
+// Sample order book data
+const sampleOrderBook = {
+  bids: Array.from({ length: 12 }, (_, i) => ({
+    price: 49.5 - i * 0.1,
+    size: Math.random() * 100 + 50,
+    total: 0, // Will be calculated
+  })),
+  asks: Array.from({ length: 12 }, (_, i) => ({
+    price: 50.5 + i * 0.1,
+    size: Math.random() * 100 + 50,
+    total: 0, // Will be calculated
+  }))
+};
+
+// Calculate cumulative totals
+let cumTotal = 0;
+sampleOrderBook.bids.forEach(bid => {
+  cumTotal += bid.size;
+  bid.total = cumTotal;
+});
+
+cumTotal = 0;
+sampleOrderBook.asks.forEach(ask => {
+  cumTotal += ask.size;
+  ask.total = cumTotal;
+});
+
 function App() {
   return (
     <Switch>
       <Route path="/">
         <RetroScreen
-          intensity={0.15}
-          scanlineSpacing={2}
-          noiseOpacity={0.05}
-          glowRadius={30}
+          intensity={0.1}
+          scanlineSpacing={3}
+          noiseOpacity={0.02}
+          glowRadius={20}
           glowColor="hsl(var(--primary))"
-          curvature={0.1}
+          curvature={0.05}
           className="min-h-screen bg-background"
         >
           <div className="p-4">
@@ -78,25 +107,37 @@ function App() {
                 </TerminalContainer>
 
                 <GridContainer columns={1} gap={4}>
-                  <TerminalContainer title="Theme" shortcut="⌃+T">
+                  <TerminalContainer title="Market Data" shortcut="⌘+M">
                     <div className="p-4">
-                      <ThemeSwitcher />
+                      <PriceChart data={samplePriceData} className="h-32" />
                     </div>
                   </TerminalContainer>
 
-                  <TerminalContainer title="Market Data" shortcut="⌘+M">
+                  <TerminalContainer title="Order Book" shortcut="⌘+O">
                     <div className="p-4">
-                      <PriceChart data={samplePriceData} />
+                      <OrderBook 
+                        bids={sampleOrderBook.bids} 
+                        asks={sampleOrderBook.asks}
+                        className="h-64"
+                      />
                     </div>
                   </TerminalContainer>
                 </GridContainer>
               </GridContainer>
 
-              <TerminalContainer title="Transaction History" shortcut="⌘+H">
-                <div className="p-4">
-                  <TransactionList transactions={sampleTransactions} />
-                </div>
-              </TerminalContainer>
+              <GridContainer columns={2} gap={4}>
+                <TerminalContainer title="Transaction History" shortcut="⌘+H">
+                  <div className="p-4">
+                    <TransactionList transactions={sampleTransactions} />
+                  </div>
+                </TerminalContainer>
+
+                <TerminalContainer title="Theme" shortcut="⌃+T">
+                  <div className="p-4">
+                    <ThemeSwitcher />
+                  </div>
+                </TerminalContainer>
+              </GridContainer>
             </GridContainer>
           </div>
         </RetroScreen>
