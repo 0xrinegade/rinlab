@@ -19,6 +19,7 @@ import { PumpFunScreener } from "@/components/defi/pump-fun-screener";
 import { NetworkStatusDashboard } from "@/components/defi/network-status-dashboard";
 import { TransactionReplay } from "@/components/defi/transaction-replay";
 import { ASCIINFTGallery } from "@/components/defi/ascii-nft-gallery";
+import { SmartOrderAgent } from "@/components/defi/smart-order-agent";
 
 // Sample analytics data
 const sampleAnalyticsData = Array.from({ length: 24 }, (_, i) => ({
@@ -164,7 +165,6 @@ function App() {
 
         <main className="flex-1 min-h-screen">
           <Switch>
-            {/* Add the new ASCII NFT Gallery route */}
             <Route path="/components/ascii-nft-gallery">
               <ComponentLayout>
                 <h1>ASCII NFT Gallery</h1>
@@ -298,6 +298,13 @@ function App() {
                 <h1>Transaction Replay</h1>
                 <p>Retro terminal-style visualization and replay of blockchain transactions.</p>
                 <TransactionReplay />
+              </ComponentLayout>
+            </Route>
+            <Route path="/components/smart-order-agent">
+              <ComponentLayout>
+                <h1>Smart Order Agent</h1>
+                <p>Create and manage trading orders with a retro-computing interface.</p>
+                <SmartOrderAgent />
               </ComponentLayout>
             </Route>
             <Route>
