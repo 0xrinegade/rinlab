@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Rocket, Sparkles, TrendingUp, Flame, Skull } from 'lucide-react';
 
 interface Token {
-  id: string; // Added stable ID
+  id: string;
   symbol: string;
   name: string;
   price: number;
@@ -30,7 +30,7 @@ export function PumpFunScreener({ className = '' }: PumpFunScreenerProps) {
   useEffect(() => {
     try {
       const generateToken = (index: number): Token => ({
-        id: `token-${index}`, // Stable ID for React key
+        id: `token-${index}`,
         symbol: ['PEPE', 'DOGE', 'SHIB', 'FLOKI', 'WOJAK'][index % 5],
         name: ['PepeCoin', 'Dogecoin', 'Shiba Inu', 'Floki Inu', 'Wojak'][index % 5],
         price: Math.random() * 10,
@@ -48,7 +48,7 @@ export function PumpFunScreener({ className = '' }: PumpFunScreenerProps) {
       const interval = setInterval(() => {
         setTokens(prev => 
           prev.map(token => ({
-            ...token, // Preserve stable ID
+            ...token,
             price: token.price * (1 + (Math.random() - 0.5) * 0.1),
             change24h: token.change24h + (Math.random() - 0.5) * 5,
             pumpScore: Math.min(100, Math.max(0, token.pumpScore + (Math.random() - 0.5) * 10)),
@@ -91,7 +91,6 @@ export function PumpFunScreener({ className = '' }: PumpFunScreenerProps) {
     );
   };
 
-  // Safely sort tokens with null checks and stable sorting
   const sortedTokens = [...tokens].sort((a, b) => {
     if (!a || !b) return 0;
     const aValue = a[sortKey];
@@ -135,13 +134,11 @@ export function PumpFunScreener({ className = '' }: PumpFunScreenerProps) {
       </div>
 
       <div className="relative overflow-hidden">
-        {/* Scan line effect */}
         <div 
           className="absolute w-full h-[2px] bg-foreground/10 pointer-events-none"
           style={{ top: `${scanLine}%` }}
         />
 
-        {/* Table header */}
         <div className="grid grid-cols-6 gap-4 p-4 text-xs border-b border-border/20">
           {[
             { key: 'symbol', label: 'TOKEN' },
@@ -168,15 +165,16 @@ export function PumpFunScreener({ className = '' }: PumpFunScreenerProps) {
           ))}
         </div>
 
-        {/* Token rows */}
-        <div className="space-y-[1px]">
-          <AnimatePresence mode="wait">
+        <div className="space-y-[1px] relative">
+          <AnimatePresence>
             {sortedTokens.map((token) => (
               <motion.div
                 key={token.id}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.2 }}
+                layout
                 className="grid grid-cols-6 gap-4 p-4 hover:bg-hover text-xs"
               >
                 <div className="flex items-center gap-2">
@@ -206,7 +204,6 @@ export function PumpFunScreener({ className = '' }: PumpFunScreenerProps) {
           </AnimatePresence>
         </div>
 
-        {/* Stats footer */}
         <div className="border-t border-border/20 mt-4 p-4">
           <div className="text-xs text-muted-foreground">
             ┌── MARKET STATS ──┐
