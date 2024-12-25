@@ -46,7 +46,7 @@ export function PumpFunScreener({ className = '' }: PumpFunScreenerProps) {
       setTokens(initialTokens);
 
       const interval = setInterval(() => {
-        setTokens(prev => 
+        setTokens(prev =>
           prev.map(token => ({
             ...token,
             price: token.price * (1 + (Math.random() - 0.5) * 0.1),
@@ -96,7 +96,7 @@ export function PumpFunScreener({ className = '' }: PumpFunScreenerProps) {
     const aValue = a[sortKey];
     const bValue = b[sortKey];
     if (aValue === undefined || bValue === undefined) return 0;
-    return sortDirection === 'asc' ? 
+    return sortDirection === 'asc' ?
       (aValue > bValue ? 1 : -1) :
       (aValue < bValue ? 1 : -1);
   });
@@ -134,7 +134,7 @@ export function PumpFunScreener({ className = '' }: PumpFunScreenerProps) {
       </div>
 
       <div className="relative overflow-hidden">
-        <div 
+        <div
           className="absolute w-full h-[2px] bg-foreground/10 pointer-events-none"
           style={{ top: `${scanLine}%` }}
         />
@@ -148,7 +148,7 @@ export function PumpFunScreener({ className = '' }: PumpFunScreenerProps) {
             { key: 'fomoLevel', label: 'FOMO LEVEL' },
             { key: 'lastPump', label: 'LAST PUMP' }
           ].map(({ key, label }) => (
-            <button 
+            <button
               key={key}
               onClick={() => {
                 if (sortKey === key) {
@@ -166,7 +166,7 @@ export function PumpFunScreener({ className = '' }: PumpFunScreenerProps) {
         </div>
 
         <div className="space-y-[1px] relative">
-          <AnimatePresence>
+          <AnimatePresence mode="sync">
             {sortedTokens.map((token) => (
               <motion.div
                 key={token.id}
@@ -174,7 +174,6 @@ export function PumpFunScreener({ className = '' }: PumpFunScreenerProps) {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ duration: 0.2 }}
-                layout
                 className="grid grid-cols-6 gap-4 p-4 hover:bg-hover text-xs"
               >
                 <div className="flex items-center gap-2">
