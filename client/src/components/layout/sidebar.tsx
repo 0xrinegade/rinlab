@@ -29,7 +29,8 @@ export function Sidebar({ className = '' }: SidebarProps) {
         { name: "Trend Predictor", path: "/components/trend-predictor" },
         { name: "Meme Generator", path: "/components/meme-generator" },
         { name: "Token Input", path: "/components/token-input" },
-        { name: "Transaction History", path: "/components/transaction-history" }
+        { name: "Transaction History", path: "/components/transaction-history" },
+        { name: "Contribution Leaderboard", path: "/components/contribution-leaderboard" }
       ]
     },
     {
@@ -44,7 +45,7 @@ export function Sidebar({ className = '' }: SidebarProps) {
   return (
     <div className={cn("w-64 border-r border-border/20 h-screen overflow-y-auto font-mono", className)}>
       <div className="p-4 border-b border-border/20">
-        <div className="text-lg font-bold vintage-glow">SRCL DEFI</div>
+        <div className="text-lg font-bold">SRCL DEFI</div>
         <div className="text-xs text-muted-foreground">Component Library</div>
       </div>
       <div className="p-4">

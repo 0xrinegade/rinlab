@@ -1,30 +1,36 @@
 import { Switch, Route } from "wouter";
-import { ThemeSwitcher } from "@/components/ui/theme-switcher";
-import { Sidebar } from "@/components/layout/sidebar";
-import { ComponentPage } from "@/components/layout/component-page";
-import { NetworkTopology } from "@/components/defi/network-topology";
-import { WalletConnectAnimation } from "@/components/defi/wallet-connect-animation";
-import { TokenScreener } from "@/components/defi/token-screener";
-import { OrderBook } from "@/components/defi/order-book";
-import { PriceChart } from "@/components/defi/price-chart";
-import { TrendPredictor } from "@/components/defi/trend-predictor";
-import { MemeGenerator } from "@/components/defi/meme-generator";
-import { TokenInput } from "@/components/defi/token-input";
-import { TransactionHistory } from "@/components/defi/transaction-history";
-import { ColorPaletteSelector } from "@/components/ui/color-palette-selector";
-import { BlockchainVisualizer } from "@/components/defi/blockchain-visualizer";
-import { TransactionComplexity } from "@/components/defi/transaction-complexity";
-import { BlockchainExplorer } from "@/components/defi/blockchain-explorer";
-import { TransactionFlowChart } from "@/components/defi/transaction-flow-chart";
-import { BlockchainHeatmap } from "@/components/defi/blockchain-heatmap";
-import { PumpFunScreener } from "@/components/defi/pump-fun-screener";
-import { NetworkStatusDashboard } from "@/components/defi/network-status-dashboard";
-import { TransactionReplay } from "@/components/defi/transaction-replay";
-import { ASCIINFTGallery } from "@/components/defi/ascii-nft-gallery";
-import { SmartOrderAgent } from "@/components/defi/smart-order-agent";
+import { Sidebar } from "./components/layout/sidebar";
+import { ComponentPage } from "./components/layout/component-page";
 import { Download } from "lucide-react";
 
-// Example of full component code for NetworkTopology
+// Import components from our library
+import {
+  ASCIINFTGallery,
+  NetworkTopology,
+  PumpFunScreener,
+  WalletConnectAnimation,
+  ContributionLeaderboard,
+  ThemeSwitcher
+} from "./lib/src";
+
+// Import local components
+import { TokenScreener } from "./components/defi/token-screener";
+import { OrderBook } from "./components/defi/order-book";
+import { PriceChart } from "./components/defi/price-chart";
+import { TrendPredictor } from "./components/defi/trend-predictor";
+import { MemeGenerator } from "./components/defi/meme-generator";
+import { TokenInput } from "./components/defi/token-input";
+import { TransactionHistory } from "./components/defi/transaction-history";
+import { BlockchainVisualizer } from "./components/defi/blockchain-visualizer";
+import { TransactionComplexity } from "./components/defi/transaction-complexity";
+import { BlockchainExplorer } from "./components/defi/blockchain-explorer";
+import { TransactionFlowChart } from "./components/defi/transaction-flow-chart";
+import { BlockchainHeatmap } from "./components/defi/blockchain-heatmap";
+import { NetworkStatusDashboard } from "./components/defi/network-status-dashboard";
+import { TransactionReplay } from "./components/defi/transaction-replay";
+import { SmartOrderAgent } from "./components/defi/smart-order-agent";
+import { ColorPaletteSelector } from "./components/ui/color-palette-selector";
+
 const NETWORK_TOPOLOGY_CODE = `import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Code } from 'lucide-react';
@@ -75,9 +81,9 @@ export function NetworkTopology({
       {/* Component render logic... */}
     </div>
   );
-}`;
+}
+`;
 
-// Example of full component code for WalletConnectAnimation
 const WALLET_CONNECT_CODE = `import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Wallet, Loader2, CheckCircle2, XCircle, Code } from 'lucide-react';
@@ -123,7 +129,8 @@ export function WalletConnectAnimation({
       {/* Component render logic... */}
     </div>
   );
-}`;
+}
+`;
 
 const sampleAnalyticsData = Array.from({ length: 24 }, (_, i) => ({
   timestamp: Date.now() - 1000 * 60 * 60 * (24 - i),
@@ -458,6 +465,15 @@ function App() {
                 code=""
               >
                 <SmartOrderAgent />
+              </ComponentPage>
+            </Route>
+            <Route path="/components/contribution-leaderboard">
+              <ComponentPage
+                title="Contribution Leaderboard"
+                description="Community contribution tracking with pixel art rewards and achievements."
+                code=""
+              >
+                <ContributionLeaderboard />
               </ComponentPage>
             </Route>
             <Route>
