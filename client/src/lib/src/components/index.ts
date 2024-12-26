@@ -14,3 +14,4 @@ export * from './defi/ascii-nft-gallery';
 export * from './defi/pump-fun-screener';
 export * from './defi/network-topology';
 export * from './defi/wallet-connect-animation';
+export * from './defi/contribution-leaderboard';
