@@ -38,6 +38,10 @@ export default {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
         },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
         border: "hsl(var(--border))",
         chart: {
           "1": "hsl(var(--chart-1))",
