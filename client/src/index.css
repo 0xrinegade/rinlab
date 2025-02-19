@@ -56,9 +56,16 @@
   .terminal-grid {
     @apply relative;
     background-size: 20px 20px;
-    background-image: 
-      linear-gradient(to right, hsl(var(--border) / 0.05) 1px, transparent 1px),
-      linear-gradient(to bottom, hsl(var(--border) / 0.05) 1px, transparent 1px);
+    background-image: linear-gradient(
+      to right,
+      hsl(var(--border) / 0.05) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      hsl(var(--border) / 0.05) 1px,
+      transparent 1px
+    );
   }
 
   .terminal-text {
@@ -69,17 +76,14 @@
   .ascii-border {
     position: relative;
     padding: 1px;
-    &::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        90deg,
-        hsl(var(--border)) 1px,
-        transparent 1px
-      ) 0 0 / 4px 100%;
-      transition: background 0.2s ease;
-    }
+  }
+
+  .ascii-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, hsl(var(--border)) 1px, transparent 1px) 0 0 / 4px 100%;
+    transition: background 0.2s ease;
   }
 
   .vintage-glow {
@@ -89,20 +93,21 @@
 
   .vintage-screen {
     position: relative;
-    &::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: repeating-linear-gradient(
-        0deg,
-        hsl(var(--background) / 0.1) 0px,
-        hsl(var(--background) / 0.1) 1px,
-        transparent 1px,
-        transparent 2px
-      );
-      pointer-events: none;
-      transition: background 0.2s ease;
-    }
+  }
+
+  .vintage-screen::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      hsl(var(--background) / 0.1) 0px,
+      hsl(var(--background) / 0.1) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+    pointer-events: none;
+    transition: background 0.2s ease;
   }
 
   .chart-container {
