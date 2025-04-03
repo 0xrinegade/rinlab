@@ -1,6 +1,6 @@
 {
-  "name": "rest-express",
-  "version": "1.0.0",
+  "name": "rinlab",
+  "version": "0.3.0",
   "type": "module",
   "license": "MIT",
   "scripts": {

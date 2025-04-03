@@ -1,0 +1,14 @@
+# Changelog
+
+## [0.3.0] - 2025-02-19
+
+### Updated
+- Updated framer-motion to version 12.4.4
+- Updated lucide-react to version 0.475.0
+- Updated tailwind-merge to version 3.0.1
+
+### Fixed
+- Fixed PostCSS nesting configuration for proper CSS nesting support
+
+### Changed
+- Refactored CSS nested selectors to follow PostCSS nesting standards
