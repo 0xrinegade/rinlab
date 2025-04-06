@@ -18,7 +18,7 @@ export function Terminal({
   welcomeMessage = 'Retro Terminal Interface v1.0.1', 
   promptSymbol = '>', 
   height = '300px'
-}: TerminalProps) {
+}: TerminalProps): JSX.Element {
   const terminalRef = useRef<HTMLDivElement>(null);
   const xtermRef = useRef<XTerm | null>(null);
   const { currentPalette } = useTheme();
@@ -60,11 +60,18 @@ export function Terminal({
   useEffect(() => {
     if (!terminalRef.current) return;
     
-    // Initialize xterm
+    // Need to prevent re-initialization with same ref
+    if (xtermRef.current) {
+      xtermRef.current.dispose();
+    }
+    
+    // Initialize xterm with safe defaults
     xtermRef.current = new XTerm({
       cursorBlink: true,
       fontSize: 14,
       fontFamily: 'monospace',
+      rows: 20,
+      cols: 80,
       theme: {
         background: '#000000',
         foreground: currentPalette.colors.foreground,
@@ -74,114 +81,120 @@ export function Terminal({
       }
     });
     
-    // Open the terminal
-    xtermRef.current.open(terminalRef.current);
-    
-    // Write welcome message
-    xtermRef.current.writeln('');
-    xtermRef.current.writeln(`${welcomeMessage}`);
-    xtermRef.current.writeln('Type "help" for available commands.');
-    xtermRef.current.writeln('');
-    xtermRef.current.write(`${promptSymbol} `);
-    
-    // Handle terminal input
-    xtermRef.current.onKey(({ key, domEvent }) => {
-      const printable = !domEvent.altKey && !domEvent.ctrlKey && !domEvent.metaKey;
+    try {
+      // Open the terminal
+      xtermRef.current.open(terminalRef.current);
       
-      // Handle Enter key
-      if (domEvent.key === 'Enter') {
-        xtermRef.current?.writeln('');
-        if (input.trim()) {
-          executeCommand(input.trim());
-          setHistory((prev) => [...prev, input.trim()]);
-          setHistoryIndex(-1);
+      // Write welcome message
+      xtermRef.current.writeln('');
+      xtermRef.current.writeln(`${welcomeMessage}`);
+      xtermRef.current.writeln('Type "help" for available commands.');
+      xtermRef.current.writeln('');
+      xtermRef.current.write(`${promptSymbol} `);
+      
+      // Handle terminal input
+      xtermRef.current.onKey(({ key, domEvent }) => {
+        const printable = !domEvent.altKey && !domEvent.ctrlKey && !domEvent.metaKey;
+        
+        // Handle Enter key
+        if (domEvent.key === 'Enter') {
+          xtermRef.current?.writeln('');
+          if (input.trim()) {
+            executeCommand(input.trim());
+            setHistory((prev) => [...prev, input.trim()]);
+            setHistoryIndex(-1);
+          }
+          setInput('');
+          xtermRef.current?.write(`${promptSymbol} `);
         }
-        setInput('');
-        xtermRef.current?.write(`${promptSymbol} `);
-      }
-      // Handle Backspace key
-      else if (domEvent.key === 'Backspace') {
-        if (input.length > 0) {
-          xtermRef.current?.write('\b \b');
-          setInput(input.slice(0, -1));
+        // Handle Backspace key
+        else if (domEvent.key === 'Backspace') {
+          if (input.length > 0) {
+            xtermRef.current?.write('\b \b');
+            setInput(input.slice(0, -1));
+          }
         }
-      }
-      // Handle Up Arrow for history navigation
-      else if (domEvent.key === 'ArrowUp') {
-        const newIndex = Math.min(history.length - 1, historyIndex + 1);
-        if (newIndex >= 0 && history.length > 0) {
+        // Handle Up Arrow for history navigation
+        else if (domEvent.key === 'ArrowUp') {
+          const newIndex = Math.min(history.length - 1, historyIndex + 1);
+          if (newIndex >= 0 && history.length > 0) {
+            setHistoryIndex(newIndex);
+            clearInput();
+            const historyCommand = history[history.length - 1 - newIndex];
+            setInput(historyCommand);
+            xtermRef.current?.write(historyCommand);
+          }
+        }
+        // Handle Down Arrow for history navigation
+        else if (domEvent.key === 'ArrowDown') {
+          const newIndex = Math.max(-1, historyIndex - 1);
           setHistoryIndex(newIndex);
           clearInput();
-          const historyCommand = history[history.length - 1 - newIndex];
-          setInput(historyCommand);
-          xtermRef.current?.write(historyCommand);
+          if (newIndex >= 0) {
+            const historyCommand = history[history.length - 1 - newIndex];
+            setInput(historyCommand);
+            xtermRef.current?.write(historyCommand);
+          }
         }
-      }
-      // Handle Down Arrow for history navigation
-      else if (domEvent.key === 'ArrowDown') {
-        const newIndex = Math.max(-1, historyIndex - 1);
-        setHistoryIndex(newIndex);
-        clearInput();
-        if (newIndex >= 0) {
-          const historyCommand = history[history.length - 1 - newIndex];
-          setInput(historyCommand);
-          xtermRef.current?.write(historyCommand);
-        }
-      }
-      // Handle printable characters
-      else if (printable) {
-        xtermRef.current?.write(key);
-        const newInput = input + key;
-        setInput(newInput);
-        
-        // Update suggestions
-        if (newInput.length > 0) {
-          const availableCommands = Object.keys(commands);
-          const matchingCommands = availableCommands.filter(cmd => 
-            cmd.startsWith(newInput.split(' ')[0])
-          );
+        // Handle printable characters
+        else if (printable) {
+          xtermRef.current?.write(key);
+          const newInput = input + key;
+          setInput(newInput);
           
-          if (matchingCommands.length > 0 && matchingCommands[0] !== newInput) {
-            setSuggestions(matchingCommands);
-            setShowSuggestions(true);
+          // Update suggestions
+          if (newInput.length > 0) {
+            const availableCommands = Object.keys(commands);
+            const matchingCommands = availableCommands.filter(cmd => 
+              cmd.startsWith(newInput.split(' ')[0])
+            );
+            
+            if (matchingCommands.length > 0 && matchingCommands[0] !== newInput) {
+              setSuggestions(matchingCommands);
+              setShowSuggestions(true);
+            } else {
+              setShowSuggestions(false);
+            }
           } else {
             setShowSuggestions(false);
           }
-        } else {
-          setShowSuggestions(false);
         }
-      }
+        
+        // Handle Tab key for auto-completion
+        else if (domEvent.key === 'Tab') {
+          domEvent.preventDefault();
+          if (suggestions.length > 0) {
+            clearInput();
+            const suggestion = suggestions[0];
+            setInput(suggestion);
+            xtermRef.current?.write(suggestion);
+            setShowSuggestions(false);
+          }
+        }
+      });
       
-      // Handle Tab key for auto-completion
-      else if (domEvent.key === 'Tab') {
-        domEvent.preventDefault();
-        if (suggestions.length > 0) {
-          clearInput();
-          const suggestion = suggestions[0];
-          setInput(suggestion);
-          xtermRef.current?.write(suggestion);
-          setShowSuggestions(false);
-        }
+      // Execute initial commands if provided
+      if (initialCommands.length > 0) {
+        setTimeout(() => {
+          initialCommands.forEach((cmd) => {
+            xtermRef.current?.writeln('');
+            xtermRef.current?.write(`${promptSymbol} ${cmd}`);
+            xtermRef.current?.writeln('');
+            executeCommand(cmd);
+            xtermRef.current?.write(`${promptSymbol} `);
+          });
+        }, 500);
       }
-    });
-    
-    // Execute initial commands if provided
-    if (initialCommands.length > 0) {
-      setTimeout(() => {
-        initialCommands.forEach((cmd) => {
-          xtermRef.current?.writeln('');
-          xtermRef.current?.write(`${promptSymbol} ${cmd}`);
-          xtermRef.current?.writeln('');
-          executeCommand(cmd);
-          xtermRef.current?.write(`${promptSymbol} `);
-        });
-      }, 500);
+    } catch (error) {
+      console.error('Error initializing terminal:', error);
     }
     
     return () => {
-      xtermRef.current?.dispose();
+      if (xtermRef.current) {
+        xtermRef.current.dispose();
+      }
     };
-  }, [welcomeMessage, promptSymbol, initialCommands, currentPalette]);
+  }, [welcomeMessage, promptSymbol, initialCommands, currentPalette, commands, history, historyIndex, input]);
   
   const clearInput = () => {
     // Clear current input in terminal
