@@ -30,7 +30,8 @@ export function Sidebar({ className = '' }: SidebarProps) {
         { name: "Meme Generator", path: "/components/meme-generator" },
         { name: "Token Input", path: "/components/token-input" },
         { name: "Transaction History", path: "/components/transaction-history" },
-        { name: "Contribution Leaderboard", path: "/components/contribution-leaderboard" }
+        { name: "Contribution Leaderboard", path: "/components/contribution-leaderboard" },
+        { name: "Terminal", path: "/components/terminal" }
       ]
     },
     {
