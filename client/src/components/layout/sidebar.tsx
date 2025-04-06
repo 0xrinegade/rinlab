@@ -1,4 +1,3 @@
-import { Link, useLocation } from "wouter";
 import { cn } from "@/lib/utils";
 
 interface SidebarProps {
@@ -6,40 +5,38 @@ interface SidebarProps {
 }
 
 export function Sidebar({ className = '' }: SidebarProps) {
-  const [location] = useLocation();
-
   const categories = [
     {
       title: "Components",
       items: [
-        { name: "Smart Order Agent", path: "/components/smart-order-agent" },
-        { name: "ASCII NFT Gallery", path: "/components/ascii-nft-gallery" },
-        { name: "Pump Fun Screener", path: "/components/pump-fun-screener" },
-        { name: "Network Status", path: "/components/network-status" },
-        { name: "Transaction Replay", path: "/components/transaction-replay" },
-        { name: "Token Screener", path: "/components/token-screener" },
-        { name: "Order Book", path: "/components/order-book" },
-        { name: "Price Chart", path: "/components/price-chart" },
-        { name: "Network Topology", path: "/components/network-topology" },
-        { name: "Blockchain Visualizer", path: "/components/blockchain-visualizer" },
-        { name: "Transaction Complexity", path: "/components/transaction-complexity" },
-        { name: "Blockchain Explorer", path: "/components/blockchain-explorer" },
-        { name: "Transaction Flow", path: "/components/transaction-flow" },
-        { name: "Blockchain Heatmap", path: "/components/blockchain-heatmap" },
-        { name: "Trend Predictor", path: "/components/trend-predictor" },
-        { name: "Meme Generator", path: "/components/meme-generator" },
-        { name: "Token Input", path: "/components/token-input" },
-        { name: "Transaction History", path: "/components/transaction-history" },
-        { name: "Contribution Leaderboard", path: "/components/contribution-leaderboard" },
-        { name: "Terminal", path: "/components/terminal" },
-        { name: "Code Snippet", path: "/components/code-snippet" }
+        { name: "Smart Order Agent" },
+        { name: "ASCII NFT Gallery" },
+        { name: "Pump Fun Screener" },
+        { name: "Network Status" },
+        { name: "Transaction Replay" },
+        { name: "Token Screener" },
+        { name: "Order Book" },
+        { name: "Price Chart" },
+        { name: "Network Topology" },
+        { name: "Blockchain Visualizer" },
+        { name: "Transaction Complexity" },
+        { name: "Blockchain Explorer" },
+        { name: "Transaction Flow" },
+        { name: "Blockchain Heatmap" },
+        { name: "Trend Predictor" },
+        { name: "Meme Generator" },
+        { name: "Token Input" },
+        { name: "Transaction History" },
+        { name: "Contribution Leaderboard" },
+        { name: "Terminal" },
+        { name: "Code Snippet" }
       ]
     },
     {
       title: "Theme",
       items: [
-        { name: "Color Palette", path: "/theme/colors" },
-        { name: "Typography", path: "/theme/typography" }
+        { name: "Color Palette" },
+        { name: "Typography" }
       ]
     }
   ];
@@ -47,7 +44,7 @@ export function Sidebar({ className = '' }: SidebarProps) {
   return (
     <div className={cn("w-64 border-r border-border/20 h-screen overflow-y-auto font-mono", className)}>
       <div className="p-4 border-b border-border/20">
-        <div className="text-lg font-bold">SRCL DEFI</div>
+        <div className="text-lg font-bold">RINLAB DEFI</div>
         <div className="text-xs text-muted-foreground">Component Library</div>
       </div>
       <div className="p-4">
@@ -55,16 +52,14 @@ export function Sidebar({ className = '' }: SidebarProps) {
           <div key={category.title} className="mb-6">
             <div className="text-xs text-muted-foreground mb-2">{category.title}</div>
             {category.items.map((item) => (
-              <Link
-                key={item.path}
-                href={item.path}
+              <div
+                key={item.name}
                 className={cn(
-                  "block py-1 px-2 text-sm hover:bg-hover transition-colors",
-                  location === item.path && "bg-hover text-primary"
+                  "block py-1 px-2 text-sm hover:bg-hover transition-colors cursor-pointer"
                 )}
               >
                 {item.name}
-              </Link>
+              </div>
             ))}
           </div>
         ))}
