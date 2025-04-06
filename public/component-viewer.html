@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RINLAB - Component Viewer</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      font-family: 'Courier New', monospace;
+      background-color: #0c0c0c;
+      color: #33ff33;
+    }
+    .container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .title {
+      font-size: 24px;
+      text-shadow: 0 0 5px #33ff33;
+    }
+    .back-button {
+      cursor: pointer;
+      padding: 8px 12px;
+      border: 1px solid #33ff33;
+      color: #33ff33;
+      background: none;
+      transition: all 0.3s;
+    }
+    .back-button:hover {
+      background-color: #33ff33;
+      color: #000;
+    }
+    .component-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .component-header {
+      margin-bottom: 20px;
+      border-bottom: 1px solid #33ff33;
+      padding-bottom: 10px;
+    }
+    .component-title {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+    .component-description {
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid #33ff33;
+      margin-bottom: 20px;
+    }
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      border-bottom: none;
+    }
+    .tab.active {
+      background-color: rgba(51, 255, 51, 0.1);
+      border-color: #33ff33;
+      border-bottom: 1px solid #0c0c0c;
+    }
+    .tab-content {
+      display: none;
+      flex: 1;
+      overflow: auto;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .code-container {
+      background-color: #111;
+      border: 1px solid #33ff33;
+      padding: 15px;
+      overflow: auto;
+      position: relative;
+    }
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      font-family: 'Courier New', monospace;
+      color: #33ff33;
+    }
+    .code-copy {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 5px 10px;
+      background-color: rgba(12, 12, 12, 0.7);
+      border: 1px solid #33ff33;
+      color: #33ff33;
+      cursor: pointer;
+    }
+    .props-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    .props-table th, .props-table td {
+      border: 1px solid #33ff33;
+      padding: 8px 12px;
+      text-align: left;
+    }
+    .props-table th {
+      background-color: rgba(51, 255, 51, 0.1);
+    }
+    .usage-example {
+      margin-top: 20px;
+    }
+    .usage-title {
+      font-size: 16px;
+      margin-bottom: 10px;
+      border-bottom: 1px dashed #33ff33;
+      padding-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="title">RINLAB Component Viewer</div>
+      <button class="back-button" onclick="goBack()">← Back to Components</button>
+    </div>
+    
+    <div class="component-container">
+      <div class="component-header">
+        <h1 class="component-title" id="component-title">Component Name</h1>
+        <div class="component-description" id="component-description">
+          Component description goes here.
+        </div>
+      </div>
+      
+      <div class="tabs">
+        <div class="tab active" onclick="changeTab('code')">Code</div>
+        <div class="tab" onclick="changeTab('props')">Props</div>
+        <div class="tab" onclick="changeTab('usage')">Usage</div>
+      </div>
+      
+      <div class="tab-content active" id="code-tab">
+        <div class="code-container">
+          <button class="code-copy" onclick="copyCode()">Copy</button>
+          <pre id="component-code">// Component code will be displayed here</pre>
+        </div>
+      </div>
+      
+      <div class="tab-content" id="props-tab">
+        <table class="props-table">
+          <thead>
+            <tr>
+              <th>Prop</th>
+              <th>Type</th>
+              <th>Default</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody id="props-body">
+            <!-- Props will be dynamically added here -->
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="tab-content" id="usage-tab">
+        <div class="usage-example">
+          <div class="usage-title">Basic Example</div>
+          <div class="code-container">
+            <button class="code-copy" onclick="copyUsageCode()">Copy</button>
+            <pre id="usage-code">// Usage example will be displayed here</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Get the component name from URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const componentName = urlParams.get('component') || 'Terminal';
+    
+    document.getElementById('component-title').textContent = componentName;
+    
+    // Setup tab switching
+    function changeTab(tabName) {
+      // Hide all tabs
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Show selected tab
+      document.getElementById(`${tabName}-tab`).classList.add('active');
+      document.querySelectorAll('.tab').forEach(tab => {
+        if (tab.textContent.toLowerCase() === tabName) {
+          tab.classList.add('active');
+        }
+      });
+    }
+    
+    // Go back to components page
+    function goBack() {
+      window.location.href = 'index.html';
+    }
+    
+    // Copy code to clipboard
+    function copyCode() {
+      const code = document.getElementById('component-code').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        const copyButton = document.querySelector('.code-copy');
+        copyButton.textContent = 'Copied!';
+        setTimeout(() => {
+          copyButton.textContent = 'Copy';
+        }, 2000);
+      });
+    }
+    
+    // Copy usage code to clipboard
+    function copyUsageCode() {
+      const code = document.getElementById('usage-code').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        const copyButton = document.querySelectorAll('.code-copy')[1];
+        copyButton.textContent = 'Copied!';
+        setTimeout(() => {
+          copyButton.textContent = 'Copy';
+        }, 2000);
+      });
+    }
+    
+    // Fetch component data - in a real app, this would come from an API
+    // For now we're just simulating with placeholder data
+    function loadComponentData() {
+      // Placeholder code for Terminal component
+      if (componentName === 'Terminal') {
+        document.getElementById('component-description').textContent = 
+          'A retro-style terminal component that simulates an old-school computer terminal interface. Perfect for CLI-like interactions with nostalgic aesthetics.';
+        
+        document.getElementById('component-code').textContent = 
+`interface TerminalProps {
+  className?: string;
+  initialCommands?: string[];
+  welcomeMessage?: string;
+  promptSymbol?: string;
+  height?: string;
+}
+
+export function Terminal({
+  className = '',
+  initialCommands = [],
+  welcomeMessage = 'Welcome to RINLAB Terminal v1.0',
+  promptSymbol = '>',
+  height = '400px',
+}: TerminalProps): JSX.Element {
+  // Component implementation
+}`;
+        
+        // Add props
+        const propsBody = document.getElementById('props-body');
+        propsBody.innerHTML = `
+          <tr>
+            <td>className</td>
+            <td>string</td>
+            <td>''</td>
+            <td>Additional CSS classes</td>
+          </tr>
+          <tr>
+            <td>initialCommands</td>
+            <td>string[]</td>
+            <td>[]</td>
+            <td>Commands to run when terminal initializes</td>
+          </tr>
+          <tr>
+            <td>welcomeMessage</td>
+            <td>string</td>
+            <td>'Welcome to RINLAB Terminal v1.0'</td>
+            <td>Initial message shown in terminal</td>
+          </tr>
+          <tr>
+            <td>promptSymbol</td>
+            <td>string</td>
+            <td>'>'</td>
+            <td>Symbol shown at command prompt</td>
+          </tr>
+          <tr>
+            <td>height</td>
+            <td>string</td>
+            <td>'400px'</td>
+            <td>Height of terminal container</td>
+          </tr>
+        `;
+        
+        // Usage example
+        document.getElementById('usage-code').textContent = 
+`import { Terminal } from 'rinlab';
+
+function MyTerminalPage() {
+  return (
+    <div className="container">
+      <h1>Interactive Terminal</h1>
+      <Terminal 
+        welcomeMessage="Welcome to the DeFi Terminal v1.0" 
+        promptSymbol="$"
+        initialCommands={["help", "version"]}
+        height="500px"
+      />
+    </div>
+  );
+}`;
+      }
+      
+      // Add more components as needed
+    }
+    
+    // Load component data on page load
+    loadComponentData();
+  </script>
+</body>
+</html>

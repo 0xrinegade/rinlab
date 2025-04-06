@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RINLAB - Retro DeFi Components</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      font-family: 'Courier New', monospace;
+      background-color: #0c0c0c;
+      color: #33ff33;
+    }
+    .container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .title {
+      font-size: 24px;
+      margin-bottom: 20px;
+      text-align: center;
+      text-shadow: 0 0 5px #33ff33;
+    }
+    .card {
+      border: 1px solid #33ff33;
+      padding: 20px;
+      max-width: 800px;
+      width: 100%;
+      box-shadow: 0 0 10px rgba(51, 255, 51, 0.3);
+    }
+    .component-section {
+      margin-bottom: 20px;
+    }
+    .component-title {
+      font-size: 18px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #33ff33;
+      padding-bottom: 5px;
+    }
+    .component-list {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+    .component-list li {
+      padding: 8px 0;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .component-list li:hover {
+      color: #ffffff;
+      text-shadow: 0 0 5px #33ff33;
+    }
+    .pixel-border {
+      position: relative;
+    }
+    .pixel-border::before {
+      content: "";
+      position: absolute;
+      top: -4px;
+      left: -4px;
+      right: -4px;
+      bottom: -4px;
+      border: 2px solid #33ff33;
+      z-index: -1;
+      pointer-events: none;
+    }
+    .footer {
+      margin-top: 20px;
+      font-size: 12px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="title">RINLAB - Retro DeFi Components</div>
+    <div class="card pixel-border">
+      <div class="component-section">
+        <div class="component-title">DeFi Components</div>
+        <ul class="component-list">
+          <li>Terminal</li>
+          <li>Transaction Flow Chart</li>
+          <li>Smart Order Agent</li>
+          <li>Blockchain Visualizer</li>
+          <li>Analytics Dashboard</li>
+          <li>Token Screener</li>
+          <li>Price Chart</li>
+          <li>Order Book</li>
+          <li>Network Topology</li>
+          <li>Transaction Complexity</li>
+        </ul>
+      </div>
+      <div class="component-section">
+        <div class="component-title">Utility Components</div>
+        <ul class="component-list">
+          <li>Code Snippet Highlighter</li>
+          <li>ASCII NFT Gallery</li>
+          <li>Meme Generator</li>
+          <li>Blockchain Explorer</li>
+          <li>Transaction History</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer">
+      RINLAB v0.4.20 | Pixel-perfect blockchain components
+    </div>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // When users click on component names, navigate to component viewer
+      const componentItems = document.querySelectorAll('.component-list li');
+      componentItems.forEach(item => {
+        item.addEventListener('click', function() {
+          const componentName = this.textContent.trim();
+          window.location.href = `component-viewer.html?component=${encodeURIComponent(componentName)}`;
+        });
+      });
+    });
+  </script>
+</body>
+</html>
