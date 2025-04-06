@@ -36,6 +36,7 @@ import { ColorPaletteSelector } from "./components/ui/color-palette-selector";
 
 // Import page components
 import { TerminalPage } from "./pages/Terminal";
+import { CodeSnippetPage } from "./pages/CodeSnippet";
 
 const NETWORK_TOPOLOGY_CODE = `import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -484,6 +485,9 @@ function App() {
             </Route>
             <Route path="/components/terminal">
               <TerminalPage />
+            </Route>
+            <Route path="/components/code-snippet">
+              <CodeSnippetPage />
             </Route>
             <Route>
               <ComponentPage
