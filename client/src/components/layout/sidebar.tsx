@@ -31,7 +31,8 @@ export function Sidebar({ className = '' }: SidebarProps) {
         { name: "Token Input", path: "/components/token-input" },
         { name: "Transaction History", path: "/components/transaction-history" },
         { name: "Contribution Leaderboard", path: "/components/contribution-leaderboard" },
-        { name: "Terminal", path: "/components/terminal" }
+        { name: "Terminal", path: "/components/terminal" },
+        { name: "Code Snippet", path: "/components/code-snippet" }
       ]
     },
     {
