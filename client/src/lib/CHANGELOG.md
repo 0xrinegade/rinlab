@@ -8,7 +8,7 @@
 
 ### Updated
 - Added compatibility with React 19 while maintaining support for React 18
-- Switched from Anthropic's Claude to Google's Gemini Flash for meme generation functionality
+- Switched from Anthropic's Claude to Google's Gemini Pro for meme generation functionality
 
 ### Fixed
 - Corrected PostCSS configuration order to ensure CSS nesting works properly
