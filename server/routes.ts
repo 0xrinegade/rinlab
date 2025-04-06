@@ -5,9 +5,9 @@ import archiver from 'archiver';
 import path from 'path';
 import fs from 'fs';
 
-// Initialize Google Generative AI with Gemini Flash model
+// Initialize Google Generative AI with Gemini Pro model
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || '');
-const model = genAI.getGenerativeModel({ model: "gemini-flash" });
+const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
 export function registerRoutes(app: Express): Server {
   // Meme generation endpoint
@@ -28,7 +28,7 @@ export function registerRoutes(app: Express): Server {
         Keep it under 200 characters and make it feel like it's being displayed on an old terminal.
       `;
 
-      // Generate content with Gemini Flash
+      // Generate content with Gemini Pro
       const result = await model.generateContent(prompt);
       const response = await result.response;
       const text = response.text();
