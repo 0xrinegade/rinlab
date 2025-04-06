@@ -1,14 +1,13 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import Anthropic from '@anthropic-ai/sdk';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import archiver from 'archiver';
 import path from 'path';
 import fs from 'fs';
 
-// the newest Anthropic model is "claude-3-5-sonnet-20241022" which was released October 22, 2024
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
+// Initialize Google Generative AI with Gemini Flash model
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || '');
+const model = genAI.getGenerativeModel({ model: "gemini-flash" });
 
 export function registerRoutes(app: Express): Server {
   // Meme generation endpoint
@@ -29,13 +28,12 @@ export function registerRoutes(app: Express): Server {
         Keep it under 200 characters and make it feel like it's being displayed on an old terminal.
       `;
 
-      const message = await anthropic.messages.create({
-        max_tokens: 1024,
-        messages: [{ role: 'user', content: prompt }],
-        model: 'claude-3-5-sonnet-20241022',
-      });
+      // Generate content with Gemini Flash
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const text = response.text();
 
-      res.json({ text: message.content[0].text });
+      res.json({ text });
     } catch (error) {
       console.error('Meme generation error:', error);
       res.status(500).json({ error: 'Failed to generate meme' });
