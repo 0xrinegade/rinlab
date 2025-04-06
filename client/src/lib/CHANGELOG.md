@@ -3,8 +3,9 @@
 ## [0.3.1] - 2025-04-06
 
 ### Added
-- New Terminal component with xterm.js integration for interactive command-line experience
+- New Terminal component with native React implementation for interactive command-line experience
 - Terminal scanline effect for enhanced retro aesthetic
+- Command suggestions with tab autocompletion
 
 ### Updated
 - Added compatibility with React 19 while maintaining support for React 18
@@ -13,6 +14,7 @@
 ### Fixed
 - Corrected PostCSS configuration order to ensure CSS nesting works properly
 - Resolved styling issues with nested CSS selectors
+- Fixed dimensions handling in terminal component
 
 ## [0.3.0] - 2025-02-19
 
