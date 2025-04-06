@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.3.1] - 2025-04-06
+
+### Updated
+- Added compatibility with React 19 while maintaining support for React 18
+
+### Fixed
+- Corrected PostCSS configuration order to ensure CSS nesting works properly
+- Resolved styling issues with nested CSS selectors
+
 ## [0.3.0] - 2025-02-19
 
 ### Updated
