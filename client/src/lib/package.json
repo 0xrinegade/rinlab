@@ -1,6 +1,6 @@
 {
   "name": "rinlab",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A comprehensive React component library for Solana blockchain interfaces with a nostalgic retro-computing aesthetic",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -16,13 +16,13 @@
   "peerDependencies": {
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "framer-motion": "^11.0.0",
+    "framer-motion": "^12.4.4",
     "@radix-ui/react-toast": "^1.0.0",
     "tailwindcss": "^3.0.0",
-    "lucide-react": "^0.294.0",
+    "lucide-react": "^0.475.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
-    "tailwind-merge": "^2.0.0"
+    "tailwind-merge": "^3.0.1"
   },
   "keywords": [
     "defi",
