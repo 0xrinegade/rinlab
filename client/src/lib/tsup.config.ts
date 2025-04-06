@@ -12,8 +12,7 @@ export default defineConfig({
     '@radix-ui/react-toast', 
     'tailwindcss',
     '@radix-ui/*',
-    'lucide-react',
-    'wouter'
+    'lucide-react'
   ],
   treeshake: true,
   sourcemap: true,

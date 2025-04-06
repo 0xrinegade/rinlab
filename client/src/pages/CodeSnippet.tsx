@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import { CodeSnippetHighlighter } from '../lib/src/components/defi/code-snippet-highlighter';
-import { Terminal } from '../components/defi/terminal';
 
 const sampleCode = `// Example Solana wallet connection
 import { Connection, PublicKey, clusterApiUrl } from '@solana/web3.js';
@@ -38,45 +36,15 @@ connectWallet().then(result => {
 });`;
 
 export function CodeSnippetPage() {
-  const [output, setOutput] = useState<string[]>([
-    '> Welcome to the Retro Terminal',
-    '> Type "help" for a list of commands',
-  ]);
-  
-  const handleLineExecution = (lineNumber: number, code: string) => {
-    setOutput(prev => [
-      ...prev, 
-      `> Executing line ${lineNumber}:`, 
-      `$ ${code}`,
-      `[Line ${lineNumber}] Simulated code execution...`,
-      lineNumber === 10 ? '✓ Connected to Phantom wallet: Gw5zrR...Uzh7' : '...'
-    ]);
-  };
-  
   return (
-    <div className="container mx-auto p-4 flex flex-col gap-8">
-      <h1 className="text-2xl font-bold mb-4">Code Snippet Demo</h1>
-      
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div>
-          <h2 className="text-lg font-semibold mb-2">Interactive Code Snippet</h2>
-          <CodeSnippetHighlighter 
-            code={sampleCode} 
-            title="SOLANA WALLET CONNECT"
-            language="typescript"
-            onExecuteLine={handleLineExecution}
-          />
-        </div>
-        
-        <div>
-          <h2 className="text-lg font-semibold mb-2">Terminal Output</h2>
-          <Terminal 
-            className="h-[600px]"
-            initialCommands={output}
-            promptSymbol="$>"
-          />
-        </div>
-      </div>
+    <div className="p-4 flex flex-col gap-4">
+      <h2 className="text-lg font-semibold">Interactive Code Snippet</h2>
+      <CodeSnippetHighlighter 
+        code={sampleCode} 
+        title="SOLANA WALLET CONNECT"
+        language="typescript"
+        interactive={true}
+      />
     </div>
   );
 }

@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.4.1] - 2025-04-06
+
+### Changed
+- Removed wouter dependency for simpler, more reliable navigation
+- Simplified routing architecture to avoid path-to-regexp issues
+- Updated sidebar components to use basic state management instead of route-based selection
+- Added favicon with pixel art design to match the retro aesthetic
+
+### Fixed
+- Resolved application startup timeouts related to routing issues
+- Fixed component library exports to work without router dependencies
+- Updated PostCSS configuration to ensure nesting plugin runs before Tailwind
+
 ## [0.4.0] - 2025-04-06
 
 ### Added
