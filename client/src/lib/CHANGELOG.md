@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.4.0] - 2025-04-06
+
+### Added
+- Interactive Code Snippet component with hover effects and syntax highlighting
+- Code execution mode with line-by-line execution capability
+- Token-based syntax highlighting with retro glow effects
+- Line-specific code explanations with tooltips
+- Execution animation effects
+
+### Updated
+- Enhanced CSS styling with syntax highlighting colors
+- Added custom glow effects for better retro aesthetic
+- Improved overall component interaction feedback
+- Added execution mode for code snippets
+
 ## [0.3.1] - 2025-04-06
 
 ### Added
