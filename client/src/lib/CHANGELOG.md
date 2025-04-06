@@ -2,6 +2,10 @@
 
 ## [0.3.1] - 2025-04-06
 
+### Added
+- New Terminal component with xterm.js integration for interactive command-line experience
+- Terminal scanline effect for enhanced retro aesthetic
+
 ### Updated
 - Added compatibility with React 19 while maintaining support for React 18
 - Switched from Anthropic's Claude to Google's Gemini Flash for meme generation functionality

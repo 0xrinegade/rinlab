@@ -9,9 +9,11 @@ import {
   NetworkTopology,
   PumpFunScreener,
   WalletConnectAnimation,
-  ContributionLeaderboard,
-  ThemeSwitcher
+  ContributionLeaderboard
 } from "./lib/src";
+
+// Import theme components
+import { ThemeSwitcher } from "./components/ui/theme-switcher";
 
 // Import local components
 import { TokenScreener } from "./components/defi/token-screener";
@@ -29,7 +31,11 @@ import { BlockchainHeatmap } from "./components/defi/blockchain-heatmap";
 import { NetworkStatusDashboard } from "./components/defi/network-status-dashboard";
 import { TransactionReplay } from "./components/defi/transaction-replay";
 import { SmartOrderAgent } from "./components/defi/smart-order-agent";
+import { Terminal } from "./components/defi/terminal";
 import { ColorPaletteSelector } from "./components/ui/color-palette-selector";
+
+// Import page components
+import { TerminalPage } from "./pages/Terminal";
 
 const NETWORK_TOPOLOGY_CODE = `import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -475,6 +481,9 @@ function App() {
               >
                 <ContributionLeaderboard />
               </ComponentPage>
+            </Route>
+            <Route path="/components/terminal">
+              <TerminalPage />
             </Route>
             <Route>
               <ComponentPage
