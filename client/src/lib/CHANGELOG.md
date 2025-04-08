@@ -1,5 +1,38 @@
 # Changelog
 
+## [0.4.22] - 2025-04-08
+
+### Added
+- Enhanced documentation with a comprehensive component showcase
+- Improved usage examples with more detailed code snippets
+- Added Text component demo with a full range of style variants
+
+### Updated
+- Refactored build process to support a more robust distribution
+- Enhanced component previews with "View Code" functionality
+
+## [0.4.21] - 2025-04-08
+
+### Added
+- Enhanced Text component with retro-computing styles and pixel art aesthetics
+- Text variant support including terminal, glitch, pixelated, retro, and CRT effects
+- Animation variants for typing, blinking, glitching, and scanline effects
+- CRT screen effect with scanlines and pixel borders
+- DeFi-specific text styles for tokens, addresses, percentages, and values
+- Utility functions for pixel fonts, retro glow effects, and ASCII art generation
+- Special pixel font styles with VT323 and Press Start 2P integration
+
+### Updated
+- Expanded color palette with improved DeFi-appropriate colors and chart colors
+- Added SVG filter for pixelation effects
+- Updated tailwind animations configuration with retro-inspired keyframes
+- Enhanced CSS utilities for retro computing aesthetics
+- Improved component organization with better documentation
+
+### Fixed
+- Fixed animation compatibility issues with different browser engines
+- Resolved text rendering artifacts in pixelated font styles
+
 ## [0.3.1] - 2025-04-06
 
 ### Added
