@@ -1,4 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -15,6 +17,49 @@
     --hover: 240 100% 32%;
     --muted: 240 30% 80%;
     --radius: 0;
+    
+    /* Chart colors palette */
+    --chart-1: 197 100% 50%;
+    --chart-2: 271 100% 71%;
+    --chart-3: 338 100% 55%;
+    --chart-4: 47 100% 50%;
+    --chart-5: 120 100% 43%;
+    
+    /* Card colors */
+    --card: 240 20% 15%;
+    --card-foreground: 0 0% 100%;
+    
+    /* Popover colors */
+    --popover: 240 20% 15%;
+    --popover-foreground: 0 0% 100%;
+    
+    /* Primary button colors */
+    --primary-foreground: 240 10% 5%;
+    
+    /* Secondary button colors */
+    --secondary-foreground: 240 10% 5%;
+    
+    /* Muted elements */
+    --muted-foreground: 240 5% 65%;
+    
+    /* Accent elements */
+    --accent-foreground: 240 10% 5%;
+    
+    /* Destructive colors */
+    --destructive: 0 90% 60%;
+    --destructive-foreground: 0 0% 100%;
+    
+    /* Status colors */
+    --success: 142 76% 47%;
+    --warning: 38 92% 50%;
+    --error: 0 90% 60%;
+    --info: 221 83% 53%;
+  }
+
+  @font-face {
+    font-family: 'PixelFont';
+    src: url('/fonts/VT323-Regular.ttf') format('truetype');
+    font-display: swap;
   }
 
   * {
@@ -24,9 +69,39 @@
   body {
     @apply font-mono antialiased bg-background text-foreground;
   }
+  
+  /* Root SVG filter for pixelation effect */
+  body::after {
+    content: '';
+    position: fixed;
+    pointer-events: none;
+    visibility: hidden;
+    z-index: -1000;
+  }
+  
+  body::after svg {
+    position: absolute;
+    width: 0;
+    height: 0;
+  }
+  
+  /* Add pixel texture to whole app */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyhpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDcuMi1jMDAwIDc5LjU2NmViYzViNCwgMjAyMi8wNS8wOS0wODoyNTo1NSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDIzLjQgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6ODM2RTRFNUEwRTdEMTFFREI5ODVGMzBCMzM3QTU1NDkiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6ODM2RTRFNUIwRTdEMTFFREI5ODVGMzBCMzM3QTU1NDkiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo4MzZFNEU1ODBFNzQxMUVEQjk4NUYzMEIzMzdBNTU0OSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo4MzZFNEU1OTBFNzQxMUVEQjk4NUYzMEIzMzdBNTU0OSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PnYgtdYAAAAYSURBVHjaYmRgYPjPQAJgYiABjDpg2AEAAQYAbWUDHL04Qn8AAAAASUVORK5CYII=");
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 9999;
+  }
 }
 
 @layer components {
+  /* === Base UI Components === */
   .data-table {
     @apply w-full font-mono text-sm;
     border-spacing: 0;
@@ -43,7 +118,8 @@
   .data-table tr:hover {
     @apply bg-hover transition-colors duration-150;
   }
-
+  
+  /* === Terminal & Retro UI Components === */
   .terminal-container {
     @apply bg-background border border-border/20 rounded-none shadow-sm transition-all duration-200;
     box-shadow: inset 0 0 0 1px hsl(var(--border) / 0.1);
@@ -72,7 +148,70 @@
     @apply text-foreground font-mono transition-all duration-200;
     text-shadow: 0 0 2px hsl(var(--foreground) / 0.2);
   }
+  
+  /* Pixel font styles */
+  .font-pixel {
+    font-family: 'VT323', 'Press Start 2P', monospace;
+    letter-spacing: 0.05em;
+    image-rendering: pixelated;
+  }
+  
+  .font-pixel-2p {
+    font-family: 'Press Start 2P', monospace;
+    letter-spacing: 0.05em;
+    image-rendering: pixelated;
+    line-height: 1.5;
+  }
 
+  /* CRT screen effect with scanlines */
+  .crt-screen {
+    position: relative;
+    border-radius: 4px;
+    overflow: hidden;
+    background-color: hsl(var(--background));
+    box-shadow: 
+      inset 0 0 6px rgba(0, 0, 0, 0.2),
+      0 5px 15px rgba(0, 0, 0, 0.15);
+  }
+  
+  .crt-screen::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.03) 0%, 
+        rgba(255, 255, 255, 0) 100%
+      );
+    z-index: 2;
+    pointer-events: none;
+  }
+  
+  .crt-screen::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.15) 0px,
+        rgba(0, 0, 0, 0.15) 1px,
+        transparent 1px,
+        transparent 2px
+      );
+    z-index: 3;
+    pointer-events: none;
+    opacity: 0.3;
+  }
+  
+  /* ASCII art borders and elements */
   .ascii-border {
     position: relative;
     padding: 1px;
@@ -85,12 +224,62 @@
     background: linear-gradient(90deg, hsl(var(--border)) 1px, transparent 1px) 0 0 / 4px 100%;
     transition: background 0.2s ease;
   }
-
+  
+  /* Pixel art border styles */
+  .pixel-border {
+    @apply border border-dashed p-4 relative;
+    image-rendering: pixelated;
+    border-image-slice: 2;
+    border-image-width: 2;
+    border-image-outset: 0;
+    border-image-source: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAACKADAAQAAAABAAAACAAAAAAoFhDDAAAAP0lEQVQYGWP8//8/AzGAiYFAQFgBkPn/P04lLAwofqhSRnwKmBhwAEYWrB7AqgDsXEacCrB6ApcCdP8Q9CMAAK3PEwI1WW55AAAAAElFTkSuQmCC");
+    border-image-repeat: repeat;
+  }
+  
+  /* Text effects */
   .vintage-glow {
     text-shadow: 0 0 2px hsl(var(--primary) / 0.5);
     transition: text-shadow 0.2s ease;
   }
-
+  
+  .matrix-text {
+    color: #00FF41;
+    text-shadow: 0 0 5px rgba(0, 255, 65, 0.8);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  
+  .glitch-text {
+    position: relative;
+    display: inline-block;
+    color: hsl(var(--foreground));
+  }
+  
+  .glitch-text::before,
+  .glitch-text::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.8;
+  }
+  
+  .glitch-text::before {
+    color: #ff00ff;
+    z-index: -1;
+    transform: translateX(-2px);
+    animation: glitch-anim 2.5s infinite alternate-reverse;
+  }
+  
+  .glitch-text::after {
+    color: #00ffff;
+    z-index: -2;
+    transform: translateX(2px);
+    animation: glitch-anim 2s infinite alternate;
+  }
+  
+  /* Screen and monitor effects */
   .vintage-screen {
     position: relative;
   }
@@ -109,7 +298,31 @@
     pointer-events: none;
     transition: background 0.2s ease;
   }
-
+  
+  /* Curve display effect like old CRTs */
+  .curved-display {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .curved-display::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+      circle at center,
+      transparent 60%,
+      rgba(0, 0, 0, 0.2) 100%
+    );
+    pointer-events: none;
+    z-index: 3;
+  }
+  
+  /* Containers and layout */
   .chart-container {
     @apply p-4 bg-background border border-border/20 transition-all duration-200;
     box-shadow: inset 0 0 0 1px hsl(var(--border) / 0.1);
@@ -119,9 +332,39 @@
     @apply border border-border/20 shadow-sm transition-all duration-200;
     box-shadow: inset 0 0 0 1px hsl(var(--border) / 0.1);
   }
+  
+  /* Blockchain/DeFi specific UI */
+  .wallet-display {
+    @apply font-mono text-xs bg-black/20 p-2 rounded border border-dashed border-primary/30;
+  }
+  
+  .token-badge {
+    @apply font-mono text-xs uppercase tracking-wider px-2 py-0.5 rounded-sm bg-primary/10 border border-primary/20;
+  }
+  
+  .address-display {
+    @apply font-mono text-xs tracking-tighter bg-black/30 px-2 py-0.5 rounded overflow-hidden text-ellipsis;
+    max-width: 120px;
+  }
+  
+  /* Loading and progress indicators */
+  .pixel-spinner {
+    width: 24px;
+    height: 24px;
+    animation: rotate 1.5s linear infinite;
+    image-rendering: pixelated;
+  }
+  
+  .loading-dots::after {
+    content: '.';
+    animation: loading-dots 1.5s infinite;
+    display: inline-block;
+    width: 1em;
+  }
 }
 
 @layer utilities {
+  /* Debug tools */
   .theme-debug * {
     outline: 1px solid rgba(255, 0, 0, 0.1);
   }
@@ -132,6 +375,166 @@
 
   body.debug .theme-debug-info {
     @apply block;
+  }
+  
+  /* Pixel and text utilities */
+  .pixel-perfect {
+    image-rendering: pixelated;
+    font-smooth: never;
+    -webkit-font-smoothing: none;
+  }
+  
+  .text-shadow-glow {
+    text-shadow: 0 0 5px currentColor;
+  }
+  
+  .text-shadow-outline {
+    text-shadow: -1px -1px 0 rgba(0,0,0,0.4), 1px -1px 0 rgba(0,0,0,0.4), -1px 1px 0 rgba(0,0,0,0.4), 1px 1px 0 rgba(0,0,0,0.4);
+  }
+  
+  .text-scan {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .text-scan::after {
+    content: '';
+    position: absolute;
+    height: 5px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    animation: text-scanner 2s linear infinite;
+  }
+  
+  /* Retro UI utilities */
+  .scanlines {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .scanlines::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: 
+      repeating-linear-gradient(
+        to bottom,
+        transparent,
+        transparent 1px,
+        rgba(0, 0, 0, 0.05) 1px,
+        rgba(0, 0, 0, 0.05) 2px
+      );
+    pointer-events: none;
+  }
+  
+  .terminal-border-dashed {
+    border: 1px dashed hsl(var(--border) / 0.5);
+  }
+  
+  .terminal-border-ascii {
+    position: relative;
+    border: none;
+  }
+  
+  .terminal-border-ascii::before {
+    content: '+' attr(data-width-chars) '+';
+    position: absolute;
+    top: -0.7em;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    color: hsl(var(--border));
+    font-family: monospace;
+  }
+  
+  .terminal-border-ascii::after {
+    content: '+' attr(data-width-chars) '+';
+    position: absolute;
+    bottom: -0.7em;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    color: hsl(var(--border));
+    font-family: monospace;
+  }
+  
+  /* DeFi specific utilities */
+  .token-up {
+    @apply text-[#00ff00] font-mono;
+  }
+  
+  .token-down {
+    @apply text-[#ff0000] font-mono;
+  }
+  
+  .token-neutral {
+    @apply text-yellow-400 font-mono;
+  }
+  
+  /* Address and hash formatting */
+  .address-format {
+    @apply font-mono text-xs tracking-tighter opacity-80;
+  }
+  
+  .hash-format {
+    @apply font-mono text-xs tracking-tighter leading-tight break-all opacity-80;
+  }
+}
+
+/* Animation definitions */
+@keyframes glitch-anim {
+  0% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-1px, 1px);
+  }
+  40% {
+    transform: translate(-1px, -1px);
+  }
+  60% {
+    transform: translate(1px, 1px);
+  }
+  80% {
+    transform: translate(1px, -1px);
+  }
+  100% {
+    transform: translate(0);
+  }
+}
+
+@keyframes text-scanner {
+  0% {
+    top: -5px;
+  }
+  100% {
+    top: 100%;
+  }
+}
+
+@keyframes loading-dots {
+  0%, 20% {
+    content: '.';
+  }
+  40%, 60% {
+    content: '..';
+  }
+  80%, 100% {
+    content: '...';
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
 
@@ -165,4 +568,35 @@ input,
 textarea,
 button {
   font-family: 'IBM Plex Mono', monospace !important;
+}
+
+/* Create SVG filter for pixelation effect */
+body:after {
+  content: "";
+  display: none;
+}
+
+body svg {
+  display: none;
+}
+
+body svg defs {
+  width: 0;
+  height: 0;
+}
+
+body svg filter#pixelate {
+  width: 0;
+  height: 0;
+}
+
+body svg filter#pixelate feFlood {
+  width: 0;
+  height: 0;
+}
+
+/* Added to head to ensure pixelation effect works */
+html:before {
+  content: '<svg xmlns="http://www.w3.org/2000/svg" style="display:none"><defs><filter id="pixelate"><feFlood x="4" y="4" height="2" width="2"/><feComposite width="10" height="10"/><feTile result="a"/><feComposite in="SourceGraphic" in2="a" operator="in"/><feMorphology operator="dilate" radius="5"/></filter></defs></svg>';
+  display: none;
 }
