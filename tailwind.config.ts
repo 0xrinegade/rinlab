@@ -2,7 +2,11 @@ import type { Config } from "tailwindcss";
 
 export default {
   darkMode: ["class"],
-  content: ["./client/index.html", "./client/src/**/*.{js,jsx,ts,tsx}"],
+  content: [
+    "./client/index.html", 
+    "./client/src/**/*.{js,jsx,ts,tsx}",
+    "./app/**/*.{js,jsx,ts,tsx}"
+  ],
   theme: {
     extend: {
       borderRadius: {
@@ -60,10 +64,44 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        typing: {
+          "0%": { width: "0" },
+          "100%": { width: "100%" }
+        },
+        blink: {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0" }
+        },
+        scanline: {
+          "0%": { top: "0%" },
+          "100%": { top: "100%" }
+        },
+        flicker: {
+          "0%, 100%": { opacity: "1" },
+          "33%": { opacity: "0.9" },
+          "66%": { opacity: "0.94" }
+        },
+        glitch: {
+          "0%, 100%": { transform: "translate(0)" },
+          "20%": { transform: "translate(-2px, 2px)" },
+          "40%": { transform: "translate(-2px, -2px)" },
+          "60%": { transform: "translate(2px, 2px)" },
+          "80%": { transform: "translate(2px, -2px)" }
+        },
+        pixelate: {
+          "0%, 100%": { filter: "none" },
+          "50%": { filter: "url(#pixelate)" }
+        }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "typing": "typing 2.5s steps(30, end) infinite",
+        "blink": "blink 0.75s step-end infinite",
+        "scanline": "scanline 2s linear infinite",
+        "flicker": "flicker 0.1s linear infinite",
+        "glitch": "glitch 0.4s linear infinite",
+        "pixelate": "pixelate 2s ease-in-out infinite"
       },
     },
   },

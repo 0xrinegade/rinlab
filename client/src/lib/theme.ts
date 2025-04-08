@@ -172,6 +172,7 @@ export const defaultTheme = themePalettes[2]; // DOS theme as default
 export const theme = {
   fonts: {
     mono: "'IBM Plex Mono', monospace",
+    pixel: "'Press Start 2P', monospace",
   },
   spacing: {
     grid: '8px',
@@ -179,10 +180,41 @@ export const theme = {
   transitions: {
     default: '0.2s ease',
     slow: '0.4s ease',
+    glitch: '0.1s linear',
+  },
+  animations: {
+    typing: {
+      duration: '2.5s',
+      timingFunction: 'steps(30, end)',
+      iteration: 'infinite',
+    },
+    blink: {
+      duration: '0.75s',
+      timingFunction: 'step-end',
+      iteration: 'infinite',
+    },
+    scanline: {
+      duration: '2s',
+      timingFunction: 'linear',
+      iteration: 'infinite',
+    },
+    flicker: {
+      duration: '0.1s',
+      timingFunction: 'linear',
+      iteration: 'infinite',
+    },
+    glitch: {
+      duration: '0.4s',
+      timingFunction: 'linear',
+      iteration: 'infinite',
+    }
   }
 };
 
 export const borderStyles = {
   default: '1px solid hsl(var(--border))',
-  glowing: 'hsl(var(--glow))'
+  glowing: '0 0 5px hsl(var(--primary))',
+  pixelated: '2px solid hsl(var(--primary))',
+  terminal: '1px solid hsl(var(--primary))',
+  retro: '2px dashed hsl(var(--primary))',
 };
