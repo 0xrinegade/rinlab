@@ -66,6 +66,7 @@
     "next": "^15.2.4",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
+    "postcss": "^8.5.3",
     "postcss-nesting": "^13.0.1",
     "react": "^19.1.0",
     "react-day-picker": "^9.6.5",
