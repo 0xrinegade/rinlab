@@ -15,7 +15,7 @@ export default function Home() {
         <div className="grid grid-cols-1 gap-8">
           <section className="mb-8">
             <Text variant="subheading" className="mb-4">Text Component Variants</Text>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border border-border rounded-md bg-background/50">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border rounded-md bg-background/50">
               <div className="space-y-4">
                 <Text variant="terminal" animation="typing">Terminal with typing animation</Text>
                 <Text variant="glitch" dataText="Glitch Effect">Glitch Effect</Text>
