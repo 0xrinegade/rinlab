@@ -1,6 +1,6 @@
 {
   "name": "rinlab",
-  "version": "0.3.1",
+  "version": "0.4.22",
   "description": "A comprehensive React component library for Solana blockchain interfaces with a nostalgic retro-computing aesthetic",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -11,7 +11,8 @@
     "prepublishOnly": "npm run clean && npm run build",
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
-    "test": "jest"
+    "test": "jest",
+    "publish-local": "npm run clean && npm run build && cp -r dist ../../../dist-lib/"
   },
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",
