@@ -1,31 +1,15 @@
-import express, { type Express } from "express";
+import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import archiver from 'archiver';
 import path from 'path';
 import fs from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-
-// ESM equivalent of __dirname
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 // Initialize Google Generative AI with Gemini Pro model
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || '');
 const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
 export function registerRoutes(app: Express): Server {
-  // Add CORS headers to allow Replit domain
-  app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    next();
-  });
-  
-  // Serve static files from public directory
-  app.use(express.static(path.join(__dirname, '../public')));
   // Meme generation endpoint
   app.post('/api/generate-meme', async (req, res) => {
     try {
@@ -54,11 +38,6 @@ export function registerRoutes(app: Express): Server {
       console.error('Meme generation error:', error);
       res.status(500).json({ error: 'Failed to generate meme' });
     }
-  });
-
-  // Serve static HTML page
-  app.get('/', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../public/index.html'));
   });
 
   // Download project as ZIP
