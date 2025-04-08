@@ -15,7 +15,7 @@
     --hover: 240 100% 32%;
     --muted: 240 30% 80%;
     --radius: 0;
-    
+
     /* Code syntax highlighting colors */
     --syntax-blue: 210 100% 70%;
     --syntax-green: 150 60% 50%;
@@ -224,12 +224,12 @@
     text-shadow: 0 0 4px hsl(var(--primary) / 0.5);
     box-shadow: 0 0 8px hsl(var(--primary) / 0.2);
   }
-  
+
   /* Code execution animation */
   .execution-pulse {
     animation: execution-pulse 2s ease-in-out infinite;
   }
-  
+
   @keyframes execution-pulse {
     0%, 100% {
       background-color: hsla(var(--primary), 0.05);
