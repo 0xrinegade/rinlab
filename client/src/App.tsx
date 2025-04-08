@@ -1,11 +1,15 @@
+import { Switch, Route } from "wouter";
 import { Sidebar } from "./components/layout/sidebar";
 import { ComponentPage } from "./components/layout/component-page";
 import { Download } from "lucide-react";
 
 // Import components from our library
 import {
+  ASCIINFTGallery,
   NetworkTopology,
-  WalletConnectAnimation
+  PumpFunScreener,
+  WalletConnectAnimation,
+  ContributionLeaderboard
 } from "./lib/src";
 
 // Import theme components
@@ -14,11 +18,24 @@ import { ThemeSwitcher } from "./components/ui/theme-switcher";
 // Import local components
 import { TokenScreener } from "./components/defi/token-screener";
 import { OrderBook } from "./components/defi/order-book";
+import { PriceChart } from "./components/defi/price-chart";
+import { TrendPredictor } from "./components/defi/trend-predictor";
+import { MemeGenerator } from "./components/defi/meme-generator";
+import { TokenInput } from "./components/defi/token-input";
+import { TransactionHistory } from "./components/defi/transaction-history";
+import { BlockchainVisualizer } from "./components/defi/blockchain-visualizer";
+import { TransactionComplexity } from "./components/defi/transaction-complexity";
+import { BlockchainExplorer } from "./components/defi/blockchain-explorer";
+import { TransactionFlowChart } from "./components/defi/transaction-flow-chart";
+import { BlockchainHeatmap } from "./components/defi/blockchain-heatmap";
+import { NetworkStatusDashboard } from "./components/defi/network-status-dashboard";
+import { TransactionReplay } from "./components/defi/transaction-replay";
+import { SmartOrderAgent } from "./components/defi/smart-order-agent";
 import { Terminal } from "./components/defi/terminal";
+import { ColorPaletteSelector } from "./components/ui/color-palette-selector";
 
 // Import page components
 import { TerminalPage } from "./pages/Terminal";
-import { CodeSnippetPage } from "./pages/CodeSnippet";
 
 const NETWORK_TOPOLOGY_CODE = `import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -263,20 +280,224 @@ function App() {
       <div className="flex">
         <Sidebar />
         <main className="flex-1 min-h-screen">
-          <ComponentPage
-            title="DeFi Components"
-            description="A retro-computing themed React component library for Solana blockchain interfaces."
-            code=""
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <NetworkTopology width={32} height={16} />
-              <WalletConnectAnimation status="disconnected" />
-              <TokenScreener />
-              <OrderBook bids={sampleOrderBook.bids} asks={sampleOrderBook.asks} />
-              <CodeSnippetPage />
+          <Switch>
+            <Route path="/components/network-topology">
+              <ComponentPage
+                title="Network Topology"
+                description="Blockchain network visualization showing node connections and status."
+                code={NETWORK_TOPOLOGY_CODE}
+              >
+                <NetworkTopology width={32} height={16} />
+              </ComponentPage>
+            </Route>
+
+            <Route path="/components/wallet-connect">
+              <ComponentPage
+                title="Wallet Connection"
+                description="Animated wallet connection interface with retro terminal style."
+                code={WALLET_CONNECT_CODE}
+              >
+                <WalletConnectAnimation 
+                  status="disconnected" 
+                  onConnect={() => alert('Connect clicked')} 
+                />
+              </ComponentPage>
+            </Route>
+            <Route path="/components/ascii-nft-gallery">
+              <ComponentPage
+                title="ASCII NFT Gallery"
+                description="Display NFTs with retro ASCII art style and animations."
+                code=""
+              >
+                <ASCIINFTGallery />
+              </ComponentPage>
+            </Route>
+
+            <Route path="/components/token-screener">
+              <ComponentPage
+                title="Token Screener"
+                description="Real-time token screening with sorting and filtering capabilities."
+                code=""
+              >
+                <TokenScreener />
+              </ComponentPage>
+            </Route>
+
+            <Route path="/components/order-book">
+              <ComponentPage
+                title="Order Book"
+                description="Live order book visualization with bids and asks."
+                code=""
+              >
+                <OrderBook bids={sampleOrderBook.bids} asks={sampleOrderBook.asks} />
+              </ComponentPage>
+            </Route>
+
+            <Route path="/components/price-chart">
+              <ComponentPage
+                title="Price Chart"
+                description="Interactive price chart with customizable time ranges."
+                code=""
+              >
+                <PriceChart data={sampleAnalyticsData} height={300} />
+              </ComponentPage>
+            </Route>
+
+            <Route path="/components/trend-predictor">
+              <ComponentPage
+                title="Trend Predictor"
+                description="AI-powered market trend predictions with confidence levels."
+                code=""
+              >
+                <TrendPredictor predictions={samplePredictions} currentPrice={105.75} />
+              </ComponentPage>
+            </Route>
+
+            <Route path="/components/meme-generator">
+              <ComponentPage
+                title="Meme Generator"
+                description="Market sentiment visualization through generated memes."
+                code=""
+              >
+                <MemeGenerator trend={sampleMarketTrend} />
+              </ComponentPage>
+            </Route>
+
+            <Route path="/components/token-input">
+              <ComponentPage
+                title="Token Input"
+                description="Token amount input with balance display and max button."
+                code=""
+              >
+                <TokenInput token="SOL" balance="1.5" max="1.5" onChange={console.log} />
+              </ComponentPage>
+            </Route>
+
+            <Route path="/components/transaction-history">
+              <ComponentPage
+                title="Transaction History"
+                description="Detailed transaction history with status indicators."
+                code=""
+              >
+                <TransactionHistory transactions={sampleTransactions} />
+              </ComponentPage>
+            </Route>
+
+            <Route path="/theme/colors">
+              <ComponentPage
+                title="Color Palette"
+                description="Customize the theme colors for the entire application."
+                code=""
+              >
+                <ColorPaletteSelector />
+              </ComponentPage>
+            </Route>
+            <Route path="/components/blockchain-visualizer">
+              <ComponentPage
+                title="Blockchain Visualizer"
+                description="Real-time visualization of blockchain transactions with retro-style animations."
+                code=""
+              >
+                <BlockchainVisualizer />
+              </ComponentPage>
+            </Route>
+            <Route path="/components/transaction-complexity">
+              <ComponentPage
+                title="Transaction Complexity"
+                description="Visualize blockchain transaction complexity with retro computing metaphors."
+                code=""
+              >
+                <TransactionComplexity />
+              </ComponentPage>
+            </Route>
+            <Route path="/components/blockchain-explorer">
+              <ComponentPage
+                title="Blockchain Explorer"
+                description="Explore blockchain data with a retro terminal-style interface."
+                code=""
+              >
+                <BlockchainExplorer />
+              </ComponentPage>
+            </Route>
+            <Route path="/components/transaction-flow">
+              <ComponentPage
+                title="Transaction Flow Chart"
+                description="Animated blockchain transaction flow visualization with retro pixel art elements."
+                code=""
+              >
+                <TransactionFlowChart />
+              </ComponentPage>
+            </Route>
+            <Route path="/components/blockchain-heatmap">
+              <ComponentPage
+                title="Blockchain Heatmap"
+                description="Color-coded visualization of blockchain activity with retro terminal aesthetics."
+                code=""
+              >
+                <BlockchainHeatmap />
+              </ComponentPage>
+            </Route>
+            <Route path="/components/pump-fun-screener">
+              <ComponentPage
+                title="Pump Fun Screener"
+                description="Track meme coins and tokens with fun metrics in retro style."
+                code=""
+              >
+                <PumpFunScreener />
+              </ComponentPage>
+            </Route>
+            <Route path="/components/network-status">
+              <ComponentPage
+                title="Network Status Dashboard"
+                description="Pixel art visualization of blockchain network node status and connectivity."
+                code=""
+              >
+                <NetworkStatusDashboard />
+              </ComponentPage>
+            </Route>
+            <Route path="/components/transaction-replay">
+              <ComponentPage
+                title="Transaction Replay"
+                description="Retro terminal-style visualization and replay of blockchain transactions."
+                code=""
+              >
+                <TransactionReplay />
+              </ComponentPage>
+            </Route>
+            <Route path="/components/smart-order-agent">
+              <ComponentPage
+                title="Smart Order Agent"
+                description="Create and manage trading orders with a retro-computing interface."
+                code=""
+              >
+                <SmartOrderAgent />
+              </ComponentPage>
+            </Route>
+            <Route path="/components/contribution-leaderboard">
+              <ComponentPage
+                title="Contribution Leaderboard"
+                description="Community contribution tracking with pixel art rewards and achievements."
+                code=""
+              >
+                <ContributionLeaderboard />
+              </ComponentPage>
+            </Route>
+            <Route path="/components/terminal">
               <TerminalPage />
-            </div>
-          </ComponentPage>
+            </Route>
+            <Route>
+              <ComponentPage
+                title="DeFi Components"
+                description="A retro-computing themed React component library for Solana blockchain interfaces."
+                code=""
+              >
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <NetworkTopology width={32} height={16} />
+                  <WalletConnectAnimation status="disconnected" />
+                </div>
+              </ComponentPage>
+            </Route>
+          </Switch>
         </main>
       </div>
     </div>
