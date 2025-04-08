@@ -63,7 +63,7 @@
   }
 
   * {
-    @apply border-border transition-colors duration-200;
+    @apply border transition-colors duration-200;
   }
 
   body {
