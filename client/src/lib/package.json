@@ -1,6 +1,6 @@
 {
   "name": "rinlab",
-  "version": "0.4.1",
+  "version": "0.3.1",
   "description": "A comprehensive React component library for Solana blockchain interfaces with a nostalgic retro-computing aesthetic",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
