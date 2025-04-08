@@ -37,8 +37,7 @@ export function Sidebar({ className = '' }: SidebarProps) {
     {
       title: "Theme",
       items: [
-        { name: "Color Palette", path: "/theme/colors" },
-        { name: "Typography", path: "/theme/typography" }
+        { name: "Color Palette", path: "/theme/colors" }
       ]
     }
   ];

@@ -1,18 +1,31 @@
-import type { Express } from "express";
+import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import archiver from 'archiver';
 import path from 'path';
 import fs from 'fs';
 
-// Initialize Google Generative AI with Gemini Pro model
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || '');
-const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+// Initialize Google Generative AI with Gemini Pro model if API key is available
+let genAI: GoogleGenerativeAI | null = null;
+let model: any = null;
+
+if (process.env.GOOGLE_API_KEY) {
+  genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
+  model = genAI.getGenerativeModel({ model: "gemini-pro" });
+}
 
 export function registerRoutes(app: Express): Server {
   // Meme generation endpoint
   app.post('/api/generate-meme', async (req, res) => {
     try {
+      // Check if API key is available and model is initialized
+      if (!model || !genAI) {
+        return res.status(503).json({ 
+          error: 'Meme generation service unavailable. Missing API key.',
+          message: 'Please set the GOOGLE_API_KEY environment variable.'
+        });
+      }
+
       const { trend, template } = req.body;
 
       // Create a prompt that describes the market situation and requests a meme

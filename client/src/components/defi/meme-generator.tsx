@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '@/lib/theme';
-import { ArrowUp, ArrowDown, ArrowRight } from 'lucide-react';
+import { ArrowUp, ArrowDown, ArrowRight, AlertTriangle } from 'lucide-react';
 
 interface MarketTrend {
   symbol: string;
@@ -26,6 +26,7 @@ const MEME_TEMPLATES = [
 export function MemeGenerator({ trend, className = '' }: MemeGeneratorProps) {
   const [loading, setLoading] = useState(false);
   const [memeText, setMemeText] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const { currentPalette } = useTheme();
   
   const getTrendIcon = () => {
@@ -36,6 +37,7 @@ export function MemeGenerator({ trend, className = '' }: MemeGeneratorProps) {
 
   const generateMeme = async () => {
     setLoading(true);
+    setError(null);
     try {
       const response = await fetch('/api/generate-meme', {
         method: 'POST',
@@ -47,9 +49,16 @@ export function MemeGenerator({ trend, className = '' }: MemeGeneratorProps) {
       });
       
       const data = await response.json();
+      
+      if (!response.ok) {
+        setError(data.error || data.message || 'Failed to generate meme');
+        return;
+      }
+      
       setMemeText(data.text);
     } catch (error) {
       console.error('Failed to generate meme:', error);
+      setError('Network error: Failed to connect to meme generation service');
     } finally {
       setLoading(false);
     }
@@ -75,7 +84,24 @@ export function MemeGenerator({ trend, className = '' }: MemeGeneratorProps) {
         </button>
       </div>
 
-      {memeText && (
+      {error && (
+        <motion.div 
+          className="p-4 bg-black border border-red-500 rounded-md font-mono text-sm text-red-400"
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+        >
+          <div className="flex items-center gap-2 mb-2">
+            <AlertTriangle size={16} className="text-red-500" />
+            <span className="text-red-400">ERROR</span>
+          </div>
+          <p>{error}</p>
+          <p className="mt-2 text-xs text-red-300">
+            API key may be missing. Check server configuration.
+          </p>
+        </motion.div>
+      )}
+
+      {!error && memeText && (
         <motion.div 
           className="p-4 bg-black border border-primary rounded-md font-mono text-sm vintage-glow"
           initial={{ y: 20, opacity: 0 }}

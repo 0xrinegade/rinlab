@@ -253,12 +253,8 @@ sampleOrderBook.asks.forEach(ask => {
 });
 
 function App() {
-  const handleDownload = async () => {
-    try {
-      window.location.href = '/api/download-project';
-    } catch (error) {
-      console.error('Download failed:', error);
-    }
+  const handleDownload = () => {
+    window.location.href = '/api/download-project';
   };
 
   return (
